@@ -1,8 +1,8 @@
 # ha-ugreen-nas-card
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![HACS Validation](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml)
-[![Build](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/build.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/build.yml)
+[![HACS Validation](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/hacs.yml)
+[![Validate](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml)
 [![Release](https://img.shields.io/github/v/release/juju35/ha-ugreen-nas-card)](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
