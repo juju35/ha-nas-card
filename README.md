@@ -150,6 +150,13 @@ npm run check        # verifies dist/ is up to date (run in CI)
 npm run screenshots  # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/
 ```
 
+### Releasing
+
+1. Add a `## <version>` section at the top of [CHANGELOG.md](CHANGELOG.md)
+2. Run the **Release** workflow from the Actions tab with that version
+
+The workflow builds the card, creates the tag and the GitHub release with the changelog section as notes, and attaches `ugreen-nas-card.js`.
+
 ## Translations
 
 The cards auto-detect the language from your Home Assistant settings. Currently supported:

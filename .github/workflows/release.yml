@@ -44,13 +44,28 @@ jobs:
           npm pkg set version="${TAG#v}"
           npm run build
 
+      - name: Extract release notes from CHANGELOG.md
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          # Section "## <version>" of CHANGELOG.md, up to the next "## " heading.
+          awk -v v="${TAG#v}" '
+            /^## / { if (found) exit; if ($2 == v) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::No '## ${TAG#v}' section in CHANGELOG.md"
+            exit 1
+          fi
+
       - name: Create or update the release with ugreen-nas-card.js
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file notes.md
             gh release upload "$TAG" dist/ugreen-nas-card.js --clobber
           else
-            gh release create "$TAG" dist/ugreen-nas-card.js --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+            gh release create "$TAG" dist/ugreen-nas-card.js --target "$GITHUB_SHA" --title "$TAG" --notes-file notes.md
           fi
