@@ -1,0 +1,16 @@
+{
+  "name": "ha-ugreen-nas-card",
+  "version": "1.0.0",
+  "description": "Lovelace cards for Home Assistant to monitor UGREEN NAS devices (UGREEN NAS integration).",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check && node --check dist/ugreen-nas-card.js",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
