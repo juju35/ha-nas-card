@@ -1,15 +1,15 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
 
 permissions:
   contents: write
 
 jobs:
   release:
-    name: Attach card to release
+    name: Build and publish release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,13 +20,17 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build with the release version
+      - name: Build with the tag version
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          npm pkg set version="$VERSION"
+          npm pkg set version="${GITHUB_REF_NAME#v}"
           npm run build
 
-      - name: Upload ugreen-nas-card.js
+      - name: Create release with ugreen-nas-card.js
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" dist/ugreen-nas-card.js --clobber
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/ugreen-nas-card.js --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/ugreen-nas-card.js --title "$GITHUB_REF_NAME" --generate-notes
+          fi
