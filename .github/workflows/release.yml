@@ -1,6 +1,11 @@
 name: Release
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 1.0.0)"
+        required: true
   push:
     tags: ["v*"]
   release:
@@ -22,17 +27,30 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build with the tag version
+      - name: Resolve tag
+        id: tag
         run: |
-          npm pkg set version="${GITHUB_REF_NAME#v}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+            VERSION="${VERSION#v}"
+            echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build with the release version
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          npm pkg set version="${TAG#v}"
           npm run build
 
-      - name: Create release with ugreen-nas-card.js
+      - name: Create or update the release with ugreen-nas-card.js
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/ugreen-nas-card.js --clobber
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/ugreen-nas-card.js --clobber
           else
-            gh release create "$GITHUB_REF_NAME" dist/ugreen-nas-card.js --title "$GITHUB_REF_NAME" --generate-notes
+            gh release create "$TAG" dist/ugreen-nas-card.js --target "$GITHUB_SHA" --title "$TAG" --generate-notes
           fi
