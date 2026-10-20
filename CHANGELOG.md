@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0
+
+| UGREEN NAS Card | UGREEN NAS Mini Card |
+|---|---|
+| ![ugreen-nas-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![ugreen-nas-mini-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) |
+
+### ✨ Features
+
+- **UGREEN logo** next to the NAS name, in the full card and the mini card. In dark mode the bottom of its gradient is lightened so it stays visible on dark backgrounds. The logo is embedded, no extra resource needed.
+
 ## 1.0.0
 
 First release of the UGREEN NAS cards for Home Assistant, built for the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas).
