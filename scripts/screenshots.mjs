@@ -60,13 +60,13 @@ for (const s of shots) {
   await page.addScriptTag({ content: HA_CARD });
   await page.addScriptTag({ content: cardJs });
   await page.evaluate(
-    ({ type, config, states }) => {
+    ({ type, config, states, dark }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
-      el.hass = { states, language: "en", locale: { language: "en" } };
+      el.hass = { states, language: "en", locale: { language: "en" }, themes: { darkMode: dark } };
       document.getElementById("root").appendChild(el);
     },
-    { type: s.type, config: s.config, states }
+    { type: s.type, config: s.config, states, dark: s.theme === "dark" }
   );
   await page.waitForTimeout(800);
   const box = await page.locator("#root").boundingBox();

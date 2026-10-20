@@ -31,7 +31,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Click any value to open its Home Assistant history (more-info dialog)
 - Visual editor in the dashboard UI for both cards (no YAML needed)
 - Light and dark mode, English and French
-- Single file, no external dependency, the NAS picture is embedded
+- UGREEN logo next to the NAS name, adapted to dark mode
+- Single file, no external dependency, the NAS picture and logo are embedded
 
 ## Prerequisites
 

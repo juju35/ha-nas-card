@@ -175,6 +175,15 @@ const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= wa
 
 const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
 
+// UGREEN logo. The bottom of the gradient is lightened in dark mode, the original
+// near-black end would blend into the card background.
+const logo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" role="img" aria-label="UGREEN">
+  <defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="${dark ? "#0b8f5c" : "#001509"}"/>
+  </linearGradient></defs>
+  <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/>
+</svg>`;
+
 // ---------------------------------------------------------------------------
 // Entity discovery
 // ---------------------------------------------------------------------------
@@ -310,7 +319,9 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px; }
   .titles { flex: 1; min-width: 0; }
-  .name { font-size: 18px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .name { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; line-height: 1.25; }
+  .name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .name .logo { height: 1.1em; width: auto; flex: none; }
   .sub { font-size: 13px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .warning { padding: 16px; color: var(--ug-warn); }
 `;
@@ -364,7 +375,7 @@ class UgreenNasBase extends HTMLElement {
     return `
       <div class="header">
         <div class="titles">
-          <div class="name">${esc(name)}</div>
+          <div class="name"><span>${esc(name)}</span>${logo(this._hass.themes?.darkMode)}</div>
           <div class="sub">${esc(sub)}</div>
           ${
             status
