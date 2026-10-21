@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2
+
+### 🐛 Fixes
+
+- **UGREEN logo position**: in the full card it was centred on the whole title block, status chip included, so it sat below the NAS name. It is now aligned with the name and the model line.
+
 ## 1.1.1
 
 | UGREEN NAS Card | UGREEN NAS Mini Card |

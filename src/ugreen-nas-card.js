@@ -319,7 +319,7 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px; }
   .titles { flex: 1; min-width: 0; }
-  .logo { height: 40px; width: auto; flex: none; }
+  .logo { height: 40px; width: auto; flex: none; align-self: flex-start; }
   .name { font-size: 18px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 13px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .warning { padding: 16px; color: var(--ug-warn); }
