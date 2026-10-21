@@ -57,7 +57,7 @@ Or manually:
 
 ### Manual
 
-1. Download `ugreen-nas-card.js` from the [latest release](https://github.com/juju35/ha-ugreen-nas-card/releases/latest) (or `dist/ugreen-nas-card.js` from this repository)
+1. Download `ugreen-nas-card.js` from the [latest release](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
 2. Copy it to `/config/www/ugreen-nas-card.js`
 3. Go to **Settings → Dashboards → ⋮ → Resources** → Add resource:
    - URL: `/local/ugreen-nas-card.js`
@@ -148,15 +148,17 @@ Thresholds:
 ```bash
 npm install
 npm run build        # bundles src/ugreen-nas-card.js + images/nas.webp into dist/ugreen-nas-card.js
-npm run check        # verifies dist/ is up to date (run in CI)
+npm run check        # builds and checks the card (run in CI)
 npm run screenshots  # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/
 ```
 
+`dist/` is not committed: `npm run build` creates it locally, CI builds it on every push, and the release workflow attaches the built file to the release, which is where HACS downloads it from.
+
 ### Releasing
 
-1. Bump `version` in `package.json` and run `npm run build`
+1. Bump `version` in `package.json`
 2. Add a `## <version>` section at the top of [CHANGELOG.md](CHANGELOG.md)
-3. Push to `main`: the **Release** workflow creates the tag and the GitHub release with the changelog section as notes, and attaches `ugreen-nas-card.js`
+3. Push to `main`: the **Release** workflow builds the card, creates the tag and the GitHub release with the changelog section as notes, and attaches `ugreen-nas-card.js`
 
 ## Translations
 
