@@ -34,7 +34,7 @@ const STRINGS = {
     volumes: "Volumes",
     disks: "Disks",
     fans: "Fans",
-    uptime: "Uptime",
+    uptime: "Uptime:",
     version: "UGOS",
     download: "Download",
     upload: "Upload",
@@ -523,7 +523,7 @@ class UgreenNasCard extends UgreenNasBase {
     const facts = [];
     if (runtime !== null)
       facts.push(
-        `<span class="clickable" data-entity="${sc.runtime}">${svgIcon(ICONS.timer)}${this._t("uptime")} : ${fmtUptime(
+        `<span class="clickable" data-entity="${sc.runtime}">${svgIcon(ICONS.timer)}${this._t("uptime")} ${fmtUptime(
           runtime,
           this._hass,
           this._config
