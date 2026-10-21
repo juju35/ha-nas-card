@@ -306,7 +306,7 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
-  :host { --ug-green: #00b46e; --ug-ok: var(--success-color, #43a047); --ug-warn: var(--warning-color, #ffa000); --ug-crit: var(--error-color, #db4437); }
+  :host { --ug-green: #00b46e; --ug-ok: var(--success-color, #43a047); --ug-warn: var(--warning-color, #ffa600); --ug-crit: var(--error-color, #db4437); }
   ha-card { overflow: hidden; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
@@ -435,7 +435,7 @@ const FULL_STYLE = `
   .tile .icon { color: var(--c, var(--ug-green)); }
   .tile .k { font-size: 12px; color: var(--secondary-text-color); }
   .tile .v { font-size: 15px; font-weight: 500; }
-  .tile.up { --c: #2196f3; }
+  .tile.up { --c: var(--info-color, #039be5); }
   .tile.down { --c: var(--ug-green); }
   .vol { margin-bottom: 10px; }
   .vol:last-child { margin-bottom: 0; }
