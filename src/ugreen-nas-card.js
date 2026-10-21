@@ -319,9 +319,8 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px; }
   .titles { flex: 1; min-width: 0; }
-  .name { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; line-height: 1.25; }
-  .name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .name .logo { height: 1.1em; width: auto; flex: none; }
+  .logo { height: 40px; width: auto; flex: none; }
+  .name { font-size: 18px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 13px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .warning { padding: 16px; color: var(--ug-warn); }
 `;
@@ -374,8 +373,9 @@ class UgreenNasBase extends HTMLElement {
     const sub = [model, version ? `UGOS ${version}` : null].filter(Boolean).join(" · ");
     return `
       <div class="header">
+        ${logo(this._hass.themes?.darkMode)}
         <div class="titles">
-          <div class="name"><span>${esc(name)}</span>${logo(this._hass.themes?.darkMode)}</div>
+          <div class="name">${esc(name)}</div>
           <div class="sub">${esc(sub)}</div>
           ${
             status
@@ -644,6 +644,7 @@ class UgreenNasCard extends UgreenNasBase {
 
 const MINI_STYLE = `
   .header { padding: 12px 12px 4px; }
+  .logo { height: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .titles .chip { display: none; }
   .name { font-size: 16px; }
