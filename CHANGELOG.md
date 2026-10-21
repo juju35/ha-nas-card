@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.3
+
+### Changes
+- HACS now asks for Home Assistant 2024.8 or later, the version that brought the sections view the card supports; the README says so under **Prerequisites**.
+
+### Fixes
+- "Uptime: 10 d" in English, without the French space before the colon.
+
+### Maintenance
+- CHANGELOG headings use the same plain English set as the other ha-* repositories.
+
 ## 1.2.2
 
 ### Maintenance
@@ -21,8 +32,7 @@
 
 ## 1.1.2
 
-### 🐛 Fixes
-
+### Fixes
 - **UGREEN logo position**: in the full card it was centred on the whole title block, status chip included, so it sat below the NAS name. It is now aligned with the name and the model line.
 
 ## 1.1.1
@@ -31,8 +41,7 @@
 |---|---|
 | ![ugreen-nas-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![ugreen-nas-mini-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) |
 
-### 🎨 Changes
-
+### Changes
 - **Larger UGREEN logo**, now left of the NAS name: 40 px in the full card and 32 px in the mini card, like the Roborock card.
 
 ## 1.1.0
@@ -41,8 +50,7 @@
 |---|---|
 | ![ugreen-nas-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![ugreen-nas-mini-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) |
 
-### ✨ Features
-
+### What's new
 - **UGREEN logo** next to the NAS name, in the full card and the mini card. In dark mode the bottom of its gradient is lightened so it stays visible on dark backgrounds. The logo is embedded, no extra resource needed.
 
 ## 1.0.0
@@ -53,8 +61,7 @@ First release of the UGREEN NAS cards for Home Assistant, built for the [UGREEN 
 |---|---|
 | ![ugreen-nas-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![ugreen-nas-mini-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) |
 
-### ✨ Features
-
+### What's new
 - **UGREEN NAS Card** (`custom:ugreen-nas-card`): CPU, RAM and CPU temperature gauges, uptime, network download / upload, volumes (RAID level, filesystem, status, used space), disks (model, status, temperature, size, power-on hours) and fans.
 - **UGREEN NAS Mini Card** (`custom:ugreen-nas-mini-card`): compact overview with CPU, RAM, temperature, overall storage, status, network and uptime.
 - **Automatic discovery** of the integration entities through their `UGNAS_device_id` attribute: no entity to pick, several NAS supported, de-duplicated ids (`_2`) handled.
@@ -64,14 +71,12 @@ First release of the UGREEN NAS cards for Home Assistant, built for the [UGREEN 
 - Light and dark mode, English and French.
 - Single file with no external dependency, the NAS picture is embedded.
 
-### 📦 Installation
-
+### Installation
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-ugreen-nas-card&category=plugin)
 
 Open the link above (or add `https://github.com/juju35/ha-ugreen-nas-card` as a **Dashboard** custom repository in HACS), click **Download**, then reload your browser. Manual install: copy `ugreen-nas-card.js` from the assets below to `/config/www/` and add `/local/ugreen-nas-card.js` as a JavaScript Module resource.
 
-### 🚀 Quick start
-
+### Quick start
 ```yaml
 type: custom:ugreen-nas-card
 ```

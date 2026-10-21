@@ -36,6 +36,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 ## Prerequisites
 
+Home Assistant 2024.8 or later, and:
+
 The [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) must be installed and configured (available in HACS).
 
 ## Installation
