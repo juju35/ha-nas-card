@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1
+
+| UGREEN NAS Card | UGREEN NAS Mini Card |
+|---|---|
+| ![ugreen-nas-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![ugreen-nas-mini-card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) |
+
+### 🎨 Changes
+
+- **Larger UGREEN logo**, now left of the NAS name: 40 px in the full card and 32 px in the mini card, like the Roborock card.
+
 ## 1.1.0
 
 | UGREEN NAS Card | UGREEN NAS Mini Card |
