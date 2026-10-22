@@ -115,7 +115,7 @@ const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 const lang = (hass, config) => {
-  const l = (config && config.language) || (hass && (hass.locale?.language || hass.language)) || "en";
+  const l = (config?.language) || (hass && (hass.locale?.language || hass.language)) || "en";
   return STRINGS[l] ? l : STRINGS[l.split("-")[0]] ? l.split("-")[0] : "en";
 };
 
@@ -181,6 +181,7 @@ const logo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" rol
   <defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="${dark ? "#0b8f5c" : "#001509"}"/>
   </linearGradient></defs>
+// biome-ignore lint: vendored/minified third-party code
   <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/>
 </svg>`;
 
@@ -227,7 +228,7 @@ const _cache = new WeakMap();
 const listNas = (hass) => {
   const ids = new Map();
   for (const s of Object.values(hass.states)) {
-    const id = s.attributes && s.attributes.UGNAS_device_id;
+    const id = s.attributes?.UGNAS_device_id;
     if (id && !ids.has(id)) ids.set(id, s.attributes.UGNAS_global_id || id);
   }
   return [...ids.entries()].map(([value, label]) => ({ value, label }));
@@ -247,7 +248,7 @@ const discover = (hass, nasId) => {
   const entityIds = Object.keys(hass.states)
     .filter((id) => {
       const a = hass.states[id].attributes;
-      return a && a.UGNAS_device_id && (!nasId || a.UGNAS_device_id === nasId);
+      return a?.UGNAS_device_id && (!nasId || a.UGNAS_device_id === nasId);
     })
     .sort();
   // Prefer the first NAS when none is configured.
@@ -331,7 +332,7 @@ class UgreenNasBase extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._html = "";
     this.shadowRoot.addEventListener("click", (ev) => {
-      const el = ev.composedPath().find((n) => n.dataset && n.dataset.entity);
+      const el = ev.composedPath().find((n) => n.dataset?.entity);
       if (el) fireMoreInfo(this, el.dataset.entity);
     });
   }
@@ -539,7 +540,7 @@ class UgreenNasCard extends UgreenNasBase {
         ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95))}
         ${this._gauge(
           sc.cpu_temp,
-          this._t("temperature") + " " + this._t("cpu"),
+          `${this._t("temperature")} ${this._t("cpu")}`,
           ICONS.temp,
           temp,
           temp === null ? "—" : `${Math.round(temp)}°C`,
