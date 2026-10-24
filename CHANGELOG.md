@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.1
+
+### Fixes
+- When the NAS entities become unavailable and come back (NAS restarted, offline at startup), the card no longer stays on a missing sensor or on "No UGREEN NAS found" until the page is reloaded.
+- When a list changes order (volumes, disks, fans, mini card footer), the keyboard focus stays on the same item instead of landing on another row. In browsers that cannot move an element without losing its focus, the focus is dropped rather than moved to another row.
+- No more script error when a NAS entity has no state while the registry still lists it.
+
+### Maintenance
+- Browser tests (Chromium) for the in-place updates, run in CI, and regression tests for the discovery; a fresh page per screenshot; duplication check skips the tests.
+
 ## 1.4.0
 
 ### Fixes
