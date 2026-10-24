@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.4.0
+
+### Fixes
+- A volume whose used space is unknown no longer shows an empty bar at "0%": the percentage is left out and the used space shows "—". The mini card storage total only counts volumes whose used space is known.
+- Upload and download rates follow the sensor unit (kB/s, MB/s, bit/s…) instead of always being read as B/s. With the integration default (B/s) nothing changes.
+- The NAS is still found when its entities only get their attributes after the dashboard has loaded (NAS offline at startup).
+
+### Changes
+- The server status "Normal" is translated; any other status is shown as reported.
+- The card only re-renders when something it shows changes, and updates the page in place: keyboard focus, hover and text selection survive updates, the bars, rings and chevrons animate again, and the NAS picture is not decoded again on every poll.
+- Keyboard access: clickable items can be reached with Tab and opened with Enter or Space, with a visible focus outline.
+
+### Maintenance
+- CI hardened: actions pinned by commit SHA, read-only token permissions, Dependabot for action updates, duplication report annotated on pull requests.
+- Unit tests (`npm test`, run in CI); discovery cached instead of being recomputed on every state change; unused sensors and strings removed.
+
 ## 1.3.1
 
 ### Maintenance
