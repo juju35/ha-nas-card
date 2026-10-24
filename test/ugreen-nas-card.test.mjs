@@ -51,3 +51,18 @@ test("discovery is cached across state changes and refreshed when entities chang
   assert.notEqual(a, c);
   assert.equal(c.scalars.ram_usage, "sensor.ugreen_nas_ram_usage");
 });
+
+test("discovery finds the NAS once UGNAS_device_id appears on already registered entities", () => {
+  // Restored / unavailable entities carry no UGNAS_device_id: same registry, same number of states.
+  const bare = (id) => ({ entity_id: id, state: "unavailable", attributes: { restored: true } });
+  const cpu = "sensor.ugreen_nas_cpu_usage";
+  const ram = "sensor.ugreen_nas_ram_usage";
+  for (const entities of [{ [cpu]: {}, [ram]: {} }, { [cpu]: { platform: "ugreen" }, [ram]: { platform: "ugreen" } }]) {
+    assert.equal(discover({ entities, states: { [cpu]: bare(cpu), [ram]: bare(ram) } }, "").nasId, null);
+    const partial = discover({ entities, states: { [cpu]: s(cpu, 10, "%"), [ram]: bare(ram) } }, "");
+    assert.equal(partial.nasId, "nas");
+    const full = discover({ entities, states: { [cpu]: s(cpu, 10, "%"), [ram]: s(ram, 30, "%") } }, "");
+    assert.equal(full.scalars.cpu_usage, cpu);
+    assert.equal(full.scalars.ram_usage, ram);
+  }
+});

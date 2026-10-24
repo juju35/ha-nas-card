@@ -236,14 +236,39 @@ const listNas = (hass) => {
 
 // Entity ids carrying UGNAS_device_id, cached on the entity registry (replaced only when it changes) and
 // on the number of states (an entity added or removed), not on hass.states, replaced on every state change.
+// HA leaves the attribute out while an entity is unavailable or restored at startup, so it can appear later
+// without the registry or the number of states changing: the entities that may still gain it (integration
+// entities and unavailable or restored ones) are kept aside and re-checked on each call, and an empty result
+// is never cached.
 let _ugnas = null;
+const UGNAS_PLATFORM = "ugreen";
 const ugnasIds = (hass) => {
-  const count = Object.keys(hass.states).length;
-  if (_ugnas && _ugnas.entities === hass.entities && _ugnas.count === count && hass.entities) return _ugnas.ids;
-  const ids = Object.keys(hass.states)
-    .filter((id) => hass.states[id].attributes?.UGNAS_device_id)
-    .sort();
-  _ugnas = { entities: hass.entities, count, ids };
+  const states = hass.states;
+  const count = Object.keys(states).length;
+  const c = _ugnas;
+  if (
+    c &&
+    hass.entities &&
+    c.entities === hass.entities &&
+    c.count === count &&
+    !c.pending.some((id) => states[id]?.attributes?.UGNAS_device_id)
+  )
+    return c.ids;
+  const ids = [];
+  const pending = [];
+  for (const id of Object.keys(states)) {
+    const st = states[id];
+    if (st.attributes?.UGNAS_device_id) ids.push(id);
+    else if (
+      hass.entities?.[id]?.platform === UGNAS_PLATFORM ||
+      st.attributes?.restored ||
+      st.state === "unavailable" ||
+      st.state === "unknown"
+    )
+      pending.push(id);
+  }
+  ids.sort();
+  _ugnas = ids.length ? { entities: hass.entities, count, ids, pending } : null;
   return ids;
 };
 
