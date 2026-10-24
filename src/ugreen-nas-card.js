@@ -232,47 +232,34 @@ const listNas = (hass) => {
   return [...ids.entries()].map(([value, label]) => ({ value, label }));
 };
 
-// Entity ids carrying UGNAS_device_id, cached on the entity registry (replaced only when it changes) and
-// on the number of states (an entity added or removed), not on hass.states, replaced on every state change.
-// HA leaves the attribute out while an entity is unavailable or restored at startup, so it can appear later
-// without the registry or the number of states changing: the entities that may still gain it (integration
-// entities and unavailable or restored ones) are kept aside and re-checked on each call, and an empty result
-// is never cached.
-let _ugnas = null;
+// Candidate entity ids: the entities of the integration in the entity registry, cached on the registry
+// object (replaced only when it changes), not on hass.states, replaced on every state change. Without a
+// registry entry for the integration, every state is a candidate.
 const UGNAS_PLATFORM = "ugreen";
+let _registry = { entities: null, ids: [] };
+const candidateIds = (hass) => {
+  if (hass.entities && _registry.entities !== hass.entities) {
+    const ids = Object.keys(hass.entities).filter((id) => hass.entities[id]?.platform === UGNAS_PLATFORM);
+    _registry = { entities: hass.entities, ids };
+  }
+  return hass.entities && _registry.ids.length ? _registry.ids : Object.keys(hass.states);
+};
+
+// Entity ids carrying UGNAS_device_id right now, re-read from the states on each call. HA leaves the
+// attribute out while an entity is unavailable or restored at startup, so the list follows the attribute
+// as it goes and comes back, and a result computed while an entity was missing is never reused once it
+// is back.
 const ugnasIds = (hass) => {
   const states = hass.states;
-  const count = Object.keys(states).length;
-  const c = _ugnas;
-  if (
-    c &&
-    hass.entities &&
-    c.entities === hass.entities &&
-    c.count === count &&
-    !c.pending.some((id) => states[id]?.attributes?.UGNAS_device_id)
-  )
-    return c.ids;
-  const ids = [];
-  const pending = [];
-  for (const id of Object.keys(states)) {
-    const st = states[id];
-    if (st.attributes?.UGNAS_device_id) ids.push(id);
-    else if (
-      hass.entities?.[id]?.platform === UGNAS_PLATFORM ||
-      st.attributes?.restored ||
-      st.state === "unavailable" ||
-      st.state === "unknown"
-    )
-      pending.push(id);
-  }
-  ids.sort();
-  _ugnas = ids.length ? { entities: hass.entities, count, ids, pending } : null;
-  return ids;
+  return candidateIds(hass)
+    .filter((id) => states[id]?.attributes?.UGNAS_device_id)
+    .sort();
 };
 
 /**
  * Map the entities of one NAS to a structured object of entity ids. The result is cached on the list
- * of UGREEN NAS entity ids, so the regex matching only runs again when that list changes.
+ * of UGREEN NAS entity ids that currently carry the attribute, so the regex matching only runs again
+ * when that list changes. An empty result (no NAS found) is not cached.
  */
 const discover = (hass, nasId) => {
   const all = ugnasIds(hass);
@@ -314,7 +301,7 @@ const discover = (hass, nasId) => {
       }
     }
   }
-  _cache.set(key, nas);
+  if (nas.nasId) _cache.set(key, nas);
   return nas;
 };
 
@@ -333,25 +320,54 @@ const volumeUsage = (hass, vol) => {
 const sameSig = (a, b) => !!a && !!b && a.length === b.length && a.every((v, i) => v === b[i]);
 
 // Patch the shadow DOM in place from the new HTML: nodes whose tag is unchanged are kept, so keyboard
-// focus, hover, the embedded NAS picture and CSS transitions (bars, rings) survive an update, and only
-// the changed text and attributes are written.
+// focus, hover, embedded pictures and CSS transitions survive an update, and only the changed text and
+// attributes are written. Rows of a list carry a data-key (their entity or row id) and are matched by it,
+// wherever they moved, so a focused row keeps its own data when the list is reordered (a node matched by
+// position would be rewritten with the row taking its place, and Enter would act on that row). Nodes
+// without a data-key are matched by position.
 const patchAttrs = (cur, next) => {
   for (const { name } of [...cur.attributes]) if (!next.hasAttribute(name)) cur.removeAttribute(name);
   for (const { name, value } of next.attributes) if (cur.getAttribute(name) !== value) cur.setAttribute(name, value);
 };
+const keyOf = (n) => (n.nodeType === 1 ? n.getAttribute("data-key") : null);
+const sameNode = (a, b) => !!a && a.nodeType === b.nodeType && a.nodeName === b.nodeName;
+// Moves a kept node. moveBefore (where supported) keeps its focus; insertBefore drops it, which is safe:
+// Enter then does nothing rather than act on another row.
+const place = (parent, node, ref) => {
+  if (node === ref) return;
+  try {
+    if (parent.moveBefore && node.parentNode === parent) return parent.moveBefore(node, ref);
+  } catch (_e) {
+    /* fall back to insertBefore */
+  }
+  parent.insertBefore(node, ref);
+};
 const patchChildren = (cur, next) => {
   const old = [...cur.childNodes];
   const fresh = [...next.childNodes];
+  const byKey = new Map();
+  for (const o of old) {
+    const k = keyOf(o);
+    if (k !== null && !byKey.has(k)) byKey.set(k, o);
+  }
+  const used = new Set();
   fresh.forEach((n, i) => {
-    const o = old[i];
-    if (!o) cur.appendChild(n);
-    else if (o.nodeType !== n.nodeType || o.nodeName !== n.nodeName) cur.replaceChild(n, o);
-    else if (n.nodeType === 1) {
+    const k = keyOf(n);
+    let o = k !== null ? byKey.get(k) : old[i];
+    if (!sameNode(o, n) || used.has(o) || (k === null && keyOf(o) !== null)) o = null;
+    const ref = cur.childNodes[i] ?? null;
+    if (!o) {
+      cur.insertBefore(n, ref);
+      return;
+    }
+    used.add(o);
+    place(cur, o, ref);
+    if (n.nodeType === 1) {
       patchAttrs(o, n);
       patchChildren(o, n);
     } else if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue;
   });
-  for (let i = fresh.length; i < old.length; i++) cur.removeChild(old[i]);
+  while (cur.childNodes.length > fresh.length) cur.removeChild(cur.lastChild);
 };
 const morph = (root, html) => {
   const tpl = document.createElement("template");
@@ -671,13 +687,13 @@ class UgreenNasCard extends UgreenNasBase {
     const rows = [];
     for (const [pn, pool] of Object.entries(nas.pools)) {
       const raid = this._s(pool.level)?.state;
-      for (const vol of Object.values(pool.volumes)) {
+      for (const [vn, vol] of Object.entries(pool.volumes)) {
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
         const label = this._s(vol.label)?.state || `Volume ${pn}`;
         const fs = this._s(vol.filesystem)?.state;
         const cls = level(u.pct, 80, 90);
-        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-entity="${vol.used_size_raw || vol.used_size || ""}">
+        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${pn}-${vn}" data-entity="${vol.used_size_raw || vol.used_size || ""}">
           <div class="row">
             <span class="dot ${isOk(status) ? "ok" : "crit"}"></span>
             <span class="grow">${esc(label)}</span>
@@ -698,13 +714,13 @@ class UgreenNasCard extends UgreenNasBase {
 
   _disks(nas) {
     const items = [];
-    for (const pool of Object.values(nas.pools)) {
+    for (const [pn, pool] of Object.entries(nas.pools)) {
       for (const [dn, d] of Object.entries(pool.disks)) {
         const status = this._s(d.status);
         const temp = num(this._s(d.temperature));
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
-        items.push(`<div class="disk clickable" role="button" tabindex="0" data-entity="${d.temperature || d.status || ""}">
+        items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${pn}-${dn}" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || `Disk ${dn}`)}</span>
             <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
           <div class="model">${esc(this._s(d.model)?.state || "")}</div>
@@ -731,7 +747,7 @@ class UgreenNasCard extends UgreenNasBase {
     if (!fans.length) return "";
     const tiles = fans.map(([id, label]) => {
       const rpm = num(this._s(id));
-      return `<div class="tile clickable" role="button" tabindex="0" data-entity="${id}">${svgIcon(ICONS.fan, rpm ? "spin" : "")}<div><div class="k">${esc(
+      return `<div class="tile clickable" role="button" tabindex="0" data-key="${id}" data-entity="${id}">${svgIcon(ICONS.fan, rpm ? "spin" : "")}<div><div class="k">${esc(
         label
       )}</div><div class="v">${rpm === null ? "—" : `${Math.round(rpm)} rpm`}</div></div></div>`;
     });
@@ -820,18 +836,18 @@ class UgreenNasMiniCard extends UgreenNasBase {
     const foot = [];
     if (status)
       foot.push(
-        `<span class="clickable ${isOk(status) ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
+        `<span class="clickable ${isOk(status) ? "ok" : "warn"}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
           this._statusText(status)
         )}</span>`
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
       foot.push(
-        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
           ICONS.up
         )}${fmtRate(toBps(this._s(sc.lan_up)))}</span>`
       );
     const runtime = num(this._s(sc.runtime));
-    if (runtime !== null) foot.push(`<span>${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
+    if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
     return `<style>${BASE_STYLE}${MINI_STYLE}</style>
       <ha-card>
         ${this._header(nas)}
