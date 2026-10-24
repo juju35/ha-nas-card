@@ -222,7 +222,7 @@ const RE_DISK = new RegExp(
   `(?:^|_)pool_(\\d+)_disk_(\\d+)_(label|model|temperature|status|power_on_hours|size|type|slot)${SFX}`
 );
 
-const _cache = new WeakMap();
+const _cache = new Map();
 
 /** List the UGNAS_device_id values present in hass. */
 const listNas = (hass) => {
@@ -234,23 +234,56 @@ const listNas = (hass) => {
   return [...ids.entries()].map(([value, label]) => ({ value, label }));
 };
 
-/** Map the entities of one NAS to a structured object of entity ids. */
-const discover = (hass, nasId) => {
-  let byNas = _cache.get(hass.states);
-  if (!byNas) {
-    byNas = new Map();
-    _cache.set(hass.states, byNas);
+// Entity ids carrying UGNAS_device_id, cached on the entity registry (replaced only when it changes) and
+// on the number of states (an entity added or removed), not on hass.states, replaced on every state change.
+// HA leaves the attribute out while an entity is unavailable or restored at startup, so it can appear later
+// without the registry or the number of states changing: the entities that may still gain it (integration
+// entities and unavailable or restored ones) are kept aside and re-checked on each call, and an empty result
+// is never cached.
+let _ugnas = null;
+const UGNAS_PLATFORM = "ugreen";
+const ugnasIds = (hass) => {
+  const states = hass.states;
+  const count = Object.keys(states).length;
+  const c = _ugnas;
+  if (
+    c &&
+    hass.entities &&
+    c.entities === hass.entities &&
+    c.count === count &&
+    !c.pending.some((id) => states[id]?.attributes?.UGNAS_device_id)
+  )
+    return c.ids;
+  const ids = [];
+  const pending = [];
+  for (const id of Object.keys(states)) {
+    const st = states[id];
+    if (st.attributes?.UGNAS_device_id) ids.push(id);
+    else if (
+      hass.entities?.[id]?.platform === UGNAS_PLATFORM ||
+      st.attributes?.restored ||
+      st.state === "unavailable" ||
+      st.state === "unknown"
+    )
+      pending.push(id);
   }
-  const key = nasId || "";
-  if (byNas.has(key)) return byNas.get(key);
+  ids.sort();
+  _ugnas = ids.length ? { entities: hass.entities, count, ids, pending } : null;
+  return ids;
+};
+
+/**
+ * Map the entities of one NAS to a structured object of entity ids. The result is cached on the list
+ * of UGREEN NAS entity ids, so the regex matching only runs again when that list changes.
+ */
+const discover = (hass, nasId) => {
+  const all = ugnasIds(hass);
+  const key = `${nasId || ""}\n${all.join(",")}`;
+  if (_cache.has(key)) return _cache.get(key);
+  if (_cache.size > 8) _cache.clear();
 
   const nas = { scalars: {}, fans: {}, pools: {}, nasId: null };
-  const entityIds = Object.keys(hass.states)
-    .filter((id) => {
-      const a = hass.states[id].attributes;
-      return a?.UGNAS_device_id && (!nasId || a.UGNAS_device_id === nasId);
-    })
-    .sort();
+  const entityIds = all.filter((id) => !nasId || hass.states[id].attributes.UGNAS_device_id === nasId);
   // Prefer the first NAS when none is configured.
   const first = entityIds.length ? hass.states[entityIds[0]].attributes.UGNAS_device_id : null;
   const set = (obj, k, id) => {
@@ -283,7 +316,7 @@ const discover = (hass, nasId) => {
       }
     }
   }
-  byNas.set(key, nas);
+  _cache.set(key, nas);
   return nas;
 };
 
@@ -294,7 +327,38 @@ const volumeUsage = (hass, vol) => {
   let used = toBytes(st("used_size_raw")) ?? toBytes(st("used_size"));
   const avail = toBytes(st("available_size_raw"));
   if (used === null && total !== null && avail !== null) used = total - avail;
-  return { total, used, pct: total ? Math.min(100, (used / total) * 100) : null };
+  // Unknown used space: no percentage (shown as "—"), rather than an empty bar at 0 %.
+  return { total, used, pct: total && used !== null ? Math.min(100, Math.max(0, (used / total) * 100)) : null };
+};
+
+// Same values, compared by identity: used to skip a render when nothing the card shows has changed.
+const sameSig = (a, b) => !!a && !!b && a.length === b.length && a.every((v, i) => v === b[i]);
+
+// Patch the shadow DOM in place from the new HTML: nodes whose tag is unchanged are kept, so keyboard
+// focus, hover, the embedded NAS picture and CSS transitions (bars, rings) survive an update, and only
+// the changed text and attributes are written.
+const patchAttrs = (cur, next) => {
+  for (const { name } of [...cur.attributes]) if (!next.hasAttribute(name)) cur.removeAttribute(name);
+  for (const { name, value } of next.attributes) if (cur.getAttribute(name) !== value) cur.setAttribute(name, value);
+};
+const patchChildren = (cur, next) => {
+  const old = [...cur.childNodes];
+  const fresh = [...next.childNodes];
+  fresh.forEach((n, i) => {
+    const o = old[i];
+    if (!o) cur.appendChild(n);
+    else if (o.nodeType !== n.nodeType || o.nodeName !== n.nodeName) cur.replaceChild(n, o);
+    else if (n.nodeType === 1) {
+      patchAttrs(o, n);
+      patchChildren(o, n);
+    } else if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue;
+  });
+  for (let i = fresh.length; i < old.length; i++) cur.removeChild(old[i]);
+};
+const morph = (root, html) => {
+  const tpl = document.createElement("template");
+  tpl.innerHTML = html;
+  patchChildren(root, tpl.content);
 };
 
 const fireMoreInfo = (node, entityId) => {
@@ -312,6 +376,7 @@ const BASE_STYLE = `
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }
+  [role="button"]:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
   .ok { --c: var(--ug-ok); } .warn { --c: var(--ug-warn); } .crit { --c: var(--ug-crit); }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--ug-ok)); flex: none; display: inline-block; }
   .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;
@@ -335,11 +400,22 @@ class UgreenNasBase extends HTMLElement {
       const el = ev.composedPath().find((n) => n.dataset?.entity);
       if (el) fireMoreInfo(this, el.dataset.entity);
     });
+    // Keyboard access: Enter or Space on a focusable non-button element acts as a click.
+    this.shadowRoot.addEventListener("keydown", (ev) => {
+      if ((ev.key === "Enter" || ev.key === " ") && ev.target.getAttribute?.("role") === "button") {
+        ev.preventDefault();
+        ev.target.click();
+      }
+    });
   }
 
   set hass(hass) {
     this._hass = hass;
-    this._update();
+    if (!this._config) return;
+    // Render only when a state the card shows has changed, not on every state change of Home Assistant.
+    const sig = this._signature();
+    if (sameSig(sig, this._sig)) return;
+    this._update(sig);
   }
 
   get hass() {
@@ -354,12 +430,32 @@ class UgreenNasBase extends HTMLElement {
     return id ? this._hass.states[id] : undefined;
   }
 
-  _update() {
+  // What the render depends on: language, dark mode and the states of the NAS entities.
+  _signature() {
+    const h = this._hass;
+    const sig = [h.language, h.locale?.language, h.themes?.darkMode];
+    const nas = discover(h, this._config.nas);
+    sig.push(nas);
+    if (!nas.nasId) return sig;
+    const walk = (o) => {
+      for (const v of Object.values(o)) {
+        if (typeof v === "string") sig.push(h.states[v]);
+        else if (v && typeof v === "object") walk(v);
+      }
+    };
+    walk(nas.scalars);
+    walk(nas.fans);
+    walk(nas.pools);
+    return sig;
+  }
+
+  _update(sig) {
     if (!this._hass || !this._config) return;
+    this._sig = sig ?? this._signature();
     const html = this._render();
     if (html !== this._html) {
       this._html = html;
-      this.shadowRoot.innerHTML = html;
+      morph(this.shadowRoot, html);
     }
   }
 
@@ -380,7 +476,7 @@ class UgreenNasBase extends HTMLElement {
           <div class="sub">${esc(sub)}</div>
           ${
             status
-              ? `<span class="chip clickable ${ok ? "ok" : "warn"}" data-entity="${status.entity_id}" title="${esc(
+              ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
                   this._s(sc.system_message)?.state || ""
                 )}"><span class="dot"></span>${esc(status.state)}</span>`
               : ""
@@ -504,7 +600,7 @@ class UgreenNasCard extends UgreenNasBase {
   }
 
   _gauge(id, label, icon, value, display, cls) {
-    return `<div class="gauge clickable ${cls}" data-entity="${id || ""}">
+    return `<div class="gauge clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
       ${ring(value, cls)}
       <div class="val">${svgIcon(icon)}<b>${display}</b></div>
       <div class="lbl">${label}</div>
@@ -526,7 +622,7 @@ class UgreenNasCard extends UgreenNasBase {
     const facts = [];
     if (runtime !== null)
       facts.push(
-        `<span class="clickable" data-entity="${sc.runtime}">${svgIcon(ICONS.timer)}${this._t("uptime")} ${fmtUptime(
+        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.runtime}">${svgIcon(ICONS.timer)}${this._t("uptime")} ${fmtUptime(
           runtime,
           this._hass,
           this._config
@@ -555,7 +651,7 @@ class UgreenNasCard extends UgreenNasBase {
     const sc = nas.scalars;
     if (!sc.lan_down && !sc.lan_up) return "";
     const tile = (id, cls, icon, k) =>
-      `<div class="tile clickable ${cls}" data-entity="${id || ""}">${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
+      `<div class="tile clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
         num(this._s(id))
       )}</div></div></div>`;
     return `<div>
@@ -577,7 +673,7 @@ class UgreenNasCard extends UgreenNasBase {
         const label = this._s(vol.label)?.state || `Volume ${pn}`;
         const fs = this._s(vol.filesystem)?.state;
         const cls = level(u.pct, 80, 90);
-        rows.push(`<div class="vol clickable ${cls}" data-entity="${vol.used_size_raw || vol.used_size || ""}">
+        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-entity="${vol.used_size_raw || vol.used_size || ""}">
           <div class="row">
             <span class="dot ${isOk(status) ? "ok" : "crit"}"></span>
             <span class="grow">${esc(label)}</span>
@@ -604,7 +700,7 @@ class UgreenNasCard extends UgreenNasBase {
         const temp = num(this._s(d.temperature));
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
-        items.push(`<div class="disk clickable" data-entity="${d.temperature || d.status || ""}">
+        items.push(`<div class="disk clickable" role="button" tabindex="0" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || `Disk ${dn}`)}</span>
             <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
           <div class="model">${esc(this._s(d.model)?.state || "")}</div>
@@ -631,7 +727,7 @@ class UgreenNasCard extends UgreenNasBase {
     if (!fans.length) return "";
     const tiles = fans.map(([id, label]) => {
       const rpm = num(this._s(id));
-      return `<div class="tile clickable" data-entity="${id}">${svgIcon(ICONS.fan, rpm ? "spin" : "")}<div><div class="k">${esc(
+      return `<div class="tile clickable" role="button" tabindex="0" data-entity="${id}">${svgIcon(ICONS.fan, rpm ? "spin" : "")}<div><div class="k">${esc(
         label
       )}</div><div class="v">${rpm === null ? "—" : `${Math.round(rpm)} rpm`}</div></div></div>`;
     });
@@ -685,7 +781,7 @@ class UgreenNasMiniCard extends UgreenNasBase {
   }
 
   _metric(id, icon, label, pct, display, cls) {
-    return `<div class="metric clickable ${cls}" data-entity="${id || ""}">
+    return `<div class="metric clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
       ${svgIcon(icon)}<span>${label}</span>
       <div class="bar"><div style="width:${pct === null ? 0 : Math.max(0, Math.min(100, pct))}%"></div></div>
       <span class="v">${display}</span>
@@ -713,9 +809,10 @@ class UgreenNasMiniCard extends UgreenNasBase {
       for (const pool of Object.values(nas.pools))
         for (const vol of Object.values(pool.volumes)) {
           const u = volumeUsage(this._hass, vol);
-          if (u.total) {
+          // A volume whose used space is unknown is left out of both totals.
+          if (u.total && u.used !== null) {
             total += u.total;
-            used += u.used || 0;
+            used += u.used;
           }
         }
       if (total) {
@@ -726,13 +823,13 @@ class UgreenNasMiniCard extends UgreenNasBase {
     const foot = [];
     if (status)
       foot.push(
-        `<span class="clickable ${isOk(status) ? "ok" : "warn"}" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
+        `<span class="clickable ${isOk(status) ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
           status.state
         )}</span>`
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
       foot.push(
-        `<span class="clickable" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(num(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(num(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
           ICONS.up
         )}${fmtRate(num(this._s(sc.lan_up)))}</span>`
       );
