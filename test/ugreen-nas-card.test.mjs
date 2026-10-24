@@ -2,7 +2,15 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, UgreenNasMiniCard } = load("ugreen-nas-card.js", ["volumeUsage", "discover", "UgreenNasMiniCard"]);
+const { volumeUsage, discover, UgreenNasCard, UgreenNasMiniCard, toBps, fmtRate, STRINGS } = load("ugreen-nas-card.js", [
+  "volumeUsage",
+  "discover",
+  "UgreenNasCard",
+  "UgreenNasMiniCard",
+  "toBps",
+  "fmtRate",
+  "STRINGS",
+]);
 
 const A = (unit) => ({ UGNAS_device_id: "nas", ...(unit ? { unit_of_measurement: unit } : {}) });
 const s = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: A(unit) });
@@ -65,4 +73,91 @@ test("discovery finds the NAS once UGNAS_device_id appears on already registered
     assert.equal(full.scalars.cpu_usage, cpu);
     assert.equal(full.scalars.ram_usage, ram);
   }
+});
+
+test("network rates follow the unit of the sensor", () => {
+  assert.equal(toBps(s("sensor.r", 2348000, "B/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 2348, "kB/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 2.348, "MB/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 8, "Mbit/s")), 1e6);
+  assert.equal(toBps(s("sensor.r", 1, "MiB/s")), 1024 ** 2);
+  assert.equal(toBps(s("sensor.r", 5)), 5);
+  assert.equal(toBps(s("sensor.r", "unavailable", "B/s")), null);
+  assert.equal(fmtRate(toBps(s("sensor.r", 48.475, "MB/s"))), "48.5 MB/s");
+});
+
+test("both cards share setConfig and translate the Normal server status", () => {
+  for (const Cls of [UgreenNasCard, UgreenNasMiniCard]) {
+    const el = new Cls();
+    el._hass = { states: {}, language: "en" };
+    el._update = () => {};
+    el.setConfig({ nas: "x" });
+    assert.deepEqual({ ...el._config }, { nas: "x" });
+    assert.throws(() => el.setConfig(null));
+    STRINGS.en.status_ok = "OK (test)";
+    try {
+      assert.equal(el._statusText({ state: "Normal" }), "OK (test)");
+    } finally {
+      STRINGS.en.status_ok = "Normal";
+    }
+    assert.equal(el._statusText({ state: "Warning" }), "Warning");
+  }
+});
+
+// R1: the attribute is lost (entity unavailable) while a configuration is resolved for the first time,
+// then comes back with the same registry and the same number of states.
+const regression = async () => {
+  const { states: mock } = await import("../scripts/mock-states.mjs");
+  const entities = Object.fromEntries(Object.keys(mock).map((id) => [id, { entity_id: id, platform: "ugreen" }]));
+  const lose = (states, id) => ({ ...states, [id]: { entity_id: id, state: "unavailable", attributes: { friendly_name: "x" } } });
+  return { mock, entities, lose };
+};
+
+test("discovery recovers when the first NAS entity comes back after a lookup without nas", async () => {
+  const { mock, entities, lose } = await regression();
+  assert.equal(discover({ states: mock, entities }, "ugreen_nas").nasId, "ugreen_nas");
+  const first = Object.keys(mock).sort()[0];
+  const down = lose(mock, first);
+  assert.equal(discover({ states: down, entities }, "").nasId, "ugreen_nas");
+  const el = new UgreenNasCard();
+  el._config = {};
+  el._hass = { states: down, entities, language: "en" };
+  assert.doesNotMatch(el._render(), /class="warning"/);
+  assert.equal(discover({ states: { ...mock }, entities }, "").scalars.cpu_fan, first);
+});
+
+test("discovery finds the NAS again after it was entirely offline", async () => {
+  const { mock, entities, lose } = await regression();
+  let offline = mock;
+  for (const id of Object.keys(mock)) offline = lose(offline, id);
+  assert.equal(discover({ states: offline, entities }, "").nasId, null);
+  const el = new UgreenNasMiniCard();
+  el._config = {};
+  el._hass = { states: offline, entities, language: "en" };
+  assert.match(el._render(), /class="warning"/);
+  el._hass = { states: { ...mock }, entities, language: "en" };
+  assert.doesNotMatch(el._render(), /class="warning"/);
+  assert.equal(discover({ states: { ...mock }, entities }, "").nasId, "ugreen_nas");
+});
+
+test("a sensor missing at the first lookup of a configuration is found once it is back", async () => {
+  const { mock, entities, lose } = await regression();
+  const ram = "sensor.ugreen_nas_ram_usage";
+  const other = { ...mock };
+  assert.equal(discover({ states: lose(other, ram), entities }, "ugreen_nas").scalars.ram_usage, undefined);
+  assert.equal(discover({ states: other, entities }, "ugreen_nas").scalars.ram_usage, ram);
+  // And the other way round: lost again, then back.
+  assert.equal(discover({ states: lose(other, ram), entities }, "ugreen_nas").scalars.ram_usage, undefined);
+  assert.equal(discover({ states: { ...other }, entities }, "ugreen_nas").scalars.ram_usage, ram);
+});
+
+test("an entity of the registry removed from the states does not break discovery", async () => {
+  const { mock, entities } = await regression();
+  const { "sensor.ugreen_nas_cpu_usage": _gone, ...rest } = mock;
+  const swapped = { ...rest, "light.kitchen": { entity_id: "light.kitchen", state: "on", attributes: {} } };
+  discover({ states: mock, entities }, "");
+  // Same registry object and same number of states: only the content changed.
+  const nas = discover({ states: swapped, entities }, "");
+  assert.equal(nas.nasId, "ugreen_nas");
+  assert.equal(nas.scalars.cpu_usage, undefined);
 });
