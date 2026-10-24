@@ -28,20 +28,15 @@ const STRINGS = {
     cpu: "CPU",
     ram: "RAM",
     temperature: "Temp.",
-    system: "System",
     network: "Network",
     storage: "Storage",
     volumes: "Volumes",
     disks: "Disks",
     fans: "Fans",
     uptime: "Uptime:",
-    version: "UGOS",
     download: "Download",
     upload: "Upload",
-    read: "Read",
-    write: "Write",
     used: "used",
-    free: "free",
     of: "of",
     hours: "h",
     days: "d",
@@ -51,7 +46,6 @@ const STRINGS = {
     status_ok: "Normal",
     cpu_fan: "CPU fan",
     device_fan: "Fan",
-    power_on: "Power-on",
     // Editor
     nas: "NAS (UGREEN NAS integration device)",
     title: "Title (optional, defaults to the NAS name)",
@@ -69,20 +63,15 @@ const STRINGS = {
     cpu: "CPU",
     ram: "RAM",
     temperature: "Temp.",
-    system: "Système",
     network: "Réseau",
     storage: "Stockage",
     volumes: "Volumes",
     disks: "Disques",
     fans: "Ventilateurs",
     uptime: "Allumé depuis",
-    version: "UGOS",
     download: "Réception",
     upload: "Envoi",
-    read: "Lecture",
-    write: "Écriture",
     used: "utilisés",
-    free: "libres",
     of: "sur",
     hours: "h",
     days: "j",
@@ -92,7 +81,6 @@ const STRINGS = {
     status_ok: "Normal",
     cpu_fan: "Ventilateur CPU",
     device_fan: "Ventilateur",
-    power_on: "En service",
     nas: "NAS (appareil de l'intégration UGREEN NAS)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher la photo du NAS",
@@ -148,6 +136,20 @@ const fmtBytes = (b) => {
   return `${v.includes(".") ? v.replace(/\.?0+$/, "") : v} ${units[i]}`;
 };
 
+// Rate in B/s from a sensor, whatever unit it is displayed in (the integration reports B/s, but the
+// unit can be changed in Home Assistant).
+const RATE_FACTORS = {
+  "b/s": 1, "bit/s": 1 / 8, "kbit/s": 125, "mbit/s": 125e3, "gbit/s": 125e6,
+  "kb/s": 1e3, "mb/s": 1e6, "gb/s": 1e9, "kib/s": 1024, "mib/s": 1024 ** 2, "gib/s": 1024 ** 3,
+};
+
+const toBps = (s) => {
+  const v = num(s);
+  if (v === null) return null;
+  const unit = String(s.attributes?.unit_of_measurement || "B/s").toLowerCase();
+  return v * (RATE_FACTORS[unit] ?? 1);
+};
+
 const fmtRate = (bps) => {
   if (bps === null || bps === undefined) return "—";
   const units = ["B/s", "kB/s", "MB/s", "GB/s"];
@@ -181,7 +183,6 @@ const logo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" rol
   <defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="${dark ? "#0b8f5c" : "#001509"}"/>
   </linearGradient></defs>
-// biome-ignore lint: vendored/minified third-party code
   <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/>
 </svg>`;
 
@@ -207,10 +208,7 @@ const SCALARS = {
   runtime: "total_runtime",
   lan_up: "overall_lan_upload_raw",
   lan_down: "overall_lan_download_raw",
-  disk_read: "overall_disk_read_rate_raw",
-  disk_write: "overall_disk_write_rate_raw",
   cpu_fan: "cpu_fan",
-  fan_status: "fan_status_overall",
 };
 const SCALAR_RE = Object.entries(SCALARS).map(([k, key]) => [k, new RegExp(`(?:^|_)${key}${SFX}`)]);
 const RE_FAN = new RegExp(`(?:^|_)device_fan_(\\d+)${SFX}`);
@@ -422,6 +420,19 @@ class UgreenNasBase extends HTMLElement {
     return this._hass;
   }
 
+  setConfig(config) {
+    if (!config) throw new Error("Invalid configuration");
+    this._config = { ...config };
+    this._html = "";
+    this._update();
+  }
+
+  // Server status as shown: the integration's "Normal" goes through the translations, any other
+  // value is shown as reported.
+  _statusText(status) {
+    return /^normal$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
+  }
+
   _t(key) {
     return t(this._hass, this._config, key);
   }
@@ -478,7 +489,7 @@ class UgreenNasBase extends HTMLElement {
             status
               ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
                   this._s(sc.system_message)?.state || ""
-                )}"><span class="dot"></span>${esc(status.state)}</span>`
+                )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
               : ""
           }
         </div>
@@ -567,13 +578,6 @@ class UgreenNasCard extends UgreenNasBase {
     return nas ? { nas: nas.value } : {};
   }
 
-  setConfig(config) {
-    if (!config) throw new Error("Invalid configuration");
-    this._config = { ...config };
-    this._html = "";
-    this._update();
-  }
-
   getCardSize() {
     return 8;
   }
@@ -652,7 +656,7 @@ class UgreenNasCard extends UgreenNasBase {
     if (!sc.lan_down && !sc.lan_up) return "";
     const tile = (id, cls, icon, k) =>
       `<div class="tile clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
-        num(this._s(id))
+        toBps(this._s(id))
       )}</div></div></div>`;
     return `<div>
       <div class="section-title">${svgIcon(ICONS.network)}${this._t("network")}</div>
@@ -765,13 +769,6 @@ class UgreenNasMiniCard extends UgreenNasBase {
     return UgreenNasCard.getStubConfig(hass);
   }
 
-  setConfig(config) {
-    if (!config) throw new Error("Invalid configuration");
-    this._config = { ...config };
-    this._html = "";
-    this._update();
-  }
-
   getCardSize() {
     return 3;
   }
@@ -824,14 +821,14 @@ class UgreenNasMiniCard extends UgreenNasBase {
     if (status)
       foot.push(
         `<span class="clickable ${isOk(status) ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
-          status.state
+          this._statusText(status)
         )}</span>`
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
       foot.push(
-        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(num(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
           ICONS.up
-        )}${fmtRate(num(this._s(sc.lan_up)))}</span>`
+        )}${fmtRate(toBps(this._s(sc.lan_up)))}</span>`
       );
     const runtime = num(this._s(sc.runtime));
     if (runtime !== null) foot.push(`<span>${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);

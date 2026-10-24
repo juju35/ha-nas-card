@@ -2,7 +2,15 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, UgreenNasMiniCard } = load("ugreen-nas-card.js", ["volumeUsage", "discover", "UgreenNasMiniCard"]);
+const { volumeUsage, discover, UgreenNasCard, UgreenNasMiniCard, toBps, fmtRate, STRINGS } = load("ugreen-nas-card.js", [
+  "volumeUsage",
+  "discover",
+  "UgreenNasCard",
+  "UgreenNasMiniCard",
+  "toBps",
+  "fmtRate",
+  "STRINGS",
+]);
 
 const A = (unit) => ({ UGNAS_device_id: "nas", ...(unit ? { unit_of_measurement: unit } : {}) });
 const s = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: A(unit) });
@@ -64,5 +72,34 @@ test("discovery finds the NAS once UGNAS_device_id appears on already registered
     const full = discover({ entities, states: { [cpu]: s(cpu, 10, "%"), [ram]: s(ram, 30, "%") } }, "");
     assert.equal(full.scalars.cpu_usage, cpu);
     assert.equal(full.scalars.ram_usage, ram);
+  }
+});
+
+test("network rates follow the unit of the sensor", () => {
+  assert.equal(toBps(s("sensor.r", 2348000, "B/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 2348, "kB/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 2.348, "MB/s")), 2348000);
+  assert.equal(toBps(s("sensor.r", 8, "Mbit/s")), 1e6);
+  assert.equal(toBps(s("sensor.r", 1, "MiB/s")), 1024 ** 2);
+  assert.equal(toBps(s("sensor.r", 5)), 5);
+  assert.equal(toBps(s("sensor.r", "unavailable", "B/s")), null);
+  assert.equal(fmtRate(toBps(s("sensor.r", 48.475, "MB/s"))), "48.5 MB/s");
+});
+
+test("both cards share setConfig and translate the Normal server status", () => {
+  for (const Cls of [UgreenNasCard, UgreenNasMiniCard]) {
+    const el = new Cls();
+    el._hass = { states: {}, language: "en" };
+    el._update = () => {};
+    el.setConfig({ nas: "x" });
+    assert.deepEqual({ ...el._config }, { nas: "x" });
+    assert.throws(() => el.setConfig(null));
+    STRINGS.en.status_ok = "OK (test)";
+    try {
+      assert.equal(el._statusText({ state: "Normal" }), "OK (test)");
+    } finally {
+      STRINGS.en.status_ok = "Normal";
+    }
+    assert.equal(el._statusText({ state: "Warning" }), "Warning");
   }
 });
