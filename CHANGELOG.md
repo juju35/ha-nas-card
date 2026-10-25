@@ -3,7 +3,7 @@
 ## 1.6.1
 
 ### Fixes
-- The DXP480T Plus illustration is closer to the real device: aluminium front with the black lower band holding the grey drive cover and the power button, rounded corner, darker side with its vent row.
+- The DXP480T Plus illustration is closer to the real device: seen from the front left and slightly above, with a thin top face, the aluminium front and its black lower band (grey drive cover, power button), a rounded vertical corner and the darker side in perspective with its vent row; all faces share their edges.
 
 ## 1.6.0
 
