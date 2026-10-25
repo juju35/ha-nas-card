@@ -209,36 +209,35 @@ const towerSvg = (bays, white) => {
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${front}"/><circle cx="${c}" cy="34" r="7" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="26" width="2" height="7" fill="${mark}"/><rect x="${c - 6}" y="56" width="12" height="5" rx="1.5" fill="${handle}"/><rect x="${c - 6}" y="${h - 38}" width="12" height="7" rx="1.5" fill="${handle}"/>${trays}</svg>`;
 };
-// Flat all-flash NAS (DXP480T / DXP480T Plus), seen from the front left and slightly above: thin top face,
-// aluminium front with a black lower band holding the grey drive cover and the power button, a rounded vertical
-// corner, then the darker side in perspective with its vent row. All faces share their edge points.
+// Flat all-flash NAS (DXP480T / DXP480T Plus) in parallel projection, like the product photos: each face is drawn
+// flat in its own coordinates (front: u across, v down; side and top: z in depth) and placed with the same axes,
+// so every edge stays parallel. Front axis (1, .03), depth axis (.85, -.06), vertical axis (0, 1).
 const flatSvg = () => {
-  // Side face: top edge (206,9)→(294,5), bottom edge (206,87)→(294,80).
-  const sideY = (x, top) => (top ? 9 - ((x - 206) * 4) / 88 : 87 - ((x - 206) * 7) / 88);
+  const [X0, Y0] = [6, 10];
+  const front = `matrix(1 .03 0 1 ${X0} ${Y0})`;
+  const side = `matrix(.85 -.06 0 1 ${X0 + 200} ${Y0 + 6})`;
+  const top = `matrix(1 .03 .85 -.06 ${X0} ${Y0})`;
   let vents = "";
-  for (let i = 0; i < 16; i++) {
-    const x = 222 + i * 4.2;
-    const y = sideY(x, true) + 8;
-    vents += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="2" height="${(15 - i * 0.1).toFixed(1)}" rx=".8" fill="#2c2f33"/>`;
-  }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"><defs>\
-<linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b6babe"/><stop offset=".5" stop-color="#93979c"/><stop offset="1" stop-color="#6f7378"/></linearGradient>\
-<linearGradient id="k" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9fa3a8"/><stop offset=".45" stop-color="#c3c6ca"/><stop offset="1" stop-color="#7c8086"/></linearGradient>\
-<linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7c8086"/><stop offset="1" stop-color="#555a5f"/></linearGradient>\
+  for (let i = 0; i < 16; i++) vents += `<rect x="${18 + i * 4.6}" y="9" width="2.2" height="15" rx=".8" fill="#2c2f33"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 104"><defs>\
+<linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8bcc0"/><stop offset=".5" stop-color="#95999e"/><stop offset="1" stop-color="#72767b"/></linearGradient>\
+<linearGradient id="k" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#95999e" stop-opacity="0"/><stop offset=".6" stop-color="#c6c9cd"/><stop offset="1" stop-color="#868a90"/></linearGradient>\
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7e8288"/><stop offset="1" stop-color="#565a5f"/></linearGradient>\
+<linearGradient id="t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c2c5c9"/><stop offset="1" stop-color="#dadcdf"/></linearGradient>\
 <linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9bcc0"/><stop offset="1" stop-color="#989ca1"/></linearGradient></defs>\
-<ellipse cx="150" cy="92" rx="146" ry="5" opacity=".28"/>\
-<rect x="20" y="86" width="16" height="5" rx="1.5" fill="#111"/><rect x="168" y="86" width="16" height="5" rx="1.5" fill="#111"/><rect x="278" y="78.5" width="12" height="4" rx="1.5" fill="#111"/>\
-<path d="M4 10 L14 4 L278 1.5 Q292 1.5 294 5 L206 9 Z" fill="#cfd2d5"/>\
-<path d="M206 9 L294 5 L294 80 L206 87 Z" fill="url(#s)"/>\
-<path d="M4 14 Q4 10 8 10 H206 V87 H8 Q4 87 4 83 Z" fill="url(#f)"/>\
-<path d="M186 10 H206 V87 H186 Z" fill="url(#k)"/>\
-<rect x="4" y="10" width="202" height="1.5" fill="#fff" opacity=".35"/>\
-<path d="M4 46 H180 Q184 46 184 50 V87 H8 Q4 87 4 83 Z" fill="#141517"/>\
-<rect x="10" y="51" width="112" height="35" rx="2" fill="url(#c)"/>\
-<text x="66" y="72" text-anchor="middle" font-size="5" fill="#3a3d41" font-family="Arial, Helvetica, sans-serif" letter-spacing=".2">PROTECT WHAT YOU LOVE</text>\
-<rect x="136" y="57" width="34" height="22" rx="5" fill="#26282c" stroke="#3a3d42" stroke-width="1.2"/>\
-<circle cx="153" cy="68" r="4.6" fill="none" stroke="#f2f2f2" stroke-width="1.4"/>\
-${vents}</svg>`;
+<ellipse cx="152" cy="97" rx="146" ry="5" opacity=".28"/>\
+<g transform="${front}"><rect x="14" y="77" width="16" height="5" rx="1.5" fill="#111"/><rect x="170" y="77" width="16" height="5" rx="1.5" fill="#111"/></g>\
+<g transform="${side}"><rect x="86" y="77" width="10" height="4" rx="1.5" fill="#111"/></g>\
+<g transform="${top}"><rect width="200" height="100" rx="6" fill="url(#t)"/></g>\
+<g transform="${side}"><rect width="100" height="78" rx="5" fill="url(#s)"/>${vents}</g>\
+<g transform="${front}"><rect width="200" height="78" rx="5" fill="url(#f)"/>\
+<rect x="184" width="16" height="78" fill="url(#k)"/>\
+<rect x="1" y=".5" width="190" height="1.2" fill="#fff" opacity=".35"/>\
+<path d="M0 40 H174 Q178 40 178 44 V78 H5 Q0 78 0 73 Z" fill="#141517"/>\
+<rect x="6" y="45" width="112" height="30" rx="2" fill="url(#c)"/>\
+<text x="62" y="61.5" text-anchor="middle" font-size="4.6" fill="#3a3d41" font-family="Arial, Helvetica, sans-serif" letter-spacing=".2">PROTECT WHAT YOU LOVE</text>\
+<rect x="132" y="51" width="30" height="20" rx="5" fill="#26282c" stroke="#3a3d42" stroke-width="1.2"/>\
+<circle cx="147" cy="61" r="4.3" fill="none" stroke="#f2f2f2" stroke-width="1.3"/></g></svg>`;
 };
 // Models offered in the editor; any other model string is matched by its family (DXP<bays>800, DH<bays>300, 480T).
 const NAS_MODELS = ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"];
