@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/juju35/ha-ugreen-nas-card)](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-<p align="center"><img src="images/nas.png" alt="UGREEN NAS" width="320"></p>
+<p align="center"><img src="images/models.svg" alt="UGREEN NAS models" width="760"></p>
 
 Lovelace cards for Home Assistant to monitor UGREEN NAS devices: CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
 
@@ -90,6 +90,7 @@ type: custom:ugreen-nas-card
 nas: ugreen_nas
 title: My NAS
 show_image: true
+image: DXP4800 Plus
 show_system: true
 show_network: true
 show_volumes: true
@@ -103,6 +104,7 @@ type: custom:ugreen-nas-mini-card
 nas: ugreen_nas
 title: My NAS
 show_image: true
+image: DXP4800 Plus
 show_storage: true
 show_network: true
 zoom: true
@@ -116,6 +118,7 @@ language: fr
 | `nas` | both | First NAS found | NAS to display: the `UGNAS_device_id` attribute of the integration entities (only needed with several NAS) |
 | `title` | both | NAS name | Card title |
 | `show_image` | both | `true` | Show the NAS picture |
+| `image` | both | NAS model | Picture to show: a model name (`DXP2800`, `DXP4800 Plus`, `DXP480T Plus`, `DXP6800 Pro`, `DXP8800 Plus`, `DH2300`, `DH4300 Plus`…) or an image URL. By default the picture follows the model reported by the integration |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
 | `show_volumes` | full | `true` | Volumes and used space |
@@ -153,7 +156,7 @@ Thresholds:
 
 ```bash
 npm install
-npm run build        # bundles src/ugreen-nas-card.js + images/nas.webp into dist/ugreen-nas-card.js
+npm run build        # bundles src/ugreen-nas-card.js into dist/ugreen-nas-card.js
 npm run check        # builds and checks the card (run in CI)
 npm run screenshots  # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/
 ```

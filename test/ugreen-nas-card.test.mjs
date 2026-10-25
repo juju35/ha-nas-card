@@ -242,3 +242,17 @@ test("zoom: false removes the mini card zoom button, the full card has none", as
   full._hass = el._hass;
   assert.doesNotMatch(full._render(), /class="zoom"/);
 });
+
+test("the NAS picture follows the model, the image option overrides it", () => {
+  const { nasSvg, nasPicture } = load("ugreen-nas-card.js", ["nasSvg", "nasPicture"]);
+  const bays = (svg) => (svg.match(/fill="#43c463"/g) || []).length;
+  assert.equal(bays(nasSvg("DXP2800")), 2);
+  assert.equal(bays(nasSvg("DXP4800 Plus")), 4);
+  assert.equal(bays(nasSvg("DXP6800 Pro")), 6);
+  assert.equal(bays(nasSvg("dxp8800plus")), 8);
+  assert.equal(bays(nasSvg("DXP480T Plus")), 0); // flat all-flash model, no trays
+  assert.match(nasSvg("DH4300 Plus"), /#f2f2f0/); // white DH series
+  assert.equal(bays(nasSvg(undefined)), 4); // unknown model: 4-bay tower
+  assert.equal(nasPicture("https://example.com/nas.png", "DXP2800"), "https://example.com/nas.png");
+  assert.equal(decodeURIComponent(nasPicture("DXP8800 Plus", "DXP2800")).split("data:image/svg+xml,")[1], nasSvg("DXP8800 Plus"));
+});
