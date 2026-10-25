@@ -161,3 +161,14 @@ test("an entity of the registry removed from the states does not break discovery
   assert.equal(nas.nasId, "ugreen_nas");
   assert.equal(nas.scalars.cpu_usage, undefined);
 });
+
+test("a volume without a label sensor is named after its own number, not the pool number", () => {
+  const el = new UgreenNasCard();
+  el._config = {};
+  el._hass = { states: {}, language: "en" };
+  const names = (pools) => [...el._volumes({ pools }).matchAll(/<span class="grow">([^<]*)<\/span>/g)].map((m) => m[1]);
+  const pool = (n) => ({ volumes: Object.fromEntries(Array.from({ length: n }, (_, i) => [String(i + 1), {}])), disks: {} });
+  assert.deepEqual(names({ 1: pool(2) }), ["Volume 1", "Volume 2"]);
+  // With several pools, the volume numbers start again in each pool: the pool number tells them apart.
+  assert.deepEqual(names({ 1: pool(2), 2: pool(1) }), ["Volume 1-1", "Volume 1-2", "Volume 2-1"]);
+});

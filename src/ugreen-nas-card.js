@@ -685,12 +685,14 @@ class UgreenNasCard extends UgreenNasBase {
 
   _volumes(nas) {
     const rows = [];
+    // Volume numbers start again in each pool: with several pools, the fallback name carries the pool number.
+    const multi = Object.keys(nas.pools).length > 1;
     for (const [pn, pool] of Object.entries(nas.pools)) {
       const raid = this._s(pool.level)?.state;
       for (const [vn, vol] of Object.entries(pool.volumes)) {
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
-        const label = this._s(vol.label)?.state || `Volume ${pn}`;
+        const label = this._s(vol.label)?.state || `Volume ${multi ? `${pn}-${vn}` : vn}`;
         const fs = this._s(vol.filesystem)?.state;
         const cls = level(u.pct, 80, 90);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${pn}-${vn}" data-entity="${vol.used_size_raw || vol.used_size || ""}">

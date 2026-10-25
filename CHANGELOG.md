@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.2
+
+### Fixes
+- A volume without a label sensor is named after its own number ("Volume 1", "Volume 2") instead of the pool number, so two volumes of the same pool no longer both show "Volume 1". With several pools, the name carries both numbers ("Volume 2-1").
+
+### Maintenance
+- Regression test for the volume name; the duplication check job runs on Node 22.
+
 ## 1.4.1
 
 ### Fixes
