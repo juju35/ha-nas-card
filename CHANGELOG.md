@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1
+
+### Fixes
+- The UGREEN logo of the mini card is the same size as on the full card (40 px instead of 32 px).
+
 ## 1.5.0
 
 ### What's new

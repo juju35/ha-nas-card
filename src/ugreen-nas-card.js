@@ -789,7 +789,6 @@ class UgreenNasCard extends UgreenNasBase {
 
 const MINI_STYLE = `
   .header { padding: 12px 12px 4px; }
-  .logo { height: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .titles .chip { display: none; }
   .name { font-size: 16px; }
