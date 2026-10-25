@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0
+
+### What's new
+- Zoom button at the top right of the mini card: it shows the full card for the same NAS (gauges, uptime and CPU model, network, volumes, disks and fans), and a second click brings the compact view back. A click anywhere outside the card also folds it back; clicks on the card or in a dialog opened from it (more-info) do not. New `zoom` option (on by default, in the visual editor): `zoom: false` removes the button.
+
+### Maintenance
+- Tests for the zoom; light and dark screenshots of the zoomed-in mini card.
+
 ## 1.4.2
 
 ### Fixes

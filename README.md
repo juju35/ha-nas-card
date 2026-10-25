@@ -21,6 +21,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 ## Features
 
 - Two cards: a full **UGREEN NAS Card** and a compact **UGREEN NAS Mini Card**
+- Zoom button at the top right of the mini card: it switches to the full card (gauges, network, volumes, disks and fans of the same NAS) and back; a click anywhere outside the card brings the compact view back
 - Automatic discovery of the UGREEN NAS integration entities (several NAS supported)
 - CPU, RAM and CPU temperature gauges, uptime and CPU model
 - Network download / upload rates
@@ -104,6 +105,7 @@ title: My NAS
 show_image: true
 show_storage: true
 show_network: true
+zoom: true
 language: fr
 ```
 
@@ -120,6 +122,7 @@ language: fr
 | `show_disks` | full | `true` | Disks details |
 | `show_fans` | full | `true` | Fans speed |
 | `show_storage` | mini | `true` | Overall storage usage bar |
+| `zoom` | mini | `true` | Zoom button at the top right: switches to the full card and back (`false` removes it) |
 | `language` | both | Auto | Force language: `fr` or `en` (auto-detects from HA settings) |
 
 ## Screenshots
@@ -128,6 +131,7 @@ language: fr
 |---|---|
 | ![card](screenshots/card.png) | ![card dark](screenshots/card-dark.png) |
 | ![mini card](screenshots/mini-card.png) | ![mini card dark](screenshots/mini-card-dark.png) |
+| ![mini card zoomed in](screenshots/mini-card-zoom.png) | ![mini card zoomed in dark](screenshots/mini-card-zoom-dark.png) |
 
 ## How it works
 

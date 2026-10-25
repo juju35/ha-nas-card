@@ -20,6 +20,9 @@ const ICONS = {
   disk: "M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M12,4A6,6 0 0,0 6,10C6,13.31 8.69,16 12.1,16L11.22,13.77C10.95,13.29 11.11,12.68 11.59,12.4L12.45,11.9C12.93,11.63 13.54,11.79 13.82,12.27L15.74,14.69C17.12,13.59 18,11.9 18,10A6,6 0 0,0 12,4M12,9A1,1 0 0,1 13,10A1,1 0 0,1 12,11A1,1 0 0,1 11,10A1,1 0 0,1 12,9M7,18A1,1 0 0,0 6,19A1,1 0 0,0 7,20A1,1 0 0,0 8,19A1,1 0 0,0 7,18M12.09,13.27L14.58,19.58L17.17,18.08L12.95,12.77L12.09,13.27Z",
   database: "M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z",
   timer: "M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z",
+  // mdi:arrow-expand and mdi:arrow-collapse, the mini card's zoom button.
+  expand: "M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z",
+  collapse: "M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z",
   network: "M13,19H14A1,1 0 0,1 15,20H22V22H15A1,1 0 0,1 14,23H10A1,1 0 0,1 9,22H2V20H9A1,1 0 0,1 10,19H11V17H4A1,1 0 0,1 3,16V12A1,1 0 0,1 4,11H20A1,1 0 0,1 21,12V16A1,1 0 0,1 20,17H13V19M4,3H20A1,1 0 0,1 21,4V8A1,1 0 0,1 20,9H4A1,1 0 0,1 3,8V4A1,1 0 0,1 4,3M9,7H10V5H9V7M9,15H10V13H9V15M5,5V7H7V5H5M5,13V15H7V13H5Z",
 };
 
@@ -46,6 +49,8 @@ const STRINGS = {
     status_ok: "Normal",
     cpu_fan: "CPU fan",
     device_fan: "Fan",
+    zoom_in: "Show the full card",
+    zoom_out: "Back to the compact view",
     // Editor
     nas: "NAS (UGREEN NAS integration device)",
     title: "Title (optional, defaults to the NAS name)",
@@ -56,6 +61,8 @@ const STRINGS = {
     show_disks: "Show disks",
     show_fans: "Show fans",
     show_storage: "Show storage",
+    zoom: "Zoom button",
+    zoom_helper: "Switches the mini card to the full card and back",
     language: "Language",
     lang_auto: "Automatic",
   },
@@ -81,6 +88,8 @@ const STRINGS = {
     status_ok: "Normal",
     cpu_fan: "Ventilateur CPU",
     device_fan: "Ventilateur",
+    zoom_in: "Afficher la carte complète",
+    zoom_out: "Revenir à la vue compacte",
     nas: "NAS (appareil de l'intégration UGREEN NAS)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher la photo du NAS",
@@ -90,6 +99,8 @@ const STRINGS = {
     show_disks: "Afficher les disques",
     show_fans: "Afficher les ventilateurs",
     show_storage: "Afficher le stockage",
+    zoom: "Bouton zoom",
+    zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
     language: "Langue",
     lang_auto: "Automatique",
   },
@@ -403,7 +414,14 @@ const BASE_STYLE = `
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .warning { padding: 16px; color: var(--ug-warn); }
+  .zoom { all: unset; flex: none; align-self: flex-start; cursor: pointer; width: 24px; height: 24px; margin: -4px -4px 0 -4px;
+          border-radius: 50%; display: grid; place-items: center; color: var(--secondary-text-color); }
+  .zoom .icon { width: 16px; height: 16px; }
+  .zoom:hover { background: color-mix(in srgb, var(--secondary-text-color) 16%, transparent); color: var(--primary-text-color); }
+  .zoom:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 1px; }
 `;
+// A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
+const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
 class UgreenNasBase extends HTMLElement {
   constructor() {
@@ -510,7 +528,13 @@ class UgreenNasBase extends HTMLElement {
           }
         </div>
         ${c.show_image !== false ? `<img class="nas" src="${IMG_NAS}" alt="NAS">` : ""}
+        ${this._zoomButton()}
       </div>`;
+  }
+
+  // Button at the far right of the header: only the mini card has one.
+  _zoomButton() {
+    return "";
   }
 
   _noNas() {
@@ -778,21 +802,57 @@ const MINI_STYLE = `
   .foot .icon { width: 14px; height: 14px; }
 `;
 
-class UgreenNasMiniCard extends UgreenNasBase {
+// The mini card extends the full card: its zoom button (top right, `zoom: false` removes it) switches it to the
+// full card's content, same configuration, and back; a click anywhere outside the card brings it back too.
+class UgreenNasMiniCard extends UgreenNasCard {
   static getConfigElement() {
     return document.createElement("ugreen-nas-mini-card-editor");
   }
 
-  static getStubConfig(hass) {
-    return UgreenNasCard.getStubConfig(hass);
+  constructor() {
+    super();
+    this._zoomed = false;
+    this.shadowRoot.addEventListener("click", (ev) => this._zoomClick(ev));
+    // A click outside the card, and not in a dialog opened from it, brings it back to the compact view.
+    this._onOutside = (ev) => {
+      if (this._zoomed && !ev.composedPath().includes(this) && !inDialog(ev)) this._setZoom(false);
+    };
+  }
+
+  connectedCallback() {
+    document.addEventListener("click", this._onOutside, true);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("click", this._onOutside, true);
   }
 
   getCardSize() {
-    return 3;
+    return this._zoomed ? super.getCardSize() : 3;
   }
 
   getGridOptions() {
-    return { columns: 6, min_columns: 6 };
+    return this._zoomed ? super.getGridOptions() : { columns: 6, min_columns: 6 };
+  }
+
+  _setZoom(zoomed) {
+    this._zoomed = zoomed;
+    this._update(this._sig);
+  }
+
+  // A click on the zoom button: never a tap on anything else of the card.
+  _zoomClick(ev) {
+    if (!ev.target?.closest?.(".zoom")) return;
+    ev.stopPropagation();
+    this._setZoom(!this._zoomed);
+    // Keyboard use (Enter / Space: no click count) keeps the focus on the button.
+    if (ev.detail === 0) this.shadowRoot.querySelector(".zoom")?.focus();
+  }
+
+  _zoomButton() {
+    if (this._config.zoom === false) return "";
+    const z = this._zoomed;
+    return `<button class="zoom" title="${esc(this._t(z ? "zoom_out" : "zoom_in"))}">${svgIcon(z ? ICONS.collapse : ICONS.expand)}</button>`;
   }
 
   _metric(id, icon, label, pct, display, cls) {
@@ -804,6 +864,7 @@ class UgreenNasMiniCard extends UgreenNasBase {
   }
 
   _render() {
+    if (this._zoomed) return super._render();
     const nas = discover(this._hass, this._config.nas);
     if (!nas.nasId) return this._noNas();
     const c = this._config;
@@ -880,6 +941,11 @@ class UgreenNasEditorBase extends HTMLElement {
     this._render();
   }
 
+  // Boolean options, all on by default.
+  _toggles() {
+    return ["show_image", ...this.constructor.toggles];
+  }
+
   _schema() {
     const nasOptions = this._hass ? listNas(this._hass) : [];
     const tr = (k) => t(this._hass, this._config, k);
@@ -918,12 +984,13 @@ class UgreenNasEditorBase extends HTMLElement {
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (s) => t(this._hass, this._config, s.name);
+      this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`];
       this._form.addEventListener("value-changed", (ev) => {
         ev.stopPropagation();
         const config = { ...ev.detail.value };
         for (const [k, v] of Object.entries(config)) {
           // Keep the YAML minimal: drop empty values and toggles left at their default (true).
-          if (v === "" || v === undefined || v === null || (k.startsWith("show_") && v === true)) delete config[k];
+          if (v === "" || v === undefined || v === null || (this._toggles().includes(k) && v === true)) delete config[k];
         }
         this._config = config;
         this.dispatchEvent(new CustomEvent("config-changed", { detail: { config }, bubbles: true, composed: true }));
@@ -931,7 +998,7 @@ class UgreenNasEditorBase extends HTMLElement {
       this.appendChild(this._form);
     }
     const data = { ...this._config };
-    for (const name of ["show_image", ...this.constructor.toggles]) if (data[name] === undefined) data[name] = true;
+    for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
     if (!data.nas && this._hass) data.nas = listNas(this._hass)[0]?.value;
     this._form.hass = this._hass;
     this._form.data = data;
@@ -947,7 +1014,7 @@ class UgreenNasCardEditor extends UgreenNasEditorBase {
 
 class UgreenNasMiniCardEditor extends UgreenNasEditorBase {
   static get toggles() {
-    return ["show_storage", "show_network"];
+    return ["show_storage", "show_network", "zoom"];
   }
 }
 
