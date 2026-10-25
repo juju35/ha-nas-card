@@ -209,12 +209,29 @@ const towerSvg = (bays, white) => {
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${front}"/><circle cx="${c}" cy="34" r="7" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="26" width="2" height="7" fill="${mark}"/><rect x="${c - 6}" y="56" width="12" height="5" rx="1.5" fill="${handle}"/><rect x="${c - 6}" y="${h - 38}" width="12" height="7" rx="1.5" fill="${handle}"/>${trays}</svg>`;
 };
-// Flat all-flash NAS (DXP480T / DXP480T Plus).
+// Flat all-flash NAS (DXP480T / DXP480T Plus), seen from the front left: aluminium front with a black lower band
+// holding the grey drive cover on the left and the power button on the right, darker right side with its vent row.
 const flatSvg = () => {
-  const w = 300, h = 80;
   let vents = "";
-  for (let i = 0; i < 14; i++) vents += `<rect x="${w - 120 + i * 5}" y="40" width="2" height="16" rx="1" fill="#4c5158"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6d9dc"/><stop offset=".25" stop-color="#b9bdc2"/><stop offset="1" stop-color="#7d8288"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="10" fill="url(#b)"/><rect width="${w}" height="16" rx="10" fill="#e3e5e7" opacity=".6"/><rect x="12" y="28" width="${w - 24}" height="40" rx="6" fill="#2a2d31"/><circle cx="${w - 36}" cy="48" r="7" fill="none" stroke="#c9ccd0" stroke-width="2"/><rect x="${w - 37}" y="40" width="2" height="7" fill="#c9ccd0"/>${vents}</svg>`;
+  for (let i = 0; i < 16; i++) vents += `<rect x="${220 + i * 4.3}" y="${17 - i * 0.18}" width="2" height="${17 - i * 0.12}" rx=".8" fill="#2c2f33"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"><defs>\
+<linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b6babe"/><stop offset=".5" stop-color="#93979c"/><stop offset="1" stop-color="#6f7378"/></linearGradient>\
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7f8389"/><stop offset="1" stop-color="#53575c"/></linearGradient>\
+<linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9bcc0"/><stop offset="1" stop-color="#989ca1"/></linearGradient>\
+<linearGradient id="k" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#999da2"/><stop offset=".5" stop-color="#83878c"/><stop offset="1" stop-color="#7a7e84"/></linearGradient></defs>\
+<ellipse cx="150" cy="93" rx="144" ry="5" opacity=".28"/>\
+<rect x="22" y="86" width="16" height="5" rx="1.5" fill="#111"/><rect x="176" y="86" width="16" height="5" rx="1.5" fill="#111"/><rect x="276" y="80" width="12" height="4" rx="1.5" fill="#111"/>\
+<path d="M196 5 L288 3 Q296 3 296 11 L296 76 Q296 81 289 81.5 L196 88 Z" fill="url(#s)"/>\
+<path d="M196 5 L288 3 Q294 3 295 6 L205 7.5 Z" fill="#c9ccd0"/>\
+<rect x="4" y="5" width="204" height="83" rx="9" fill="url(#f)"/>\
+<path d="M184 5 H196 Q212 5 212 20 V74 Q212 88 196 88 H184 Z" fill="url(#k)"/>\
+<rect x="6" y="6" width="198" height="3" rx="1.5" fill="#fff" opacity=".45"/>\
+<path d="M4 44 H182 Q188 44 188 50 V88 H13 Q4 88 4 79 Z" fill="#141517"/>\
+<rect x="10" y="49" width="114" height="37" rx="2" fill="url(#c)"/>\
+<text x="67" y="71" text-anchor="middle" font-size="5" fill="#3a3d41" font-family="Arial, Helvetica, sans-serif" letter-spacing=".2">PROTECT WHAT YOU LOVE</text>\
+<rect x="138" y="57" width="34" height="22" rx="5" fill="#26282c" stroke="#3a3d42" stroke-width="1.2"/>\
+<circle cx="155" cy="68" r="4.6" fill="none" stroke="#f2f2f2" stroke-width="1.4"/>\
+${vents}</svg>`;
 };
 // Models offered in the editor; any other model string is matched by its family (DXP<bays>800, DH<bays>300, 480T).
 const NAS_MODELS = ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"];

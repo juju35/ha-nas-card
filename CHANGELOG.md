@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1
+
+### Fixes
+- The DXP480T Plus illustration is closer to the real device: aluminium front with the black lower band holding the grey drive cover and the power button, rounded corner, darker side with its vent row.
+
 ## 1.6.0
 
 ### What's new
