@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0
+
+### What's new
+- The NAS picture follows the model reported by the integration: drawn illustrations of the DXP2800, DXP4800 / 4800 Plus, DXP480T Plus, DXP6800 Pro, DXP8800 Plus, DH2300 and DH4300 Plus (other models are matched by their family: number of bays, DXP or DH series). They replace the single DXP480T Plus photo and keep the card lighter. New `image` option (in the visual editor) to pick another model or give an image URL.
+
+### Fixes
+- The UGREEN logo of the mini card is the same size as on the full card (40 px instead of 32 px).
+
 ## 1.5.0
 
 ### What's new

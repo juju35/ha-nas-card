@@ -8,7 +8,6 @@
  */
 
 const VERSION = "__VERSION__";
-const IMG_NAS = "__IMG_NAS__";
 
 const ICONS = {
   cpu: "M6,4H18V5H21V7H18V9H21V11H18V13H21V15H18V17H21V19H18V20H6V19H3V17H6V15H3V13H6V11H3V9H6V7H3V5H6V4M11,15V18H12V15H11M13,15V18H14V15H13M15,15V18H16V15H15Z",
@@ -55,6 +54,9 @@ const STRINGS = {
     nas: "NAS (UGREEN NAS integration device)",
     title: "Title (optional, defaults to the NAS name)",
     show_image: "Show NAS picture",
+    image: "NAS picture (model or image URL)",
+    image_helper: "Automatic from the model reported by the integration",
+    image_auto: "Automatic",
     show_system: "Show system (CPU, RAM, temperature)",
     show_network: "Show network",
     show_volumes: "Show volumes",
@@ -92,7 +94,10 @@ const STRINGS = {
     zoom_out: "Revenir à la vue compacte",
     nas: "NAS (appareil de l'intégration UGREEN NAS)",
     title: "Titre (facultatif, nom du NAS par défaut)",
-    show_image: "Afficher la photo du NAS",
+    show_image: "Afficher l'illustration du NAS",
+    image: "Illustration du NAS (modèle ou URL d'image)",
+    image_helper: "Automatique selon le modèle remonté par l'intégration",
+    image_auto: "Automatique",
     show_system: "Afficher le système (CPU, RAM, température)",
     show_network: "Afficher le réseau",
     show_volumes: "Afficher les volumes",
@@ -187,6 +192,43 @@ const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.s
 const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
 
 const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
+
+// NAS pictures: drawn illustrations, one per form factor, picked from the model reported by the integration.
+// Tower: control strip on the left + one tray per bay; the DH series is white, the DXP series aluminium.
+const towerSvg = (bays, white) => {
+  const tw = 34, gap = 6, strip = 46, pad = 14, h = 150;
+  const w = pad + strip + bays * tw + (bays - 1) * gap + pad;
+  const [top, bottom, front, tray, handle, mark] = white
+    ? ["#f2f2f0", "#d9d9d6", "#e6e6e3", "#d0d0cc", "#b5b5b0", "#888"]
+    : ["#c9ccd0", "#7d8288", "#2a2d31", "#3a3e44", "#4c5158", "#c9ccd0"];
+  const c = pad + strip / 2 - 2;
+  let trays = "";
+  for (let i = 0; i < bays; i++) {
+    const x = pad + strip + i * (tw + gap);
+    trays += `<rect x="${x}" y="22" width="${tw}" height="${h - 44}" rx="3" fill="${tray}"/><rect x="${x + tw / 2 - 5}" y="${h - 46}" width="10" height="16" rx="2" fill="${handle}"/><circle cx="${x + tw / 2}" cy="32" r="1.6" fill="#43c463"/>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${front}"/><circle cx="${c}" cy="34" r="7" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="26" width="2" height="7" fill="${mark}"/><rect x="${c - 6}" y="56" width="12" height="5" rx="1.5" fill="${handle}"/><rect x="${c - 6}" y="${h - 38}" width="12" height="7" rx="1.5" fill="${handle}"/>${trays}</svg>`;
+};
+// Flat all-flash NAS (DXP480T / DXP480T Plus).
+const flatSvg = () => {
+  const w = 300, h = 80;
+  let vents = "";
+  for (let i = 0; i < 14; i++) vents += `<rect x="${w - 120 + i * 5}" y="40" width="2" height="16" rx="1" fill="#4c5158"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6d9dc"/><stop offset=".25" stop-color="#b9bdc2"/><stop offset="1" stop-color="#7d8288"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="10" fill="url(#b)"/><rect width="${w}" height="16" rx="10" fill="#e3e5e7" opacity=".6"/><rect x="12" y="28" width="${w - 24}" height="40" rx="6" fill="#2a2d31"/><circle cx="${w - 36}" cy="48" r="7" fill="none" stroke="#c9ccd0" stroke-width="2"/><rect x="${w - 37}" y="40" width="2" height="7" fill="#c9ccd0"/>${vents}</svg>`;
+};
+// Models offered in the editor; any other model string is matched by its family (DXP<bays>800, DH<bays>300, 480T).
+const NAS_MODELS = ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"];
+const nasSvg = (model) => {
+  const m = String(model || "").toUpperCase().replace(/\s+/g, "");
+  if (/480T/.test(m)) return flatSvg();
+  const dh = m.match(/^DH(\d)\d{3}/);
+  if (dh) return towerSvg(+dh[1], true);
+  const dxp = m.match(/^DXP(\d)\d{3}/);
+  return towerSvg(dxp ? +dxp[1] : 4, false);
+};
+// `image` option: a URL is used as is, anything else is a model name; by default the NAS model sensor decides.
+const nasPicture = (image, model) =>
+  /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model))}`;
 
 // UGREEN logo. The bottom of the gradient is lightened in dark mode, the original
 // near-black end would blend into the card background.
@@ -527,7 +569,7 @@ class UgreenNasBase extends HTMLElement {
               : ""
           }
         </div>
-        ${c.show_image !== false ? `<img class="nas" src="${IMG_NAS}" alt="NAS">` : ""}
+        ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model))}" alt="${esc(model || "NAS")}">` : ""}
         ${this._zoomButton()}
       </div>`;
   }
@@ -789,7 +831,6 @@ class UgreenNasCard extends UgreenNasBase {
 
 const MINI_STYLE = `
   .header { padding: 12px 12px 4px; }
-  .logo { height: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .titles .chip { display: none; }
   .name { font-size: 16px; }
@@ -955,6 +996,16 @@ class UgreenNasEditorBase extends HTMLElement {
         selector: { select: { mode: "dropdown", custom_value: true, options: nasOptions } },
       },
       { name: "title", selector: { text: {} } },
+      {
+        name: "image",
+        selector: {
+          select: {
+            mode: "dropdown",
+            custom_value: true,
+            options: [{ value: "", label: tr("image_auto") }, ...NAS_MODELS.map((m) => ({ value: m, label: m }))],
+          },
+        },
+      },
       {
         type: "grid",
         name: "",
