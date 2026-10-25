@@ -49,6 +49,8 @@ const shots = [
   { file: "card-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: { language: "fr" } },
   { file: "mini-card", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {} },
   { file: "mini-card-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 380, config: { language: "fr" } },
+  { file: "mini-card-zoom", type: "ugreen-nas-mini-card", theme: "light", width: 460, config: {}, zoom: true },
+  { file: "mini-card-zoom-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 460, config: { language: "fr" }, zoom: true },
 ];
 
 const browser = await chromium.launch(
@@ -62,13 +64,18 @@ for (const s of shots) {
   await page.addScriptTag({ content: HA_CARD });
   await page.addScriptTag({ content: cardJs });
   await page.evaluate(
-    ({ type, config, states, dark }) => {
+    ({ type, config, states, dark, zoom }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
       el.hass = { states, language: "en", locale: { language: "en" }, themes: { darkMode: dark } };
       document.getElementById("root").appendChild(el);
+      // A mouse click (detail 1) on the zoom button: the zoomed-in view, without a keyboard focus ring.
+      if (zoom)
+        el.shadowRoot
+          .querySelector(".zoom")
+          .dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true, detail: 1 }));
     },
-    { type: s.type, config: s.config, states, dark: s.theme === "dark" }
+    { type: s.type, config: s.config, states, dark: s.theme === "dark", zoom: !!s.zoom }
   );
   await page.waitForTimeout(800);
   const box = await page.locator("#root").boundingBox();

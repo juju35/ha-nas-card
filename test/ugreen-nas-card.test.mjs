@@ -172,3 +172,73 @@ test("a volume without a label sensor is named after its own number, not the poo
   // With several pools, the volume numbers start again in each pool: the pool number tells them apart.
   assert.deepEqual(names({ 1: pool(2), 2: pool(1) }), ["Volume 1-1", "Volume 1-2", "Volume 2-1"]);
 });
+
+// Mini card zoom: a mini card on the mock NAS whose renders are captured instead of patched into a DOM.
+const zoomCard = async (config = {}) => {
+  const { states } = await import("../scripts/mock-states.mjs");
+  const el = new UgreenNasMiniCard();
+  el._config = config;
+  el._hass = { states, language: "en" };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  return el;
+};
+const node = (localName) => ({ localName });
+const click = (path, extra = {}) => ({ composedPath: () => path, stopPropagation() {}, detail: 1, ...extra });
+const zoomButton = () => click([], { target: { closest: (sel) => (sel === ".zoom" ? {} : null) } });
+
+test("the mini card zoom button switches to the full card content and back", async () => {
+  const el = await zoomCard();
+  const full = new UgreenNasCard();
+  full._config = {};
+  full._hass = el._hass;
+  assert.match(el.html, /class="metric/);
+  assert.match(el.html, /<button class="zoom" title="Show the full card">/);
+  assert.equal(el.getCardSize(), 3);
+  let stopped = false;
+  el._zoomClick({ ...zoomButton(), stopPropagation: () => (stopped = true) });
+  assert.equal(stopped, true);
+  assert.equal(el._zoomed, true);
+  // Everything the full card shows: gauges, network, volumes, disks and fans, then the button at the far right.
+  for (const cls of ["gauges", "net", "vol clickable", "disks", "fans"]) assert.match(el.html, new RegExp(`class="${cls}`));
+  assert.doesNotMatch(el.html, /class="metric/);
+  assert.equal(el.html.replace(/<button class="zoom"[\s\S]*?<\/button>/, ""), full._render());
+  assert.match(el.html, /<button class="zoom" title="Back to the compact view">/);
+  assert.equal(el.getCardSize(), full.getCardSize());
+  assert.deepEqual({ ...el.getGridOptions() }, { ...full.getGridOptions() });
+  el._zoomClick(zoomButton());
+  assert.equal(el._zoomed, false);
+  assert.match(el.html, /class="metric/);
+  assert.equal(el.getCardSize(), 3);
+});
+
+test("a click outside the mini card collapses it, a click inside or in a dialog does not", async () => {
+  const el = await zoomCard({ language: "fr" });
+  assert.match(el.html, /title="Afficher la carte complète"/);
+  el._zoomClick(zoomButton());
+  assert.match(el.html, /title="Revenir à la vue compacte"/);
+  el._onOutside(click([node("div"), el, node("body")]));
+  assert.equal(el._zoomed, true);
+  for (const dialog of ["ha-more-info-dialog", "ha-dialog", "dialog"]) {
+    el._onOutside(click([node("div"), node(dialog), node("body")]));
+    assert.equal(el._zoomed, true, dialog);
+  }
+  // Other clicks on the card leave it as it is.
+  el._zoomClick(click([el], { target: { closest: () => null } }));
+  assert.equal(el._zoomed, true);
+  el._onOutside(click([node("div"), node("body")]));
+  assert.equal(el._zoomed, false);
+  assert.match(el.html, /class="metric/);
+});
+
+test("zoom: false removes the mini card zoom button, the full card has none", async () => {
+  const el = await zoomCard({ zoom: false });
+  assert.doesNotMatch(el.html, /class="zoom"/);
+  const full = new UgreenNasCard();
+  full._config = {};
+  full._hass = el._hass;
+  assert.doesNotMatch(full._render(), /class="zoom"/);
+});
