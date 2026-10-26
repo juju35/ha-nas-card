@@ -474,8 +474,10 @@ const BASE_STYLE = `
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
-  .header > .chip { flex: none; white-space: nowrap; }
-  .titles { flex: 1; min-width: 0; }
+  /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width. */
+  .titles { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .titles > .name, .titles > .sub { grid-column: 1; }
+  .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; }
@@ -591,14 +593,14 @@ class UgreenNasBase extends HTMLElement {
         <div class="titles">
           <div class="name">${esc(name)}</div>
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
+          ${
+            status
+              ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
+                  this._s(sc.system_message)?.state || ""
+                )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
+              : ""
+          }
         </div>
-        ${
-          status
-            ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
-                this._s(sc.system_message)?.state || ""
-              )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
-            : ""
-        }
         ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model))}" alt="${esc(model || "NAS")}">` : ""}
         ${this._zoomButton()}
       </div>`;
@@ -867,7 +869,7 @@ const MINI_STYLE = `
   .logo { height: 32px; width: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   /* The status shows in the footer. */
-  .header > .chip { display: none; }
+  .titles > .chip { display: none; }
   .name { font-size: 16px; }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
   .metric { display: grid; grid-template-columns: 18px 64px 1fr 56px; align-items: center; gap: 8px; font-size: 13px; }
