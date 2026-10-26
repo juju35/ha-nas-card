@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.0 - 2026-10-26
+
+### Fixes
+- **Mini card**: the detail button now sits flush top-right and vertically centred on the header, matching the other cards (it was pinned to the top and pulled slightly left).
+
 ## 1.8.0 - 2026-10-26
 ### Fixes
 - `toBytes()` now reads `unit_of_measurement` through optional chaining, like its twin `toBps()`. A Home Assistant state with a valid numeric `state` but no `attributes` object (rare but possible depending on the integration or after a restore) no longer throws during rendering.
