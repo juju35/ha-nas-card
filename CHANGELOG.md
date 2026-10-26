@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Changes
+- The UGREEN logo in the header fits a 40 × 40 px box on the full card and a 32 × 32 px box on the mini card (zoomed in, the full card's 40 px), like the header icon of the other cards.
+- The status pill ("Normal") sits in the header row, right of the title and before the NAS picture, instead of on its own line under the title.
+- Mini card: the subtitle shows the NAS model only, no longer cut off by the NAS picture ("DXP480T Plus · UGOS 1.…"); zoomed in, it shows the model and the UGOS version like the full card. When both do not fit on one line next to the picture, the UGOS version goes to a second line instead of being cut off.
+- Header geometry: the body starts 8 px below the header on both cards (was 4 px).
+- The status pill is centred on the title line, not on the whole title block: it no longer sits low when the subtitle wraps the UGOS version to a second line (full card and zoomed-in mini card).
+
+### Maintenance
+- Test for the status pill position and the mini card subtitle.
+
 ## 1.6.1
 
 ### Fixes
