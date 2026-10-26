@@ -256,3 +256,12 @@ test("the NAS picture follows the model, the image option overrides it", () => {
   assert.equal(nasPicture("https://example.com/nas.png", "DXP2800"), "https://example.com/nas.png");
   assert.equal(decodeURIComponent(nasPicture("DXP8800 Plus", "DXP2800")).split("data:image/svg+xml,")[1], nasSvg("DXP8800 Plus"));
 });
+
+test("the status pill sits in the header row; the compact mini card subtitle shows the model only", async () => {
+  const el = await zoomCard();
+  // Compact view: model only (the UGOS version would be cut off by the NAS picture).
+  assert.match(el.html, /<div class="sub"><div class="parts"><span>DXP480T Plus<\/span><\/div><\/div>/);
+  el._zoomClick(zoomButton());
+  // Zoomed in, like the full card: model and UGOS version, then the status pill right of the title block.
+  assert.match(el.html, /<span>DXP480T Plus<\/span><span>UGOS 1\.20\.0\.0142<\/span><\/div><\/div>\s*<\/div>\s*<span class="chip clickable ok"/);
+});

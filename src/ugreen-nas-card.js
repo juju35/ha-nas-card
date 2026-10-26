@@ -473,11 +473,17 @@ const BASE_STYLE = `
           background: color-mix(in srgb, var(--c, var(--ug-ok)) 15%, transparent); color: var(--c, var(--ug-ok)); }
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
-  .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 4px; }
+  .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
+  .header > .chip { flex: none; white-space: nowrap; }
   .titles { flex: 1; min-width: 0; }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; }
+  /* Model and UGOS version on one line when they fit, else one per line: the "·" separator that starts a line
+     sits in the negative margin, clipped by .sub. */
+  .sub .parts { display: flex; flex-wrap: wrap; margin-left: -12px; }
+  .sub .parts span { min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub .parts span::before { content: "·"; display: inline-block; width: 12px; text-align: center; }
   .warning { padding: 16px; color: var(--ug-warn); }
   .zoom { all: unset; flex: none; align-self: flex-start; cursor: pointer; width: 24px; height: 24px; margin: -4px -4px 0 -4px;
           border-radius: 50%; display: grid; place-items: center; color: var(--secondary-text-color); }
@@ -577,24 +583,30 @@ class UgreenNasBase extends HTMLElement {
     const name = c.title || this._s(sc.name)?.state || "UGREEN NAS";
     const model = this._s(sc.model)?.state;
     const version = this._s(sc.version)?.state;
-    const sub = [model, version ? `UGOS ${version}` : null].filter(Boolean).join(" · ");
+    // The compact mini card shares its header with the NAS picture: the model alone, the UGOS version zoomed in.
+    const sub = [model, version && !this._compactHeader() ? `UGOS ${version}` : null].filter(Boolean);
     return `
       <div class="header">
         ${logo(this._hass.themes?.darkMode)}
         <div class="titles">
           <div class="name">${esc(name)}</div>
-          <div class="sub">${esc(sub)}</div>
-          ${
-            status
-              ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
-                  this._s(sc.system_message)?.state || ""
-                )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
-              : ""
-          }
+          <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
         </div>
+        ${
+          status
+            ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
+                this._s(sc.system_message)?.state || ""
+              )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
+            : ""
+        }
         ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model))}" alt="${esc(model || "NAS")}">` : ""}
         ${this._zoomButton()}
       </div>`;
+  }
+
+  // Whether the header is the mini card's compact one (model only in the subtitle, no status pill).
+  _compactHeader() {
+    return false;
   }
 
   // Button at the far right of the header: only the mini card has one.
@@ -625,7 +637,6 @@ const ring = (pct, cls) => {
 
 const FULL_STYLE = `
   .nas { height: 48px; width: auto; flex: none; max-width: 40%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.25)); }
-  .titles .chip { margin-top: 4px; }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 12px; }
   .section-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; text-transform: uppercase;
                    letter-spacing: .04em; color: var(--secondary-text-color); margin-bottom: 6px; }
@@ -853,12 +864,12 @@ class UgreenNasCard extends UgreenNasBase {
 // ---------------------------------------------------------------------------
 
 const MINI_STYLE = `
-  .header { padding: 12px 12px 4px; }
   .logo { height: 32px; width: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
-  .titles .chip { display: none; }
+  /* The status shows in the footer. */
+  .header > .chip { display: none; }
   .name { font-size: 16px; }
-  .content { padding: 4px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
   .metric { display: grid; grid-template-columns: 18px 64px 1fr 56px; align-items: center; gap: 8px; font-size: 13px; }
   .metric .icon { color: var(--secondary-text-color); }
   .metric .v { text-align: right; font-weight: 500; }
@@ -912,6 +923,10 @@ class UgreenNasMiniCard extends UgreenNasCard {
     this._setZoom(!this._zoomed);
     // Keyboard use (Enter / Space: no click count) keeps the focus on the button.
     if (ev.detail === 0) this.shadowRoot.querySelector(".zoom")?.focus();
+  }
+
+  _compactHeader() {
+    return !this._zoomed;
   }
 
   _zoomButton() {
