@@ -46,11 +46,11 @@ const page_html = (theme, width) => `<!doctype html><html><head><meta charset="u
 
 const shots = [
   { file: "card", type: "ugreen-nas-card", theme: "light", width: 460, config: {} },
-  { file: "card-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: { language: "fr" } },
+  { file: "card-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {} },
   { file: "mini-card", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {} },
-  { file: "mini-card-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 380, config: { language: "fr" } },
+  { file: "mini-card-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 380, config: {} },
   { file: "mini-card-zoom", type: "ugreen-nas-mini-card", theme: "light", width: 460, config: {}, zoom: true },
-  { file: "mini-card-zoom-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 460, config: { language: "fr" }, zoom: true },
+  { file: "mini-card-zoom-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 460, config: {}, zoom: true },
 ];
 
 const browser = await chromium.launch(
