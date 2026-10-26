@@ -130,6 +130,10 @@ language: fr
 
 ## Screenshots
 
+While the NAS is running, the card animates: the cooling fans spin at their live speed. It settles to a still card when they stop (and honours `prefers-reduced-motion`).
+
+![cooling fans animation](screenshots/fans.gif)
+
 | Light | Dark (French) |
 |---|---|
 | ![card](screenshots/card.png) | ![card dark](screenshots/card-dark.png) |
@@ -158,7 +162,7 @@ Thresholds:
 npm install
 npm run build        # bundles src/ugreen-nas-card.js into dist/ugreen-nas-card.js
 npm run check        # builds and checks the card (run in CI)
-npm run screenshots  # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/
+npm run screenshots  # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif, needs ffmpeg)
 ```
 
 `dist/` is not committed: `npm run build` creates it locally, CI builds it on every push, and the release workflow attaches the built file to the release, which is where HACS downloads it from.
