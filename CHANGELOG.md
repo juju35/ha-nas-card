@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.0 - 2026-10-26
+### Fixes
+- `toBytes()` now reads `unit_of_measurement` through optional chaining, like its twin `toBps()`. A Home Assistant state with a valid numeric `state` but no `attributes` object (rare but possible depending on the integration or after a restore) no longer throws during rendering.
+
 ## 1.7.0
 ### Changes
 - The UGREEN logo in the header fits a 40 × 40 px box on the full card and a 32 × 32 px box on the mini card (zoomed in, the full card's 40 px), like the header icon of the other cards.
