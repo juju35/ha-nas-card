@@ -475,7 +475,7 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 4px; }
   .titles { flex: 1; min-width: 0; }
-  .logo { height: 40px; width: auto; flex: none; align-self: flex-start; }
+  .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .warning { padding: 16px; color: var(--ug-warn); }
@@ -854,6 +854,7 @@ class UgreenNasCard extends UgreenNasBase {
 
 const MINI_STYLE = `
   .header { padding: 12px 12px 4px; }
+  .logo { height: 32px; width: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .titles .chip { display: none; }
   .name { font-size: 16px; }

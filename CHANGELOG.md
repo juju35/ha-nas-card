@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changes
+- The UGREEN logo in the header fits a 40 × 40 px box on the full card and a 32 × 32 px box on the mini card (zoomed in, the full card's 40 px), like the header icon of the other cards.
+
 ## 1.6.1
 
 ### Fixes
