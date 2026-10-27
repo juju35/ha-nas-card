@@ -1,6 +1,6 @@
 /*
  * NAS Card for Home Assistant (UGREEN, Synology, QNAP)
- * https://github.com/juju35/ha-ugreen-nas-card
+ * https://github.com/juju35/ha-nas-card
  *
  * Lovelace cards for the UGREEN NAS integration
  * (https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), the Synology DSM integration and
@@ -1443,7 +1443,7 @@ for (const card of [
   },
 ]) {
   if (!window.customCards.some((c) => c.type === card.type))
-    window.customCards.push({ ...card, preview: true, documentationURL: "https://github.com/juju35/ha-ugreen-nas-card" });
+    window.customCards.push({ ...card, preview: true, documentationURL: "https://github.com/juju35/ha-nas-card" });
 }
 
 console.info(

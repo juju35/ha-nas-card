@@ -1,9 +1,9 @@
-# ha-ugreen-nas-card
+# ha-nas-card
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![HACS Validation](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/hacs.yml)
-[![Validate](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-ugreen-nas-card/actions/workflows/validate.yml)
-[![Release](https://img.shields.io/github/v/release/juju35/ha-ugreen-nas-card)](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
+[![HACS Validation](https://github.com/juju35/ha-nas-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/hacs.yml)
+[![Validate](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml)
+[![Release](https://img.shields.io/github/v/release/juju35/ha-nas-card)](https://github.com/juju35/ha-nas-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <p align="center">
@@ -16,12 +16,12 @@ Lovelace cards for Home Assistant to monitor NAS devices — [UGREEN](https://na
 
 The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), and of the [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) and [QNAP](https://www.home-assistant.io/integrations/qnap/) integrations included in Home Assistant: entities are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-ugreen-nas-card&category=plugin)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
 | <img src="images/ugreen.svg" alt="" width="20"> UGREEN | <img src="images/synology.png" alt="" width="20"> Synology | <img src="images/qnap.png" alt="" width="20"> QNAP |
 |---|---|---|
-| ![ugreen card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card.png) | ![synology card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card-synology.png) | ![qnap card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/card-qnap.png) |
-| ![ugreen mini card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card.png) | ![synology mini card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card-synology.png) | ![qnap mini card](https://raw.githubusercontent.com/juju35/ha-ugreen-nas-card/main/screenshots/mini-card-qnap.png) |
+| ![ugreen card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png) | ![synology card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png) | ![qnap card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png) |
+| ![ugreen mini card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png) | ![synology mini card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png) | ![qnap mini card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png) |
 
 ## Features
 
@@ -42,6 +42,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Light and dark mode, English and French
 - Single file, no external dependency: the NAS pictures and the UGREEN logo are embedded, the Synology and QNAP logos load from the [Home Assistant brand images](https://brands.home-assistant.io) (the ones the Home Assistant interface itself shows)
 
+> **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to HACS as a custom repository, remove it and add `https://github.com/juju35/ha-nas-card` instead.
+
 ## Prerequisites
 
 Home Assistant 2024.8 or later, and at least one of:
@@ -56,20 +58,20 @@ Home Assistant 2024.8 or later, and at least one of:
 
 Click the button below to add the repository directly:
 
-[![Add to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-ugreen-nas-card&category=plugin)
+[![Add to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
 Then click **Download**, and reload your browser when HACS asks you to.
 
 Or manually:
 
 1. Open HACS → **⋮** (top right) → **Custom repositories**
-2. Add `https://github.com/juju35/ha-ugreen-nas-card` — Type: **Dashboard**
+2. Add `https://github.com/juju35/ha-nas-card` — Type: **Dashboard**
 3. Search for **NAS Card** and click **Download**
 4. Clear your browser cache and refresh
 
 ### Manual
 
-1. Download `nas-card.js` from the [latest release](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
+1. Download `nas-card.js` from the [latest release](https://github.com/juju35/ha-nas-card/releases/latest)
 2. Copy it to `/config/www/nas-card.js`
 3. Go to **Settings → Dashboards → ⋮ → Resources** → Add resource:
    - URL: `/local/nas-card.js`

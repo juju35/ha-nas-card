@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.1 - 2026-10-27
+
+### Changes
+- The repository is now [`juju35/ha-nas-card`](https://github.com/juju35/ha-nas-card) (was `juju35/ha-ugreen-nas-card`): README links, badges, HACS buttons, screenshots and the card's documentation link point to the new address. GitHub redirects the old one; HACS custom repository users should re-add the repository under its new name.
+
 ## 1.11.0 - 2026-10-27
 
 ### Changes
