@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.0 - 2026-10-27
+
+### Features
+- **Brand logo link**: a click on the logo opens the official website of the brand (UGREEN, Synology, QNAP) in a new tab; the `brand_url` option changes the address.
+- **NAS interface link**: a click on the NAS picture opens the NAS web interface in a new tab. By default it is the configuration URL of the NAS device in Home Assistant (UGREEN NAS and Synology DSM integrations); the QNAP integration has none, so set the `url` option for a QNAP NAS.
+- Both addresses can be set in the visual editor (« NAS interface URL », « Brand website URL »), left empty for the automatic ones. Only `http(s)://` addresses become links.
+
 ## 1.11.1 - 2026-10-27
 
 ### Changes

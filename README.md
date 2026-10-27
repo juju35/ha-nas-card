@@ -36,7 +36,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
 - Detail button on the mini card (top right): it switches the mini card to the full card's content and back; a click anywhere outside the card brings the compact view back
 - Click any value to open its Home Assistant history (more-info dialog)
-- Brand logo next to the NAS name (UGREEN, Synology or QNAP), adapted to dark mode
+- Brand logo next to the NAS name (UGREEN, Synology or QNAP), adapted to dark mode: a click opens the brand's website
+- Click the NAS picture to open the NAS web interface (UGOS, DSM, QTS), found automatically from Home Assistant for UGREEN and Synology; both addresses can be changed in the visual editor
 - Drawn NAS picture that follows the model: 43 models drawn across the three brands — towers by bay count, all-flash DXP480T, rackmounts (see [Screenshots](#screenshots)) — or your own picture
 - Visual editor in the dashboard UI for both cards (no YAML needed), with the pictures listed by brand
 - Light and dark mode, English and French
@@ -102,6 +103,8 @@ nas: ugreen_nas
 title: My NAS
 show_image: true
 image: DXP4800 Plus
+url: http://192.168.1.10:9999
+brand_url: https://nas.ugreen.com
 show_system: true
 show_network: true
 show_volumes: true
@@ -130,6 +133,8 @@ language: fr
 | `title` | both | NAS name | Card title |
 | `show_image` | both | `true` | Show the NAS picture |
 | `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`… — see the [drawn models](#screenshots)) or an image URL (e.g. `/local/my-nas.png`). By default the picture follows the model reported by the integration; an unknown model of a known family is drawn from its bay count |
+| `url` | both | Device configuration URL | Web interface of the NAS, opened by a click on the NAS picture. By default the configuration URL of the NAS device in Home Assistant (the « Visit » link of the device page), set by the UGREEN NAS and Synology DSM integrations; the QNAP integration has none, so set it for a QNAP NAS (e.g. `http://192.168.1.10:8080`) |
+| `brand_url` | both | Brand website | Website opened by a click on the brand logo: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com) or [qnap.com](https://www.qnap.com) by default |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
 | `show_volumes` | full | `true` | Volumes and used space |

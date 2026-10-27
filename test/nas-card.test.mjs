@@ -297,7 +297,7 @@ test("Synology DSM discovery: scalars, security status, volumes and disks from t
   const nas = discover(hass, "");
   assert.equal(nas.brand, "synology");
   assert.equal(nas.nasId, "syno_nas");
-  assert.deepEqual({ ...nas.info }, { name: "diskstation", model: "DS923+", version: "DSM 7.2.2-72806 Update 3" });
+  assert.deepEqual({ ...nas.info }, { name: "diskstation", model: "DS923+", version: "DSM 7.2.2-72806 Update 3", url: "https://192.168.1.20:5001" });
   assert.equal(nas.scalars.cpu_usage, "sensor.diskstation_cpu_utilization_total");
   assert.equal(nas.scalars.ram_usage, "sensor.diskstation_memory_usage_real");
   assert.equal(nas.scalars.sys_temp, "sensor.diskstation_temperature");
@@ -403,4 +403,48 @@ test("the editor lists the pictures sorted by brand, then by model, with the bra
   const syno = options.filter((o) => o.label.startsWith("Synology ")).map((o) => o.value);
   assert.ok(syno.indexOf("DS224+") < syno.indexOf("DS1522+"));
   assert.deepEqual({ ...options.find((o) => o.value === "DXP4800 Plus") }, { value: "DXP4800 Plus", label: "UGREEN DXP4800 Plus" });
+});
+
+test("the logo opens the brand website and the picture the NAS interface, both configurable", async () => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  const render = (hass, config = {}) => {
+    const el = new NasCard();
+    el._config = config;
+    el._hass = { ...hass, language: "en" };
+    return el._render();
+  };
+  const href = (html, cls) => (html.match(new RegExp(`<a class="${cls}" href="([^"]*)"`)) || [])[1] ?? null;
+  // Brand websites by default, the brand_url option replaces them.
+  assert.equal(href(render(mocks.ugreen), "brand-link"), "https://nas.ugreen.com");
+  assert.equal(href(render(mocks.synology), "brand-link"), "https://www.synology.com");
+  assert.equal(href(render(mocks.qnap), "brand-link"), "https://www.qnap.com");
+  assert.equal(href(render(mocks.qnap, { brand_url: "https://example.com/qnap" }), "brand-link"), "https://example.com/qnap");
+  // NAS interface: the configuration_url of the NAS device (Synology here), none for QNAP unless set.
+  assert.equal(href(render(mocks.synology), "nas-link"), "https://192.168.1.20:5001");
+  assert.equal(href(render(mocks.qnap), "nas-link"), null);
+  assert.equal(href(render(mocks.qnap, { url: "http://192.168.1.30:8080" }), "nas-link"), "http://192.168.1.30:8080");
+  assert.equal(href(render(mocks.synology, { url: "https://nas.example.com" }), "nas-link"), "https://nas.example.com");
+  // UGREEN: found through an entity's device, up to the root device (pools are child devices).
+  const ids = Object.keys(mocks.ugreen.states);
+  const ugreen = {
+    states: mocks.ugreen.states,
+    entities: Object.fromEntries(ids.map((id) => [id, { entity_id: id, platform: "ugreen", device_id: id.includes("pool_") ? "pool" : "root" }])),
+    devices: { root: { id: "root", configuration_url: "http://192.168.1.253:9999" }, pool: { id: "pool", via_device_id: "root" } },
+  };
+  assert.equal(href(render(ugreen), "nas-link"), "http://192.168.1.253:9999");
+  // Only web addresses become links; links open in a new tab.
+  const odd = render(mocks.qnap, { url: "javascript:alert(1)" });
+  assert.equal(href(odd, "nas-link"), null);
+  assert.match(render(mocks.synology), /<a class="nas-link" href="[^"]*" target="_blank" rel="noopener noreferrer"/);
+  // show_image: false drops the picture and its link.
+  assert.equal(href(render(mocks.synology, { show_image: false }), "nas-link"), null);
+});
+
+test("the visual editor offers the url and brand_url options after the picture", () => {
+  const { NasCardEditor } = load("nas-card.js", ["NasCardEditor"]);
+  const ed = new NasCardEditor();
+  ed._hass = { states: {}, language: "en" };
+  ed._config = {};
+  const names = [...ed._schema().map((f) => f.name)];
+  assert.deepEqual(names.slice(names.indexOf("image"), names.indexOf("image") + 3), ["image", "url", "brand_url"]);
 });
