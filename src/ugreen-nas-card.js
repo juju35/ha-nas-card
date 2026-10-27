@@ -282,8 +282,14 @@ const flatSvg = () => {
 // (DXP<bays>800, DH<bays>300, 480T, Synology DS/RS naming, QNAP TS/TVS/HS naming).
 const NAS_MODELS = {
   ugreen: ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"],
-  synology: ["DS224+", "DS423+", "DS723+", "DS923+", "DS925+", "DS1522+", "DS1621+", "DS1821+", "RS822+", "RS1221+"],
-  qnap: ["TS-233", "TS-264", "TS-464", "TS-664", "TS-873A", "TVS-h674", "HS-264", "TS-873AeU"],
+  synology: [
+    "DS124", "DS223", "DS223j", "DS224+", "DS225+", "DS423", "DS423+", "DS425+", "DS723+", "DS923+", "DS925+",
+    "DS1522+", "DS1621+", "DS1821+", "DS1825+", "DS2422+", "RS422+", "RS822+", "RS1221+", "RS2423+",
+  ],
+  qnap: [
+    "TS-133", "TS-233", "TS-433", "TS-264", "TS-464", "TS-664", "TS-473A", "TS-673A", "TS-873A", "TS-h973AX",
+    "TVS-h674", "TVS-h874", "HS-264", "TS-873AeU", "TS-1264U-RP",
+  ],
 };
 // Bay counts from the model names. Synology: the leading digits are not always the bay count
 // (DS723+ has 2 bays, DS923+ has 4, DS1522+ has 5), so known families are mapped.
@@ -326,6 +332,16 @@ const nasPicture = (image, model, brand) =>
 // logos). Both marks are grayscale, so dark mode simply inverts them.
 const BRAND_DOMAINS = { synology: "synology_dsm", qnap: "qnap" };
 const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
+// Picture choices of the editor: sorted by brand, then by model (numbers in natural order), each
+// label prefixed with its brand; the value stays the bare model name.
+const modelOptions = () =>
+  Object.keys(NAS_MODELS)
+    .sort((a, b) => BRAND_NAMES[a].localeCompare(BRAND_NAMES[b], "en", { sensitivity: "base" }))
+    .flatMap((b) =>
+      [...NAS_MODELS[b]]
+        .sort((x, y) => x.localeCompare(y, "en", { numeric: true, sensitivity: "base" }))
+        .map((m) => ({ value: m, label: `${BRAND_NAMES[b]} ${m}` }))
+    );
 const logo = (brand, dark) => {
   if (BRAND_DOMAINS[brand])
     return `<img class="logo brand${dark ? " inverted" : ""}" src="https://brands.home-assistant.io/${BRAND_DOMAINS[brand]}/icon.png" alt="${BRAND_NAMES[brand]}">`;
@@ -1329,9 +1345,7 @@ class UgreenNasEditorBase extends HTMLElement {
             custom_value: true,
             options: [
               { value: "", label: tr("image_auto") },
-              ...Object.values(NAS_MODELS)
-                .flat()
-                .map((m) => ({ value: m, label: m })),
+              ...modelOptions(),
             ],
           },
         },
@@ -1419,12 +1433,12 @@ window.customCards = window.customCards || [];
 for (const card of [
   {
     type: "ugreen-nas-card",
-    name: "UGREEN NAS Card",
+    name: "NAS Card",
     description: "Monitor a UGREEN, Synology or QNAP NAS: CPU, RAM, temperatures, volumes, disks, network and fans.",
   },
   {
     type: "ugreen-nas-mini-card",
-    name: "UGREEN NAS Mini Card",
+    name: "NAS Mini Card",
     description: "Compact NAS overview (UGREEN, Synology, QNAP): CPU, RAM, temperature, storage and network.",
   },
 ]) {

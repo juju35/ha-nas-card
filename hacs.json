@@ -1,5 +1,5 @@
 {
-  "name": "UGREEN NAS Card",
+  "name": "NAS Card (UGREEN, Synology, QNAP)",
   "render_readme": true,
   "content_in_root": false,
   "filename": "ugreen-nas-card.js",

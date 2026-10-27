@@ -386,3 +386,17 @@ test("the status pill sits in the header row; the compact mini card subtitle sho
   // Zoomed in, like the full card: model and UGOS version, then the status pill in the title block (right of the title line).
   assert.match(el.html, /<span>DXP480T Plus<\/span><span>UGOS 1\.20\.0\.0142<\/span><\/div><\/div>\s*<span class="chip clickable ok"/);
 });
+
+test("the editor lists the pictures sorted by brand, then by model, with the brand as prefix", () => {
+  const { modelOptions, NAS_MODELS } = load("ugreen-nas-card.js", ["modelOptions", "NAS_MODELS"]);
+  const options = [...modelOptions()];
+  assert.equal(options.length, Object.values(NAS_MODELS).flat().length);
+  const brands = [...options.map((o) => o.label.split(" ")[0])];
+  assert.deepEqual([...new Set(brands)], ["QNAP", "Synology", "UGREEN"]);
+  // Brands are contiguous blocks, in alphabetical order.
+  assert.deepEqual(brands, [...brands].sort());
+  // Natural order inside a brand (DS224+ before DS1522+), the value stays the bare model name.
+  const syno = options.filter((o) => o.label.startsWith("Synology ")).map((o) => o.value);
+  assert.ok(syno.indexOf("DS224+") < syno.indexOf("DS1522+"));
+  assert.deepEqual({ ...options.find((o) => o.value === "DXP4800 Plus") }, { value: "DXP4800 Plus", label: "UGREEN DXP4800 Plus" });
+});
