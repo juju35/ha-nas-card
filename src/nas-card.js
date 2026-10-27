@@ -67,6 +67,12 @@ const STRINGS = {
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
+    url: "NAS interface URL (click on the NAS picture)",
+    url_helper: "Automatic from Home Assistant when empty (UGREEN, Synology); set it for QNAP, e.g. http://192.168.1.10:8080",
+    brand_url: "Brand website URL (click on the logo)",
+    brand_url_helper: "Official website of the brand when empty",
+    open_nas: "Open the NAS interface",
+    open_brand: "Open the {brand} website",
     language: "Language",
     lang_auto: "Automatic",
   },
@@ -109,6 +115,12 @@ const STRINGS = {
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
+    url: "URL de l'interface du NAS (clic sur l'illustration)",
+    url_helper: "Automatique depuis Home Assistant si vide (UGREEN, Synology) ; à renseigner pour QNAP, ex. http://192.168.1.10:8080",
+    brand_url: "URL du site de la marque (clic sur le logo)",
+    brand_url_helper: "Site officiel de la marque si vide",
+    open_nas: "Ouvrir l'interface du NAS",
+    open_brand: "Ouvrir le site {brand}",
     language: "Langue",
     lang_auto: "Automatique",
   },
@@ -332,6 +344,18 @@ const nasPicture = (image, model, brand) =>
 // logos). Both marks are grayscale, so dark mode simply inverts them.
 const BRAND_DOMAINS = { synology: "synology_dsm", qnap: "qnap" };
 const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
+const BRAND_SITES = { ugreen: "https://nas.ugreen.com", synology: "https://www.synology.com", qnap: "https://www.qnap.com" };
+// Only web addresses become links (a configuration_url can also be a homeassistant:// path).
+const webUrl = (u) => (/^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : null);
+// The NAS web interface: the configuration_url of the NAS device in the device registry (set by the
+// UGREEN NAS and Synology DSM integrations, the "Visit" link of the device page), found from any of
+// its entities through the device's root (pools, volumes and disks are child devices).
+const deviceUrl = (hass, nas) => {
+  if (nas.info?.url) return webUrl(nas.info.url);
+  const id = Object.values(nas.scalars)[0];
+  const deviceId = id && hass.entities?.[id]?.device_id;
+  return deviceId ? webUrl(rootDevice(hass, deviceId)?.configuration_url) : null;
+};
 // Picture choices of the editor: sorted by brand, then by model (numbers in natural order), each
 // label prefixed with its brand; the value stays the bare model name.
 const modelOptions = () =>
@@ -591,7 +615,7 @@ const discoverRegistry = (hass, brand, nasId) => {
     return nas;
   }
   const dev = hass.devices[rootId];
-  nas.info = { name: dev.name_by_user || dev.name, model: dev.model, version: dev.sw_version };
+  nas.info = { name: dev.name_by_user || dev.name, model: dev.model, version: dev.sw_version, url: dev.configuration_url };
   const SCALARS_BY_KEY = brand === "synology" ? SYNO_SCALARS : QNAP_SCALARS;
   const pool = (nas.pools[1] = { volumes: {}, disks: {} });
   const groups = {};
@@ -766,6 +790,10 @@ const BASE_STYLE = `
   .titles > .name, .titles > .sub { grid-column: 1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
+  .brand-link, .nas-link { display: flex; flex: none; border-radius: 8px; }
+  .brand-link { align-self: flex-start; }
+  .brand-link:focus-visible, .nas-link:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
+  .nas-link .nas { max-width: 100%; }
   .logo.brand { object-fit: contain; }
   .logo.brand.inverted { filter: invert(1); }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -889,7 +917,7 @@ class NasBase extends HTMLElement {
     const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
     return `
       <div class="header">
-        ${logo(nas.brand, this._hass.themes?.darkMode)}
+        ${this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", logo(nas.brand, this._hass.themes?.darkMode))}
         <div class="titles">
           <div class="name">${esc(name)}</div>
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
@@ -901,9 +929,25 @@ class NasBase extends HTMLElement {
               : ""
           }
         </div>
-        ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model, nas.brand))}" alt="${esc(model || "NAS")}">` : ""}
+        ${
+          c.show_image !== false
+            ? this._link(
+                webUrl(c.url) || deviceUrl(this._hass, nas),
+                this._t("open_nas"),
+                "nas-link",
+                `<img class="nas" src="${esc(nasPicture(c.image, model, nas.brand))}" alt="${esc(model || "NAS")}">`
+              )
+            : ""
+        }
         ${this._zoomButton()}
       </div>`;
+  }
+
+  // Content wrapped in a link opening in a new tab, or left as is without an address.
+  _link(href, title, cls, content) {
+    return href
+      ? `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(title)}">${content}</a>`
+      : content;
   }
 
   // Whether the header is the mini card's compact one (model only in the subtitle, no status pill).
@@ -939,6 +983,7 @@ const ring = (pct, cls) => {
 
 const FULL_STYLE = `
   .nas { height: 48px; width: auto; flex: none; max-width: 40%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.25)); }
+  .nas-link { max-width: 40%; }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 12px; }
   .section-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; text-transform: uppercase;
                    letter-spacing: .04em; color: var(--secondary-text-color); margin-bottom: 6px; }
@@ -1169,6 +1214,7 @@ class NasCard extends NasBase {
 const MINI_STYLE = `
   .logo { height: 32px; width: 32px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
+  .nas-link { max-width: 35%; }
   /* The status shows in the footer. */
   .titles > .chip { display: none; }
   .name { font-size: 16px; }
@@ -1350,6 +1396,8 @@ class NasEditorBase extends HTMLElement {
           },
         },
       },
+      { name: "url", selector: { text: { type: "url" } } },
+      { name: "brand_url", selector: { text: { type: "url" } } },
       {
         type: "grid",
         name: "",

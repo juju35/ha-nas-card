@@ -90,6 +90,7 @@ const synoDevices = {
     manufacturer: "Synology",
     model: "DS923+",
     sw_version: "DSM 7.2.2-72806 Update 3",
+    configuration_url: "https://192.168.1.20:5001",
     via_device_id: null,
   },
   syno_vol1: { id: "syno_vol1", name: "diskstation (Volume 1)", manufacturer: "Synology", model: "DS923+", via_device_id: "syno_nas" },
