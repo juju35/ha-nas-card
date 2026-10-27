@@ -6,11 +6,11 @@
 [![Release](https://img.shields.io/github/v/release/juju35/ha-ugreen-nas-card)](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-<p align="center"><img src="images/models.svg" alt="UGREEN NAS models" width="760"></p>
+<p align="center"><img src="images/models.svg" alt="Supported NAS models (UGREEN, Synology, QNAP)" width="760"></p>
 
-Lovelace cards for Home Assistant to monitor UGREEN NAS devices: CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
+Lovelace cards for Home Assistant to monitor UGREEN, Synology and QNAP NAS devices: CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
 
-The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas): entities are **discovered automatically**, you don't have to pick them one by one.
+The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), the core [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) integration and the core [QNAP](https://www.home-assistant.io/integrations/qnap/) integration: entities are **discovered automatically**, you don't have to pick them one by one.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-ugreen-nas-card&category=plugin)
 
@@ -20,9 +20,9 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 ## Features
 
-- Two cards: a full **UGREEN NAS Card** and a compact **UGREEN NAS Mini Card**
+- Two cards: a full **UGREEN NAS Card** and a compact **UGREEN NAS Mini Card** (also registered as `custom:nas-card` and `custom:nas-mini-card`)
 - Zoom button at the top right of the mini card: it switches to the full card (gauges, network, volumes, disks and fans of the same NAS) and back; a click anywhere outside the card brings the compact view back
-- Automatic discovery of the UGREEN NAS integration entities (several NAS supported)
+- Three integrations: **UGREEN NAS**, **Synology DSM** and **QNAP** — automatic entity discovery, several NAS supported (mix of brands included)
 - CPU, RAM and CPU temperature gauges, uptime and CPU model
 - Network download / upload rates
 - Volumes with RAID level, filesystem, status and used space
@@ -32,14 +32,16 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Click any value to open its Home Assistant history (more-info dialog)
 - Visual editor in the dashboard UI for both cards (no YAML needed)
 - Light and dark mode, English and French
-- UGREEN logo next to the NAS name, adapted to dark mode
-- Single file, no external dependency, the NAS picture and logo are embedded
+- Brand logo next to the NAS name, adapted to dark mode, and a drawn picture of the NAS model (UGREEN DXP/DH, Synology DS/RS, QNAP TS/TVS/HS, rackmounts included)
+- Single file, no external dependency: the NAS pictures and the UGREEN logo are embedded (the Synology and QNAP logos load from the [Home Assistant brand images CDN](https://brands.home-assistant.io), the one the HA interface itself uses)
 
 ## Prerequisites
 
-Home Assistant 2024.8 or later, and:
+Home Assistant 2024.8 or later, and at least one of:
 
-The [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) must be installed and configured (available in HACS).
+- The [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (available in HACS)
+- The core [Synology DSM integration](https://www.home-assistant.io/integrations/synology_dsm/)
+- The core [QNAP integration](https://www.home-assistant.io/integrations/qnap/)
 
 ## Installation
 
@@ -83,6 +85,12 @@ type: custom:ugreen-nas-card
 type: custom:ugreen-nas-mini-card
 ```
 
+`custom:nas-card` and `custom:nas-mini-card` are brand-neutral aliases of the same two cards:
+
+```yaml
+type: custom:nas-card
+```
+
 ### Full options
 
 ```yaml
@@ -115,10 +123,10 @@ language: fr
 
 | Option | Card | Default | Description |
 |---|---|---|---|
-| `nas` | both | First NAS found | NAS to display: the `UGNAS_device_id` attribute of the integration entities (only needed with several NAS) |
+| `nas` | both | First NAS found | NAS to display (only needed with several NAS): the `UGNAS_device_id` attribute for UGREEN, the NAS device id for Synology DSM and QNAP — pick it in the visual editor |
 | `title` | both | NAS name | Card title |
 | `show_image` | both | `true` | Show the NAS picture |
-| `image` | both | NAS model | Picture to show: a model name (`DXP2800`, `DXP4800 Plus`, `DXP480T Plus`, `DXP6800 Pro`, `DXP8800 Plus`, `DH2300`, `DH4300 Plus`…) or an image URL. By default the picture follows the model reported by the integration |
+| `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`…) or an image URL. By default the picture follows the model reported by the integration |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
 | `show_volumes` | full | `true` | Volumes and used space |
@@ -134,17 +142,25 @@ While the NAS is running, the card animates: the cooling fans spin at their live
 
 ![cooling fans animation](screenshots/fans.gif)
 
-| Light | Dark (French) |
+| Light | Dark |
 |---|---|
 | ![card](screenshots/card.png) | ![card dark](screenshots/card-dark.png) |
 | ![mini card](screenshots/mini-card.png) | ![mini card dark](screenshots/mini-card-dark.png) |
 | ![mini card zoomed in](screenshots/mini-card-zoom.png) | ![mini card zoomed in dark](screenshots/mini-card-zoom-dark.png) |
+| ![Synology card](screenshots/card-synology.png) | ![Synology card dark](screenshots/card-synology-dark.png) |
+| ![QNAP card](screenshots/card-qnap.png) | ![QNAP card dark](screenshots/card-qnap-dark.png) |
+
+| Synology mini card | QNAP mini card |
+|---|---|
+| ![Synology mini card](screenshots/mini-card-synology.png) | ![QNAP mini card](screenshots/mini-card-qnap.png) |
 
 ## How it works
 
-Every entity created by the UGREEN NAS integration carries a `UGNAS_device_id` attribute. The cards use it to gather the entities of a NAS, then recognize each sensor from the end of its entity id (`cpu_usage`, `pool_1_volume_1_used_size_raw`, `pool_2_disk_1_temperature`…). Entity ids de-duplicated by Home Assistant (for example `sensor.ugreen_nas_cpu_usage_2`) are supported, and so are renamed devices.
+**UGREEN NAS**: every entity created by the integration carries a `UGNAS_device_id` attribute. The cards use it to gather the entities of a NAS, then recognize each sensor from the end of its entity id (`cpu_usage`, `pool_1_volume_1_used_size_raw`, `pool_2_disk_1_temperature`…). Entity ids de-duplicated by Home Assistant (for example `sensor.ugreen_nas_cpu_usage_2`) are supported, and so are renamed devices. Volume sizes are read from the `*_raw` sensors (bytes) so that the used space is exact whatever the unit chosen by the integration.
 
-Volume sizes are read from the `*_raw` sensors (bytes) so that the used space is exact whatever the unit chosen by the integration.
+**Synology DSM** and **QNAP**: the cards find the entities of these core integrations through the entity registry and recognize each sensor by its `translation_key`, so discovery does not depend on the language of your install or on renamed entities. Synology volumes and disks are child devices of the NAS in the device registry: their labels and disk models come from there, and the security binary sensor feeds the status pill. QNAP keeps everything on one device: volumes and drives are told apart by the identifier the integration inserts in the entity names (for example `DataVol1` or `0:1`).
+
+Some useful sensors are disabled by default by these integrations — on QNAP, drive temperatures, SMART statuses and volume used space; on Synology, total volume sizes. Enable them in **Settings → Devices & services → entities** to fill the matching sections of the card (missing sizes are completed from the used percentage when possible).
 
 Thresholds:
 

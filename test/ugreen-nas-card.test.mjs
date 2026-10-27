@@ -257,6 +257,127 @@ test("the NAS picture follows the model, the image option overrides it", () => {
   assert.equal(decodeURIComponent(nasPicture("DXP8800 Plus", "DXP2800")).split("data:image/svg+xml,")[1], nasSvg("DXP8800 Plus"));
 });
 
+test("Synology and QNAP models map to their own towers and rackmounts", () => {
+  const { nasSvg } = load("ugreen-nas-card.js", ["nasSvg"]);
+  const bays = (svg) => (svg.match(/fill="#43c463"/g) || []).length;
+  const rack = (svg) => / 72"/.test(svg.split(">")[0]); // rackmount viewBox is 62 + 10 high
+  // Synology: the family decides the bay count, the leading digit alone would be wrong.
+  for (const [model, n] of [["DS224+", 2], ["DS423+", 4], ["DS723+", 2], ["DS923+", 4], ["DS925+", 4], ["DS1522+", 5], ["DS1621+", 6], ["DS1821+", 8]]) {
+    const svg = nasSvg(model);
+    assert.equal(bays(svg), n, model);
+    assert.match(svg, /#101113/, model); // black Synology front
+    assert.equal(rack(svg), false, model);
+  }
+  for (const [model, n] of [["RS822+", 4], ["RS1221+", 8]]) {
+    assert.equal(rack(nasSvg(model)), true, model);
+    assert.equal(bays(nasSvg(model)), n, model);
+  }
+  // QNAP: the digits before the last two are the bay count; models ending in U are rackmounts.
+  for (const [model, n] of [["TS-233", 2], ["TS-264", 2], ["TS-464", 4], ["TS-664", 6], ["TS-873A", 8], ["TVS-h674", 6], ["HS-264", 2]]) {
+    const svg = nasSvg(model);
+    assert.equal(bays(svg), n, model);
+    assert.match(svg, /#c8a46a/, model); // copper strip
+    assert.equal(rack(svg), false, model);
+  }
+  assert.equal(rack(nasSvg("TS-873AeU")), true);
+  assert.equal(bays(nasSvg("TS-873AeU")), 8);
+  // An unrecognized model string still follows the discovered brand.
+  assert.match(nasSvg("", "synology"), /#101113/);
+  assert.match(nasSvg("", "qnap"), /#c8a46a/);
+});
+
+// Registry integrations: a hass carrying the mock states, entity registry and device registry.
+const registryHass = async (brand) => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  return { ...mocks[brand], language: "en" };
+};
+
+test("Synology DSM discovery: scalars, security status, volumes and disks from the device registry", async () => {
+  const hass = await registryHass("synology");
+  const nas = discover(hass, "");
+  assert.equal(nas.brand, "synology");
+  assert.equal(nas.nasId, "syno_nas");
+  assert.deepEqual({ ...nas.info }, { name: "diskstation", model: "DS923+", version: "DSM 7.2.2-72806 Update 3" });
+  assert.equal(nas.scalars.cpu_usage, "sensor.diskstation_cpu_utilization_total");
+  assert.equal(nas.scalars.ram_usage, "sensor.diskstation_memory_usage_real");
+  assert.equal(nas.scalars.sys_temp, "sensor.diskstation_temperature");
+  assert.equal(nas.scalars.lan_down, "sensor.diskstation_download_throughput");
+  assert.equal(nas.scalars.server_status, "binary_sensor.diskstation_security_status");
+  assert.equal(nas.scalars.boot, "sensor.diskstation_last_boot"); // no translation_key, found by device_class
+  const vols = Object.values(nas.pools[1].volumes);
+  assert.equal(vols.length, 1);
+  assert.equal(vols[0].labelText, "Volume 1");
+  const u = volumeUsage(hass, vols[0]);
+  assert.equal(u.used, 6.62 * 1024 ** 4);
+  assert.equal(Math.round(u.pct * 10) / 10, 63.1); // the direct percentage completes the missing total
+  const disks = Object.values(nas.pools[1].disks);
+  assert.equal(disks.length, 4);
+  assert.equal(disks[0].labelText, "Drive 1");
+  assert.equal(disks[0].modelText, "WD40EFPX-68C6CN0");
+  assert.equal(disks[0].temperature, "sensor.diskstation_drive_1_temperature");
+});
+
+test("QNAP discovery: one device, volumes and drives joined on the insert of their names", async () => {
+  const hass = await registryHass("qnap");
+  const nas = discover(hass, "");
+  assert.equal(nas.brand, "qnap");
+  assert.equal(nas.scalars.cpu_temp, "sensor.qnap_nas_cpu_temperature");
+  assert.equal(nas.scalars.sys_temp, "sensor.qnap_nas_system_temperature");
+  assert.equal(nas.scalars.server_status, "sensor.qnap_nas_status");
+  assert.equal(nas.scalars.lan_down, "sensor.qnap_nas_eth0_download");
+  assert.equal(nas.scalars.boot, "sensor.qnap_nas_uptime");
+  const vols = nas.pools[1].volumes;
+  assert.deepEqual(Object.keys(vols), ["DataVol1"]);
+  assert.equal(vols.DataVol1.labelText, "DataVol1");
+  assert.equal(vols.DataVol1.used_size, "sensor.qnap_nas_used_space_datavol1");
+  const u = volumeUsage(hass, vols.DataVol1);
+  assert.equal(Math.round(u.pct * 10) / 10, 71.2);
+  assert.ok(u.total > u.used); // total completed from the percentage
+  const disks = nas.pools[1].disks;
+  assert.deepEqual(Object.keys(disks), ["0:1", "0:2"]);
+  assert.equal(disks["0:1"].temperature, "sensor.qnap_nas_drive_0_1_temperature");
+  assert.equal(disks["0:1"].status, "sensor.qnap_nas_drive_0_1_status");
+});
+
+test("both new brands render without warnings; Synology translates its safety binary status", async () => {
+  for (const brand of ["synology", "qnap"]) {
+    const hass = await registryHass(brand);
+    for (const Cls of [UgreenNasCard, UgreenNasMiniCard]) {
+      const el = new Cls();
+      el._config = {};
+      el._hass = hass;
+      const html = el._render();
+      assert.doesNotMatch(html, /class="warning"/, brand);
+      assert.match(html, /class="chip clickable ok"|data-key="status"/, brand);
+    }
+  }
+  const el = new UgreenNasCard();
+  el._hass = { states: {}, language: "en" };
+  el._config = {};
+  assert.equal(el._statusText({ state: "off" }, "synology"), "Normal");
+  assert.equal(el._statusText({ state: "on" }, "synology"), "Warning");
+  assert.equal(el._statusText({ state: "good" }, "qnap"), "Normal");
+});
+
+test("a configured nas picks its own integration, the UGREEN NAS keeps priority by default", async () => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  const hass = {
+    states: { ...mocks.ugreen.states, ...mocks.synology.states },
+    entities: { ...Object.fromEntries(Object.keys(mocks.ugreen.states).map((id) => [id, { platform: "ugreen" }])), ...mocks.synology.entities },
+    devices: mocks.synology.devices,
+    language: "en",
+  };
+  assert.equal(discover(hass, "").brand, "ugreen");
+  assert.equal(discover(hass, "syno_nas").brand, "synology");
+  assert.equal(discover(hass, "ugreen_nas").brand, "ugreen");
+});
+
+test("the cards register under the custom:nas-card and custom:nas-mini-card aliases", () => {
+  const { customElements } = load("ugreen-nas-card.js", ["customElements"]);
+  assert.ok(customElements.get("nas-card").prototype instanceof customElements.get("ugreen-nas-card"));
+  assert.ok(customElements.get("nas-mini-card").prototype instanceof customElements.get("ugreen-nas-mini-card"));
+});
+
 test("the status pill sits in the header row; the compact mini card subtitle shows the model only", async () => {
   const el = await zoomCard();
   // Compact view: model only (the UGOS version would be cut off by the NAS picture).
