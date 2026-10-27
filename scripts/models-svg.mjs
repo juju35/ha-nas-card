@@ -42,6 +42,6 @@ ROWS.forEach(([brand, models], r) => {
   width = Math.max(width, x - GAP);
 });
 
-const out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${ROWS.length * ROW}"><style>text{font:12px -apple-system,Segoe UI,Roboto,sans-serif;fill:#8b949e}text.brand{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px}</style>${items}</svg>`;
+const out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${ROWS.length * ROW}"><style>text{font:12px -apple-system,Segoe UI,Roboto,sans-serif;fill:#8b949e}text.brand{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px}</style>${items}</svg>\n`;
 writeFileSync(fileURLToPath(new URL("../images/models.svg", import.meta.url)), out);
 console.log(`images/models.svg (${(out.length / 1024).toFixed(1)} KB)`);
