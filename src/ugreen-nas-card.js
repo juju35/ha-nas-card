@@ -3,8 +3,9 @@
  * https://github.com/juju35/ha-ugreen-nas-card
  *
  * Lovelace cards for the UGREEN NAS integration
- * (https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas).
- * Entities are discovered automatically through their UGNAS_device_id attribute.
+ * (https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), the Synology DSM integration and
+ * the QNAP integration. UGREEN entities are discovered through their UGNAS_device_id attribute;
+ * Synology and QNAP entities through the entity and device registries.
  */
 
 const VERSION = "__VERSION__";
@@ -43,15 +44,16 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "No UGREEN NAS entities found. Is the UGREEN NAS integration installed?",
+    no_nas: "No NAS entities found. Is a supported integration (UGREEN NAS, Synology DSM or QNAP) installed?",
     unknown_nas: "NAS not found",
     status_ok: "Normal",
+    status_problem: "Warning",
     cpu_fan: "CPU fan",
     device_fan: "Fan",
     zoom_in: "Show the full card",
     zoom_out: "Back to the compact view",
     // Editor
-    nas: "NAS (UGREEN NAS integration device)",
+    nas: "NAS (UGREEN, Synology DSM or QNAP device)",
     title: "Title (optional, defaults to the NAS name)",
     show_image: "Show NAS picture",
     image: "NAS picture (model or image URL)",
@@ -85,14 +87,15 @@ const STRINGS = {
     hours: "h",
     days: "j",
     minutes: "min",
-    no_nas: "Aucune entité UGREEN NAS trouvée. L'intégration UGREEN NAS est-elle installée ?",
+    no_nas: "Aucune entité NAS trouvée. Une intégration prise en charge (UGREEN NAS, Synology DSM ou QNAP) est-elle installée ?",
     unknown_nas: "NAS introuvable",
     status_ok: "Normal",
+    status_problem: "Alerte",
     cpu_fan: "Ventilateur CPU",
     device_fan: "Ventilateur",
     zoom_in: "Afficher la carte complète",
     zoom_out: "Revenir à la vue compacte",
-    nas: "NAS (appareil de l'intégration UGREEN NAS)",
+    nas: "NAS (appareil UGREEN, Synology DSM ou QNAP)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
     image: "Illustration du NAS (modèle ou URL d'image)",
@@ -187,27 +190,63 @@ const fmtUptime = (sec, hass, config) => {
   return `${m} ${t(hass, config, "minutes")}`;
 };
 
+// Age in seconds of a boot timestamp sensor (Synology "Last boot", QNAP "Uptime").
+const bootAge = (s) => {
+  const ts = s && Date.parse(s.state);
+  return Number.isFinite(ts) ? Math.max(0, Math.round((Date.now() - ts) / 1000)) : null;
+};
+
+// OS line of the subtitle: UGOS comes from its own sensor, the Synology firmware string already
+// spells out DSM, and QNAP firmware starts with "h" on QuTS hero.
+const osVersion = (v, brand) => (!v ? null : brand === "qnap" ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}` : v);
+
 const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.state));
+
+// Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found).
+const statusOk = (nas, s) => (nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
 
 const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
 
 const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
 
-// NAS pictures: drawn illustrations, one per form factor, picked from the model reported by the integration.
-// Tower: control strip on the left + one tray per bay; the DH series is white, the DXP series aluminium.
-const towerSvg = (bays, white) => {
+// NAS pictures: drawn illustrations, one per brand and form factor, picked from the model reported
+// by the integration. Tower: control strip on the left + one tray per bay; each brand keeps its own
+// colors (DXP aluminium, DH white, Synology black, QNAP graphite with a copper strip).
+const PALETTES = {
+  dxp: { top: "#c9ccd0", bottom: "#7d8288", front: "#2a2d31", tray: "#3a3e44", handle: "#4c5158", mark: "#c9ccd0" },
+  dh: { top: "#f2f2f0", bottom: "#d9d9d6", front: "#e6e6e3", tray: "#d0d0cc", handle: "#b5b5b0", mark: "#888" },
+  synology: { top: "#45484c", bottom: "#17181a", front: "#101113", tray: "#1e2023", handle: "#34373b", mark: "#6b6f74" },
+  qnap: { top: "#3c3f44", bottom: "#1c1e21", front: "#17181b", tray: "#24262a", handle: "#3a3d42", mark: "#8d9196", accent: "#c8a46a" },
+};
+const towerSvg = (bays, p) => {
   const tw = 34, gap = 6, strip = 46, pad = 14, h = 150;
   const w = pad + strip + bays * tw + (bays - 1) * gap + pad;
-  const [top, bottom, front, tray, handle, mark] = white
-    ? ["#f2f2f0", "#d9d9d6", "#e6e6e3", "#d0d0cc", "#b5b5b0", "#888"]
-    : ["#c9ccd0", "#7d8288", "#2a2d31", "#3a3e44", "#4c5158", "#c9ccd0"];
+  const { top, bottom, front, tray, handle, mark, accent } = p;
   const c = pad + strip / 2 - 2;
   let trays = "";
   for (let i = 0; i < bays; i++) {
     const x = pad + strip + i * (tw + gap);
     trays += `<rect x="${x}" y="22" width="${tw}" height="${h - 44}" rx="3" fill="${tray}"/><rect x="${x + tw / 2 - 5}" y="${h - 46}" width="10" height="16" rx="2" fill="${handle}"/><circle cx="${x + tw / 2}" cy="32" r="1.6" fill="#43c463"/>`;
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${front}"/><circle cx="${c}" cy="34" r="7" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="26" width="2" height="7" fill="${mark}"/><rect x="${c - 6}" y="56" width="12" height="5" rx="1.5" fill="${handle}"/><rect x="${c - 6}" y="${h - 38}" width="12" height="7" rx="1.5" fill="${handle}"/>${trays}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/><rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${front}"/>${
+    accent ? `<rect x="${pad - 3}" y="16" width="3.5" height="${h - 32}" rx="1.75" fill="${accent}"/>` : ""
+  }<circle cx="${c}" cy="34" r="7" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="26" width="2" height="7" fill="${mark}"/><rect x="${c - 6}" y="56" width="12" height="5" rx="1.5" fill="${handle}"/><rect x="${c - 6}" y="${h - 38}" width="12" height="7" rx="1.5" fill="${handle}"/>${trays}</svg>`;
+};
+// Rackmount models (Synology RS, QNAP models ending in U): short and wide, with rack ears.
+const rackSvg = (bays, p) => {
+  const n = Math.max(2, Math.min(bays, 12)), tw = 16, gap = 4, pad = 10, ear = 13, right = 42, h = 62;
+  const w = ear + pad + n * tw + (n - 1) * gap + pad + right + ear;
+  const { top, bottom, front, tray, handle, mark, accent } = p;
+  const screw = (x, y) => `<circle cx="${x}" cy="${y}" r="2.4" fill="${tray}"/>`;
+  let trays = "";
+  for (let i = 0; i < n; i++) {
+    const x = ear + pad + i * (tw + gap);
+    trays += `<rect x="${x}" y="14" width="${tw}" height="${h - 28}" rx="2.5" fill="${tray}"/><rect x="${x + tw / 2 - 4}" y="${h - 24}" width="8" height="6" rx="1.5" fill="${handle}"/><circle cx="${x + tw / 2}" cy="20" r="1.4" fill="#43c463"/>`;
+  }
+  const c = w - ear - right / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h + 10}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 4}" rx="${w / 2 - 8}" ry="3.5" opacity=".25"/><rect x="0" y="6" width="${ear}" height="${h - 12}" rx="2" fill="${bottom}"/><rect x="${w - ear}" y="6" width="${ear}" height="${h - 12}" rx="2" fill="${bottom}"/>${screw(ear / 2, 14)}${screw(ear / 2, h - 14)}${screw(w - ear / 2, 14)}${screw(w - ear / 2, h - 14)}<rect x="${ear}" width="${w - 2 * ear}" height="${h}" rx="6" fill="url(#b)"/><rect x="${ear + 5}" y="6" width="${w - 2 * ear - 10}" height="${h - 12}" rx="4" fill="${front}"/>${
+    accent ? `<rect x="${w - ear - right - 3}" y="12" width="3" height="${h - 24}" rx="1.5" fill="${accent}"/>` : ""
+  }${trays}<circle cx="${c}" cy="${h / 2 - 8}" r="6" fill="none" stroke="${mark}" stroke-width="2"/><rect x="${c - 1}" y="${h / 2 - 15}" width="2" height="6" fill="${mark}"/><rect x="${c - 6}" y="${h / 2 + 8}" width="12" height="5" rx="1.5" fill="${handle}"/></svg>`;
 };
 // Flat all-flash NAS (DXP480T / DXP480T Plus) in parallel projection, like the product photos: each face is drawn
 // flat in its own coordinates (front: u across, v down; side and top: z in depth) and placed with the same axes,
@@ -239,23 +278,62 @@ const flatSvg = () => {
 <rect x="132" y="51" width="30" height="20" rx="5" fill="#26282c" stroke="#3a3d42" stroke-width="1.2"/>\
 <circle cx="147" cy="61" r="4.3" fill="none" stroke="#f2f2f2" stroke-width="1.3"/></g></svg>`;
 };
-// Models offered in the editor; any other model string is matched by its family (DXP<bays>800, DH<bays>300, 480T).
-const NAS_MODELS = ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"];
-const nasSvg = (model) => {
+// Models offered in the editor; any other model string is matched by its family and bay count
+// (DXP<bays>800, DH<bays>300, 480T, Synology DS/RS naming, QNAP TS/TVS/HS naming).
+const NAS_MODELS = {
+  ugreen: ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"],
+  synology: ["DS224+", "DS423+", "DS723+", "DS923+", "DS925+", "DS1522+", "DS1621+", "DS1821+", "RS822+", "RS1221+"],
+  qnap: ["TS-233", "TS-264", "TS-464", "TS-664", "TS-873A", "TVS-h674", "HS-264", "TS-873AeU"],
+};
+// Bay counts from the model names. Synology: the leading digits are not always the bay count
+// (DS723+ has 2 bays, DS923+ has 4, DS1522+ has 5), so known families are mapped.
+const synoBays = (m) => {
+  const d = m.match(/^(?:DS|DVA|FS)(\d{3,4})/);
+  if (!d) return 4;
+  const n = d[1];
+  if (n.length === 4) return { 15: 5, 16: 6, 18: 8, 24: 12, 36: 12 }[n.slice(0, 2)] ?? 6;
+  return { 1: 1, 2: 2, 3: 2, 4: 4, 6: 6, 7: 2, 9: 4 }[n[0]] ?? 4;
+};
+const synoRackBays = (m) => {
+  const d = m.match(/^RS(\d{3,4})/);
+  return d && d[1].length === 4 ? ({ 12: 8, 13: 8 }[d[1].slice(0, 2)] ?? 12) : 4;
+};
+// QNAP: the digits before the last two are the bay count (TS-233 → 2, TS-873A → 8, TS-1264U → 12).
+const qnapBays = (m) => {
+  const d = m.match(/(\d{3,4})/);
+  return d ? Math.min(d[1].length === 4 ? +d[1].slice(0, 2) : +d[1][0] || 4, 12) : 4;
+};
+const brandOfModel = (m) =>
+  /^(DXP|DH)\d/.test(m) ? "ugreen" : /^(DS|RS|FS|SA|DVA)\d/.test(m) ? "synology" : /^(TS|TVS|TBS|HS|TR)-?\w*\d/.test(m) ? "qnap" : null;
+const nasSvg = (model, brand) => {
   const m = String(model || "").toUpperCase().replace(/\s+/g, "");
+  const b = brandOfModel(m) || brand || "ugreen";
+  if (b === "synology") return /^RS/.test(m) ? rackSvg(synoRackBays(m), PALETTES.synology) : towerSvg(synoBays(m), PALETTES.synology);
+  if (b === "qnap") return /U(-RP)?$/.test(m) ? rackSvg(qnapBays(m), PALETTES.qnap) : towerSvg(qnapBays(m), PALETTES.qnap);
   if (/480T/.test(m)) return flatSvg();
   const dh = m.match(/^DH(\d)\d{3}/);
-  if (dh) return towerSvg(+dh[1], true);
+  if (dh) return towerSvg(+dh[1], PALETTES.dh);
   const dxp = m.match(/^DXP(\d)\d{3}/);
-  return towerSvg(dxp ? +dxp[1] : 4, false);
+  return towerSvg(dxp ? +dxp[1] : 4, PALETTES.dxp);
 };
-// `image` option: a URL is used as is, anything else is a model name; by default the NAS model sensor decides.
-const nasPicture = (image, model) =>
-  /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model))}`;
+// `image` option: a URL is used as is, anything else is a model name; by default the model reported
+// by the integration decides, and the discovered brand backs up an unrecognized model string.
+const nasPicture = (image, model, brand) =>
+  /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model, brand))}`;
 
+// Brand logo next to the title. The UGREEN mark stays embedded; the Synology and QNAP marks load
+// from the Home Assistant brand images CDN (the one the HA interface itself uses for integration
+// logos). Both marks are grayscale, so dark mode simply inverts them.
+const BRAND_DOMAINS = { synology: "synology_dsm", qnap: "qnap" };
+const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
+const logo = (brand, dark) => {
+  if (BRAND_DOMAINS[brand])
+    return `<img class="logo brand${dark ? " inverted" : ""}" src="https://brands.home-assistant.io/${BRAND_DOMAINS[brand]}/icon.png" alt="${BRAND_NAMES[brand]}">`;
+  return ugreenLogo(dark);
+};
 // UGREEN logo. The bottom of the gradient is lightened in dark mode, the original
 // near-black end would blend into the card background.
-const logo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" role="img" aria-label="UGREEN">
+const ugreenLogo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" role="img" aria-label="UGREEN">
   <defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="${dark ? "#0b8f5c" : "#001509"}"/>
   </linearGradient></defs>
@@ -298,14 +376,21 @@ const RE_DISK = new RegExp(
 
 const _cache = new Map();
 
-/** List the UGNAS_device_id values present in hass. */
+/** List the NAS of every supported integration: UGREEN (UGNAS_device_id values) first, then the
+ * NAS devices of the registry integrations (Synology DSM, QNAP). */
 const listNas = (hass) => {
   const ids = new Map();
   for (const s of Object.values(hass.states)) {
     const id = s.attributes?.UGNAS_device_id;
     if (id && !ids.has(id)) ids.set(id, s.attributes.UGNAS_global_id || id);
   }
-  return [...ids.entries()].map(([value, label]) => ({ value, label }));
+  const list = [...ids.entries()].map(([value, label]) => ({ value, label }));
+  for (const brand of Object.keys(REGISTRY_PLATFORMS))
+    for (const rootId of registryRoots(hass, brand).keys()) {
+      const d = hass.devices[rootId];
+      list.push({ value: rootId, label: d.name_by_user || d.name || rootId });
+    }
+  return list;
 };
 
 // Candidate entity ids: the entities of the integration in the entity registry, cached on the registry
@@ -333,23 +418,20 @@ const ugnasIds = (hass) => {
 };
 
 /**
- * Map the entities of one NAS to a structured object of entity ids. The result is cached on the list
- * of UGREEN NAS entity ids that currently carry the attribute, so the regex matching only runs again
- * when that list changes. An empty result (no NAS found) is not cached.
+ * Map the entities of one UGREEN NAS to a structured object of entity ids. The result is cached on
+ * the list of UGREEN NAS entity ids that currently carry the attribute, so the regex matching only
+ * runs again when that list changes. An empty result (no NAS found) is not cached.
  */
-const discover = (hass, nasId) => {
+const discoverUgreen = (hass, nasId) => {
   const all = ugnasIds(hass);
   const key = `${nasId || ""}\n${all.join(",")}`;
   if (_cache.has(key)) return _cache.get(key);
   if (_cache.size > 8) _cache.clear();
 
-  const nas = { scalars: {}, fans: {}, pools: {}, nasId: null };
+  const nas = { brand: "ugreen", scalars: {}, fans: {}, pools: {}, nasId: null, info: null };
   const entityIds = all.filter((id) => !nasId || hass.states[id].attributes.UGNAS_device_id === nasId);
   // Prefer the first NAS when none is configured.
   const first = entityIds.length ? hass.states[entityIds[0]].attributes.UGNAS_device_id : null;
-  const set = (obj, k, id) => {
-    if (!(k in obj)) obj[k] = id;
-  };
 
   for (const id of entityIds) {
     const a = hass.states[id].attributes;
@@ -381,15 +463,204 @@ const discover = (hass, nasId) => {
   return nas;
 };
 
+// ---------------------------------------------------------------------------
+// Entity discovery — registry integrations (Synology DSM, QNAP)
+// ---------------------------------------------------------------------------
+//
+// These integrations tag no attribute on their states: their entities are found through the entity
+// registry (platform), typed by their language-independent translation_key, and grouped per NAS
+// through the device registry. Synology attaches volumes and disks to child devices of the NAS;
+// QNAP keeps everything on one device and tells volumes and drives apart in the entity names.
+
+const REGISTRY_PLATFORMS = { synology: "synology_dsm", qnap: "qnap" };
+
+// NAS-level translation_key → scalar slot.
+const SYNO_SCALARS = {
+  cpu_total_load: "cpu_usage",
+  memory_real_usage: "ram_usage",
+  memory_total_real: "ram_total",
+  memory_available_real: "ram_available",
+  temperature: "sys_temp",
+  network_up: "lan_up",
+  network_down: "lan_down",
+};
+const QNAP_SCALARS = {
+  cpu_usage: "cpu_usage",
+  cpu_temp: "cpu_temp",
+  system_temp: "sys_temp",
+  memory_percent_used: "ram_usage",
+  memory_used: "ram_used",
+  memory_size: "ram_total",
+  status: "server_status",
+  uptime: "boot",
+};
+// Volume and disk translation_key → per-device slot (Synology prefixes volume_/disk_, QNAP volume_/drive_).
+const VOLUME_KEYS = {
+  volume_percentage_used: "used_pct",
+  volume_size_used: "used_size",
+  volume_size_total: "total_size",
+  volume_size_free: "available_size",
+  volume_status: "status",
+};
+const DISK_KEYS = { disk_temp: "temperature", disk_status: "status", drive_temp: "temperature", drive_smart_status: "status" };
+
+// Registry lookups are cached on the registry objects, which Home Assistant replaces whenever an
+// entity or a device changes (the states are read again on every discovery through the mapped ids).
+let _registries = { entities: null, devices: null, cache: new Map() };
+const registryCache = (hass) => {
+  if (_registries.entities !== hass.entities || _registries.devices !== hass.devices)
+    _registries = { entities: hass.entities, devices: hass.devices, cache: new Map() };
+  return _registries.cache;
+};
+
+const rootDevice = (hass, id) => {
+  let d = hass.devices?.[id];
+  for (let i = 0; d?.via_device_id && hass.devices[d.via_device_id] && i < 4; i++) d = hass.devices[d.via_device_id];
+  return d;
+};
+
+/** The NAS of one registry integration: root device id → sorted entity ids (NAS and child devices). */
+const registryRoots = (hass, brand) => {
+  const cache = registryCache(hass);
+  const key = `roots\n${brand}`;
+  if (cache.has(key)) return cache.get(key);
+  const byRoot = new Map();
+  if (hass.entities && hass.devices) {
+    for (const [id, e] of Object.entries(hass.entities)) {
+      if (e?.platform !== REGISTRY_PLATFORMS[brand] || !e.device_id) continue;
+      const root = rootDevice(hass, e.device_id);
+      if (!root) continue;
+      if (!byRoot.has(root.id)) byRoot.set(root.id, []);
+      byRoot.get(root.id).push(id);
+    }
+    for (const ids of byRoot.values()) ids.sort();
+  }
+  cache.set(key, byRoot);
+  return byRoot;
+};
+
+// The specific volume or drive of a QNAP entity only shows in its name, where the integration
+// inserts it ({monitor_device}): the words an entity does not share with the others of its
+// translation_key group are that insert, whatever the language.
+const monitorOf = (names, i) => {
+  if (names.length < 2) return "";
+  const words = names.map((n) => String(n || "").split(/\s+/));
+  const w = words[i];
+  let a = 0;
+  while (a < w.length && words.every((o) => o[a] === w[a])) a++;
+  let b = 0;
+  while (b < w.length - a && words.every((o) => o[o.length - 1 - b] === w[w.length - 1 - b])) b++;
+  return w.slice(a, w.length - b).join(" ");
+};
+// Trailing parenthesized insert of an entity name (QNAP volume names), doubling as the label.
+const parenOf = (name) => (String(name || "").match(/\(([^()]*)\)[^()]*$/) || [])[1] ?? null;
+// Trailing parenthesized part of a device name ("hostname (Volume 1)" → "Volume 1").
+const deviceLabel = (name) => (String(name || "").match(/\(([^()]*)\)\s*$/) || [])[1];
+
+const set = (obj, k, id) => {
+  if (!(k in obj)) obj[k] = id;
+};
+
+/** Map the entities of one Synology DSM or QNAP NAS to the structure the cards render. */
+const discoverRegistry = (hass, brand, nasId) => {
+  const cache = registryCache(hass);
+  const key = `${brand}\n${nasId || ""}`;
+  if (cache.has(key)) return cache.get(key);
+
+  const byRoot = registryRoots(hass, brand);
+  const rootId = nasId ? (byRoot.has(nasId) ? nasId : null) : ([...byRoot.keys()].sort()[0] ?? null);
+  const nas = { brand, nasId: rootId, scalars: {}, fans: {}, pools: {}, info: null };
+  if (!rootId) {
+    cache.set(key, nas);
+    return nas;
+  }
+  const dev = hass.devices[rootId];
+  nas.info = { name: dev.name_by_user || dev.name, model: dev.model, version: dev.sw_version };
+  const SCALARS_BY_KEY = brand === "synology" ? SYNO_SCALARS : QNAP_SCALARS;
+  const pool = (nas.pools[1] = { volumes: {}, disks: {} });
+  const groups = {};
+
+  for (const id of byRoot.get(rootId)) {
+    const e = hass.entities[id];
+    const tk = e.translation_key;
+    if (brand === "synology" && e.device_id !== rootId) {
+      // Child device of the NAS: a volume or a disk, labelled and (for disks) modelled by its device.
+      const d = hass.devices[e.device_id];
+      if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: deviceLabel(d?.name) }), VOLUME_KEYS[tk], id);
+      else if (tk in DISK_KEYS)
+        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name), modelText: d?.model }), DISK_KEYS[tk], id);
+    } else if (brand === "synology" && tk === "status" && id.startsWith("binary_sensor.")) {
+      set(nas.scalars, "server_status", id); // Security status: a safety binary sensor, on = issue found.
+    } else if (tk in SCALARS_BY_KEY) {
+      set(nas.scalars, SCALARS_BY_KEY[tk], id);
+    } else if (brand === "qnap" && (tk in VOLUME_KEYS || tk in DISK_KEYS || tk === "network_rx" || tk === "network_tx")) {
+      (groups[tk] ??= []).push(id);
+    } else if (!tk && id.startsWith("sensor.") && hass.states[id]?.attributes?.device_class === "timestamp") {
+      set(nas.scalars, "boot", id); // Synology "Last boot" carries no translation_key.
+    }
+  }
+
+  if (brand === "qnap") {
+    // Network: the first interface (sorted entity ids) feeds the two tiles.
+    if (groups.network_rx) set(nas.scalars, "lan_down", groups.network_rx[0]);
+    if (groups.network_tx) set(nas.scalars, "lan_up", groups.network_tx[0]);
+    // Volumes and drives: the entities of one volume or drive are joined on the monitor insert of
+    // their names; the insert in parentheses (volumes) doubles as the label.
+    const nameOf = (id) => hass.states[id]?.attributes?.friendly_name || id.split(".")[1];
+    const join = (tks, into) => {
+      for (const tk of tks) {
+        const ids = groups[tk] || [];
+        const names = ids.map(nameOf);
+        ids.forEach((id, i) => {
+          const label = parenOf(names[i]);
+          const mon = label ?? monitorOf(names, i);
+          const slot = (into[mon || "1"] ??= {});
+          if (label && !slot.labelText) slot.labelText = label;
+          set(slot, (tk in VOLUME_KEYS ? VOLUME_KEYS : DISK_KEYS)[tk], id);
+        });
+      }
+    };
+    join(["volume_percentage_used", "volume_size_used", "volume_size_free"], pool.volumes);
+    join(["drive_temp", "drive_smart_status"], pool.disks);
+    // "Volume size" carries no insert in its name: it is only safe with a single volume.
+    const volumes = Object.values(pool.volumes);
+    if (groups.volume_size_total?.length === 1 && volumes.length === 1) set(volumes[0], "total_size", groups.volume_size_total[0]);
+  }
+  cache.set(key, nas);
+  return nas;
+};
+
+/** Map the entities of one NAS, whatever its integration: the UGREEN integration first (its
+ * entities carry the attribute), then the registry integrations; a configured nas picks
+ * whichever integration knows it. */
+const discover = (hass, nasId) => {
+  const ugreen = discoverUgreen(hass, nasId);
+  if (ugreen.nasId) return ugreen;
+  for (const brand of Object.keys(REGISTRY_PLATFORMS)) {
+    const nas = discoverRegistry(hass, brand, nasId);
+    if (nas.nasId) return nas;
+  }
+  return ugreen;
+};
+
 /** Compute used/total bytes of a volume from the raw sensors (fallback to the human ones). */
 const volumeUsage = (hass, vol) => {
   const st = (k) => vol[k] && hass.states[vol[k]];
-  const total = toBytes(st("total_size_raw")) ?? toBytes(st("total_size"));
+  let total = toBytes(st("total_size_raw")) ?? toBytes(st("total_size"));
   let used = toBytes(st("used_size_raw")) ?? toBytes(st("used_size"));
-  const avail = toBytes(st("available_size_raw"));
+  const avail = toBytes(st("available_size_raw")) ?? toBytes(st("available_size"));
   if (used === null && total !== null && avail !== null) used = total - avail;
+  if (total === null && used !== null && avail !== null) total = used + avail;
   // Unknown used space: no percentage (shown as "—"), rather than an empty bar at 0 %.
-  return { total, used, pct: total && used !== null ? Math.min(100, Math.max(0, (used / total) * 100)) : null };
+  let pct = total && used !== null ? Math.min(100, Math.max(0, (used / total) * 100)) : null;
+  // Synology and QNAP report the percentage directly: it completes whichever size is missing.
+  const direct = num(st("used_pct"));
+  if (pct === null && direct !== null) {
+    pct = Math.min(100, Math.max(0, direct));
+    if (used === null && total !== null) used = (total * pct) / 100;
+    else if (total === null && used !== null && pct > 0) total = (used * 100) / pct;
+  }
+  return { total, used, pct };
 };
 
 // Same values, compared by identity: used to skip a render when nothing the card shows has changed.
@@ -479,6 +750,8 @@ const BASE_STYLE = `
   .titles > .name, .titles > .sub { grid-column: 1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
+  .logo.brand { object-fit: contain; }
+  .logo.brand.inverted { filter: invert(1); }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; }
   /* Model and UGOS version on one line when they fit, else one per line: the "·" separator that starts a line
@@ -534,24 +807,34 @@ class UgreenNasBase extends HTMLElement {
     this._update();
   }
 
-  // Server status as shown: the integration's "Normal" goes through the translations, any other
-  // value is shown as reported.
-  _statusText(status) {
-    return /^normal$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
+  // Server status as shown: the healthy words of the integrations ("Normal", "good") go through
+  // the translations, any other value is shown as reported. The Synology safety binary sensor has
+  // no word at all: both of its states are translated.
+  _statusText(status, brand) {
+    if (brand === "synology") return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
+    return /^(normal|good|healthy|ok)$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
   }
 
   _t(key) {
     return t(this._hass, this._config, key);
   }
 
+  // The three gauge readings, shared by the full card and the mini card: CPU temperature when the
+  // integration reports one, system temperature otherwise.
+  _vitals(sc) {
+    const tempId = sc.cpu_temp || sc.sys_temp;
+    return { cpu: num(this._s(sc.cpu_usage)), ram: num(this._s(sc.ram_usage)), tempId, temp: num(this._s(tempId)) };
+  }
+
   _s(id) {
     return id ? this._hass.states[id] : undefined;
   }
 
-  // What the render depends on: language, dark mode and the states of the NAS entities.
+  // What the render depends on: language, dark mode, the registries (registry integrations are
+  // rediscovered when an entity or a device changes) and the states of the NAS entities.
   _signature() {
     const h = this._hass;
-    const sig = [h.language, h.locale?.language, h.themes?.darkMode];
+    const sig = [h.language, h.locale?.language, h.themes?.darkMode, h.entities, h.devices];
     const nas = discover(h, this._config.nas);
     sig.push(nas);
     if (!nas.nasId) return sig;
@@ -581,15 +864,16 @@ class UgreenNasBase extends HTMLElement {
     const sc = nas.scalars;
     const c = this._config;
     const status = this._s(sc.server_status);
-    const ok = isOk(status);
-    const name = c.title || this._s(sc.name)?.state || "UGREEN NAS";
-    const model = this._s(sc.model)?.state;
+    const ok = statusOk(nas, status);
+    const name = c.title || this._s(sc.name)?.state || nas.info?.name || `${BRAND_NAMES[nas.brand]} NAS`;
+    const model = this._s(sc.model)?.state || nas.info?.model;
     const version = this._s(sc.version)?.state;
-    // The compact mini card shares its header with the NAS picture: the model alone, the UGOS version zoomed in.
-    const sub = [model, version && !this._compactHeader() ? `UGOS ${version}` : null].filter(Boolean);
+    const os = version ? `UGOS ${version}` : osVersion(nas.info?.version, nas.brand);
+    // The compact mini card shares its header with the NAS picture: the model alone, the OS version zoomed in.
+    const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
     return `
       <div class="header">
-        ${logo(this._hass.themes?.darkMode)}
+        ${logo(nas.brand, this._hass.themes?.darkMode)}
         <div class="titles">
           <div class="name">${esc(name)}</div>
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
@@ -597,11 +881,11 @@ class UgreenNasBase extends HTMLElement {
             status
               ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
                   this._s(sc.system_message)?.state || ""
-                )}"><span class="dot"></span>${esc(this._statusText(status))}</span>`
+                )}"><span class="dot"></span>${esc(this._statusText(status, nas.brand))}</span>`
               : ""
           }
         </div>
-        ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model))}" alt="${esc(model || "NAS")}">` : ""}
+        ${c.show_image !== false ? `<img class="nas" src="${esc(nasPicture(c.image, model, nas.brand))}" alt="${esc(model || "NAS")}">` : ""}
         ${this._zoomButton()}
       </div>`;
   }
@@ -731,20 +1015,21 @@ class UgreenNasCard extends UgreenNasBase {
 
   _system(nas) {
     const sc = nas.scalars;
-    const cpu = num(this._s(sc.cpu_usage));
-    const ram = num(this._s(sc.ram_usage));
-    const temp = num(this._s(sc.cpu_temp));
-    const ramUsed = toBytes(this._s(sc.ram_used));
+    const { cpu, ram, tempId, temp } = this._vitals(sc);
     const ramTotal = toBytes(this._s(sc.ram_total));
+    const ramAvail = toBytes(this._s(sc.ram_available));
+    const ramUsed =
+      toBytes(this._s(sc.ram_used)) ??
+      (ramTotal !== null && ramAvail !== null ? ramTotal - ramAvail : ramTotal !== null && ram !== null ? (ramTotal * ram) / 100 : null);
     const ramLabel =
       ramUsed !== null && ramTotal !== null
         ? `${this._t("ram")} · ${fmtBytes(ramUsed).split(" ")[0]} / ${fmtBytes(ramTotal)}`
         : this._t("ram");
-    const runtime = num(this._s(sc.runtime));
+    const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const facts = [];
     if (runtime !== null)
       facts.push(
-        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.runtime}">${svgIcon(ICONS.timer)}${this._t("uptime")} ${fmtUptime(
+        `<span class="clickable" role="button" tabindex="0" data-entity="${sc.runtime || sc.boot}">${svgIcon(ICONS.timer)}${this._t("uptime")} ${fmtUptime(
           runtime,
           this._hass,
           this._config
@@ -757,8 +1042,8 @@ class UgreenNasCard extends UgreenNasBase {
         ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, level(cpu, 70, 90))}
         ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95))}
         ${this._gauge(
-          sc.cpu_temp,
-          `${this._t("temperature")} ${this._t("cpu")}`,
+          tempId,
+          sc.cpu_temp ? `${this._t("temperature")} ${this._t("cpu")}` : this._t("temperature"),
           ICONS.temp,
           temp,
           temp === null ? "—" : `${Math.round(temp)}°C`,
@@ -794,10 +1079,10 @@ class UgreenNasCard extends UgreenNasBase {
       for (const [vn, vol] of Object.entries(pool.volumes)) {
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
-        const label = this._s(vol.label)?.state || `Volume ${multi ? `${pn}-${vn}` : vn}`;
+        const label = this._s(vol.label)?.state || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
         const fs = this._s(vol.filesystem)?.state;
         const cls = level(u.pct, 80, 90);
-        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${pn}-${vn}" data-entity="${vol.used_size_raw || vol.used_size || ""}">
+        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${pn}-${vn}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
             <span class="dot ${isOk(status) ? "ok" : "crit"}"></span>
             <span class="grow">${esc(label)}</span>
@@ -825,9 +1110,9 @@ class UgreenNasCard extends UgreenNasBase {
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${pn}-${dn}" data-entity="${d.temperature || d.status || ""}">
-          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || `Disk ${dn}`)}</span>
+          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || d.labelText || `Disk ${dn}`)}</span>
             <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
-          <div class="model">${esc(this._s(d.model)?.state || "")}</div>
+          <div class="model">${esc(this._s(d.model)?.state || d.modelText || "")}</div>
           <div class="meta">
             <span class="temp ${level(temp, 60, 70)}">${temp === null ? "—" : `${Math.round(temp)}°C`}</span>
             <span class="muted">${size !== null ? fmtBytes(size) : ""}${
@@ -952,18 +1237,17 @@ class UgreenNasMiniCard extends UgreenNasCard {
     const c = this._config;
     const sc = nas.scalars;
     const status = this._s(sc.server_status);
-    const cpu = num(this._s(sc.cpu_usage));
-    const ram = num(this._s(sc.ram_usage));
-    const temp = num(this._s(sc.cpu_temp));
+    const { cpu, ram, tempId, temp } = this._vitals(sc);
     const rows = [];
     rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, level(cpu, 70, 90)));
     rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95)));
     rows.push(
-      this._metric(sc.cpu_temp, ICONS.temp, this._t("temperature"), temp, temp === null ? "—" : `${Math.round(temp)}°C`, level(temp, 75, 90))
+      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, temp === null ? "—" : `${Math.round(temp)}°C`, level(temp, 75, 90))
     );
     if (c.show_storage !== false) {
       let used = 0;
       let total = 0;
+      const pcts = [];
       for (const pool of Object.values(nas.pools))
         for (const vol of Object.values(pool.volumes)) {
           const u = volumeUsage(this._hass, vol);
@@ -971,18 +1255,18 @@ class UgreenNasMiniCard extends UgreenNasCard {
           if (u.total && u.used !== null) {
             total += u.total;
             used += u.used;
-          }
+          } else if (u.pct !== null) pcts.push(u.pct);
         }
-      if (total) {
-        const pct = (used / total) * 100;
+      // Sizes when they are known; the mean of the percentages when only those are (QNAP).
+      const pct = total ? (used / total) * 100 : pcts.length ? pcts.reduce((a, b) => a + b, 0) / pcts.length : null;
+      if (pct !== null)
         rows.push(this._metric("", ICONS.database, this._t("storage"), pct, `${pct.toFixed(0)}%`, level(pct, 80, 90)));
-      }
     }
     const foot = [];
     if (status)
       foot.push(
-        `<span class="clickable ${isOk(status) ? "ok" : "warn"}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
-          this._statusText(status)
+        `<span class="clickable ${statusOk(nas, status) ? "ok" : "warn"}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
+          this._statusText(status, nas.brand)
         )}</span>`
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
@@ -991,7 +1275,7 @@ class UgreenNasMiniCard extends UgreenNasCard {
           ICONS.up
         )}${fmtRate(toBps(this._s(sc.lan_up)))}</span>`
       );
-    const runtime = num(this._s(sc.runtime));
+    const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
     return `<style>${BASE_STYLE}${MINI_STYLE}</style>
       <ha-card>
@@ -1043,7 +1327,12 @@ class UgreenNasEditorBase extends HTMLElement {
           select: {
             mode: "dropdown",
             custom_value: true,
-            options: [{ value: "", label: tr("image_auto") }, ...NAS_MODELS.map((m) => ({ value: m, label: m }))],
+            options: [
+              { value: "", label: tr("image_auto") },
+              ...Object.values(NAS_MODELS)
+                .flat()
+                .map((m) => ({ value: m, label: m })),
+            ],
           },
         },
       },
@@ -1121,18 +1410,22 @@ define("ugreen-nas-card", UgreenNasCard);
 define("ugreen-nas-mini-card", UgreenNasMiniCard);
 define("ugreen-nas-card-editor", UgreenNasCardEditor);
 define("ugreen-nas-mini-card-editor", UgreenNasMiniCardEditor);
+// `custom:nas-card` / `custom:nas-mini-card`: brand-neutral aliases of the two cards (a custom
+// element class registers only once, so the aliases are empty subclasses).
+define("nas-card", class extends UgreenNasCard {});
+define("nas-mini-card", class extends UgreenNasMiniCard {});
 
 window.customCards = window.customCards || [];
 for (const card of [
   {
     type: "ugreen-nas-card",
     name: "UGREEN NAS Card",
-    description: "Monitor a UGREEN NAS: CPU, RAM, temperatures, volumes, disks, network and fans.",
+    description: "Monitor a UGREEN, Synology or QNAP NAS: CPU, RAM, temperatures, volumes, disks, network and fans.",
   },
   {
     type: "ugreen-nas-mini-card",
     name: "UGREEN NAS Mini Card",
-    description: "Compact UGREEN NAS overview: CPU, RAM, temperature, storage and network.",
+    description: "Compact NAS overview (UGREEN, Synology, QNAP): CPU, RAM, temperature, storage and network.",
   },
 ]) {
   if (!window.customCards.some((c) => c.type === card.type))

@@ -1,12 +1,12 @@
-// Renders the cards with mock UGREEN NAS data and saves the README screenshots.
+// Renders the cards with mock NAS data (UGREEN, Synology DSM, QNAP) and saves the README screenshots.
 // Usage: npm run build && npm run screenshots
 import { chromium } from "playwright";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { states } from "./mock-states.mjs";
+import { mocks } from "./mock-states.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const cardJs = readFileSync(`${root}dist/ugreen-nas-card.js`, "utf8");
@@ -47,19 +47,26 @@ const page_html = (theme, width) => `<!doctype html><html><head><meta charset="u
          font-family: Roboto, "Segoe UI", Helvetica, Arial, sans-serif; width: ${width}px; }
 </style></head><body><div id="root"></div></body></html>`;
 
-// Opens a fresh page for one shot and mounts the card with its mock states.
+// Opens a fresh page for one shot and mounts the card with the mock hass of its brand.
 async function openCard(browser, s) {
   // A fresh page for each capture: the card script declares its classes and custom elements once per page.
   const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1000, height: 2000 } });
   page.on("pageerror", (err) => console.error(`${s.file}: ${err.message}`));
+  // Brand icons (Synology, QNAP) load from the HA brand images CDN: point BRANDS_DIR at a checkout
+  // of github.com/home-assistant/brands to render them offline.
+  if (process.env.BRANDS_DIR)
+    await page.route("https://brands.home-assistant.io/**", (route) => {
+      const path = join(process.env.BRANDS_DIR, "core_integrations", new URL(route.request().url()).pathname);
+      return existsSync(path) ? route.fulfill({ path }) : route.continue();
+    });
   await page.setContent(page_html(s.theme, s.width));
   await page.addScriptTag({ content: HA_CARD });
   await page.addScriptTag({ content: cardJs });
   await page.evaluate(
-    ({ type, config, states, dark, zoom }) => {
+    ({ type, config, mock, dark, zoom }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
-      el.hass = { states, language: "en", locale: { language: "en" }, themes: { darkMode: dark } };
+      el.hass = { ...mock, language: "en", locale: { language: "en" }, themes: { darkMode: dark } };
       document.getElementById("root").appendChild(el);
       // A mouse click (detail 1) on the zoom button: the zoomed-in view, without a keyboard focus ring.
       if (zoom)
@@ -67,7 +74,7 @@ async function openCard(browser, s) {
           .querySelector(".zoom")
           .dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true, detail: 1 }));
     },
-    { type: s.type, config: s.config, states, dark: s.theme === "dark", zoom: !!s.zoom }
+    { type: s.type, config: s.config, mock: mocks[s.mock ?? "ugreen"], dark: s.theme === "dark", zoom: !!s.zoom }
   );
   return page;
 }
@@ -79,6 +86,12 @@ const shots = [
   { file: "mini-card-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 380, config: {} },
   { file: "mini-card-zoom", type: "ugreen-nas-mini-card", theme: "light", width: 460, config: {}, zoom: true },
   { file: "mini-card-zoom-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 460, config: {}, zoom: true },
+  { file: "card-synology", type: "ugreen-nas-card", theme: "light", width: 460, config: {}, mock: "synology" },
+  { file: "card-synology-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {}, mock: "synology" },
+  { file: "mini-card-synology", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {}, mock: "synology" },
+  { file: "card-qnap", type: "ugreen-nas-card", theme: "light", width: 460, config: {}, mock: "qnap" },
+  { file: "card-qnap-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {}, mock: "qnap" },
+  { file: "mini-card-qnap", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {}, mock: "qnap" },
 ];
 
 const browser = await chromium.launch(

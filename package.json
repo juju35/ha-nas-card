@@ -1,7 +1,7 @@
 {
   "name": "ha-ugreen-nas-card",
-  "version": "1.9.0",
-  "description": "Lovelace cards for Home Assistant to monitor UGREEN NAS devices (UGREEN NAS integration).",
+  "version": "1.10.0",
+  "description": "Lovelace cards for Home Assistant to monitor UGREEN, Synology and QNAP NAS devices.",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +12,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "playwright": "^1.56.1"
+    "playwright": "^1.64.1"
   }
 }
