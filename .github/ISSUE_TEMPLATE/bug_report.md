@@ -30,7 +30,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Card configuration:**
 ```yaml
-type: custom:ugreen-nas-card
+type: custom:nas-card
 ```
 
 **Additional context**

@@ -1,5 +1,5 @@
 /*
- * UGREEN NAS Card for Home Assistant
+ * NAS Card for Home Assistant (UGREEN, Synology, QNAP)
  * https://github.com/juju35/ha-ugreen-nas-card
  *
  * Lovelace cards for the UGREEN NAS integration
@@ -282,8 +282,14 @@ const flatSvg = () => {
 // (DXP<bays>800, DH<bays>300, 480T, Synology DS/RS naming, QNAP TS/TVS/HS naming).
 const NAS_MODELS = {
   ugreen: ["DXP2800", "DXP4800", "DXP4800 Plus", "DXP480T Plus", "DXP6800 Pro", "DXP8800 Plus", "DH2300", "DH4300 Plus"],
-  synology: ["DS224+", "DS423+", "DS723+", "DS923+", "DS925+", "DS1522+", "DS1621+", "DS1821+", "RS822+", "RS1221+"],
-  qnap: ["TS-233", "TS-264", "TS-464", "TS-664", "TS-873A", "TVS-h674", "HS-264", "TS-873AeU"],
+  synology: [
+    "DS124", "DS223", "DS223j", "DS224+", "DS225+", "DS423", "DS423+", "DS425+", "DS723+", "DS923+", "DS925+",
+    "DS1522+", "DS1621+", "DS1821+", "DS1825+", "DS2422+", "RS422+", "RS822+", "RS1221+", "RS2423+",
+  ],
+  qnap: [
+    "TS-133", "TS-233", "TS-433", "TS-264", "TS-464", "TS-664", "TS-473A", "TS-673A", "TS-873A", "TS-h973AX",
+    "TVS-h674", "TVS-h874", "HS-264", "TS-873AeU", "TS-1264U-RP",
+  ],
 };
 // Bay counts from the model names. Synology: the leading digits are not always the bay count
 // (DS723+ has 2 bays, DS923+ has 4, DS1522+ has 5), so known families are mapped.
@@ -326,6 +332,16 @@ const nasPicture = (image, model, brand) =>
 // logos). Both marks are grayscale, so dark mode simply inverts them.
 const BRAND_DOMAINS = { synology: "synology_dsm", qnap: "qnap" };
 const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
+// Picture choices of the editor: sorted by brand, then by model (numbers in natural order), each
+// label prefixed with its brand; the value stays the bare model name.
+const modelOptions = () =>
+  Object.keys(NAS_MODELS)
+    .sort((a, b) => BRAND_NAMES[a].localeCompare(BRAND_NAMES[b], "en", { sensitivity: "base" }))
+    .flatMap((b) =>
+      [...NAS_MODELS[b]]
+        .sort((x, y) => x.localeCompare(y, "en", { numeric: true, sensitivity: "base" }))
+        .map((m) => ({ value: m, label: `${BRAND_NAMES[b]} ${m}` }))
+    );
 const logo = (brand, dark) => {
   if (BRAND_DOMAINS[brand])
     return `<img class="logo brand${dark ? " inverted" : ""}" src="https://brands.home-assistant.io/${BRAND_DOMAINS[brand]}/icon.png" alt="${BRAND_NAMES[brand]}">`;
@@ -769,7 +785,7 @@ const BASE_STYLE = `
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
-class UgreenNasBase extends HTMLElement {
+class NasBase extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -970,9 +986,9 @@ const FULL_STYLE = `
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 `;
 
-class UgreenNasCard extends UgreenNasBase {
+class NasCard extends NasBase {
   static getConfigElement() {
-    return document.createElement("ugreen-nas-card-editor");
+    return document.createElement("nas-card-editor");
   }
 
   static getStubConfig(hass) {
@@ -1167,9 +1183,9 @@ const MINI_STYLE = `
 
 // The mini card extends the full card: its zoom button (top right, `zoom: false` removes it) switches it to the
 // full card's content, same configuration, and back; a click anywhere outside the card brings it back too.
-class UgreenNasMiniCard extends UgreenNasCard {
+class NasMiniCard extends NasCard {
   static getConfigElement() {
-    return document.createElement("ugreen-nas-mini-card-editor");
+    return document.createElement("nas-mini-card-editor");
   }
 
   constructor() {
@@ -1292,7 +1308,7 @@ class UgreenNasMiniCard extends UgreenNasCard {
 // Visual editors (ha-form)
 // ---------------------------------------------------------------------------
 
-class UgreenNasEditorBase extends HTMLElement {
+class NasEditorBase extends HTMLElement {
   static get toggles() {
     return [];
   }
@@ -1329,9 +1345,7 @@ class UgreenNasEditorBase extends HTMLElement {
             custom_value: true,
             options: [
               { value: "", label: tr("image_auto") },
-              ...Object.values(NAS_MODELS)
-                .flat()
-                .map((m) => ({ value: m, label: m })),
+              ...modelOptions(),
             ],
           },
         },
@@ -1387,13 +1401,13 @@ class UgreenNasEditorBase extends HTMLElement {
   }
 }
 
-class UgreenNasCardEditor extends UgreenNasEditorBase {
+class NasCardEditor extends NasEditorBase {
   static get toggles() {
     return ["show_system", "show_network", "show_volumes", "show_disks", "show_fans"];
   }
 }
 
-class UgreenNasMiniCardEditor extends UgreenNasEditorBase {
+class NasMiniCardEditor extends NasEditorBase {
   static get toggles() {
     return ["show_storage", "show_network", "zoom"];
   }
@@ -1406,25 +1420,25 @@ class UgreenNasMiniCardEditor extends UgreenNasEditorBase {
 const define = (name, cls) => {
   if (!customElements.get(name)) customElements.define(name, cls);
 };
-define("ugreen-nas-card", UgreenNasCard);
-define("ugreen-nas-mini-card", UgreenNasMiniCard);
-define("ugreen-nas-card-editor", UgreenNasCardEditor);
-define("ugreen-nas-mini-card-editor", UgreenNasMiniCardEditor);
-// `custom:nas-card` / `custom:nas-mini-card`: brand-neutral aliases of the two cards (a custom
-// element class registers only once, so the aliases are empty subclasses).
-define("nas-card", class extends UgreenNasCard {});
-define("nas-mini-card", class extends UgreenNasMiniCard {});
+define("nas-card", NasCard);
+define("nas-mini-card", NasMiniCard);
+define("nas-card-editor", NasCardEditor);
+define("nas-mini-card-editor", NasMiniCardEditor);
+// `custom:ugreen-nas-card` / `custom:ugreen-nas-mini-card`: the former types, kept so that existing
+// dashboards keep working (a custom element class registers only once, so they are empty subclasses).
+define("ugreen-nas-card", class extends NasCard {});
+define("ugreen-nas-mini-card", class extends NasMiniCard {});
 
 window.customCards = window.customCards || [];
 for (const card of [
   {
-    type: "ugreen-nas-card",
-    name: "UGREEN NAS Card",
+    type: "nas-card",
+    name: "NAS Card",
     description: "Monitor a UGREEN, Synology or QNAP NAS: CPU, RAM, temperatures, volumes, disks, network and fans.",
   },
   {
-    type: "ugreen-nas-mini-card",
-    name: "UGREEN NAS Mini Card",
+    type: "nas-mini-card",
+    name: "NAS Mini Card",
     description: "Compact NAS overview (UGREEN, Synology, QNAP): CPU, RAM, temperature, storage and network.",
   },
 ]) {
@@ -1433,7 +1447,7 @@ for (const card of [
 }
 
 console.info(
-  `%c UGREEN-NAS-CARD %c v${VERSION} `,
+  `%c NAS-CARD %c v${VERSION} `,
   "color: white; background: #00b46e; font-weight: 700;",
   "color: #00b46e; background: white; font-weight: 700;"
 );

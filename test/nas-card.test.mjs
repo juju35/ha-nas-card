@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, UgreenNasCard, UgreenNasMiniCard, toBps, fmtRate, STRINGS } = load("ugreen-nas-card.js", [
+const { volumeUsage, discover, NasCard, NasMiniCard, toBps, fmtRate, STRINGS } = load("nas-card.js", [
   "volumeUsage",
   "discover",
-  "UgreenNasCard",
-  "UgreenNasMiniCard",
+  "NasCard",
+  "NasMiniCard",
   "toBps",
   "fmtRate",
   "STRINGS",
@@ -40,7 +40,7 @@ test("mini card storage total leaves out volumes whose used space is unknown", (
     "sensor.ugreen_nas_pool_1_volume_1_used_size_raw": s("sensor.ugreen_nas_pool_1_volume_1_used_size_raw", 500, "B"),
     "sensor.ugreen_nas_pool_1_volume_2_total_size_raw": s("sensor.ugreen_nas_pool_1_volume_2_total_size_raw", 9000, "B"),
   };
-  const el = new UgreenNasMiniCard();
+  const el = new NasMiniCard();
   el._config = {};
   el._hass = { states, language: "en" };
   // 500 / 1000 = 50 %; counting the unknown volume as empty would give 5 %.
@@ -87,7 +87,7 @@ test("network rates follow the unit of the sensor", () => {
 });
 
 test("both cards share setConfig and translate the Normal server status", () => {
-  for (const Cls of [UgreenNasCard, UgreenNasMiniCard]) {
+  for (const Cls of [NasCard, NasMiniCard]) {
     const el = new Cls();
     el._hass = { states: {}, language: "en" };
     el._update = () => {};
@@ -119,7 +119,7 @@ test("discovery recovers when the first NAS entity comes back after a lookup wit
   const first = Object.keys(mock).sort()[0];
   const down = lose(mock, first);
   assert.equal(discover({ states: down, entities }, "").nasId, "ugreen_nas");
-  const el = new UgreenNasCard();
+  const el = new NasCard();
   el._config = {};
   el._hass = { states: down, entities, language: "en" };
   assert.doesNotMatch(el._render(), /class="warning"/);
@@ -131,7 +131,7 @@ test("discovery finds the NAS again after it was entirely offline", async () => 
   let offline = mock;
   for (const id of Object.keys(mock)) offline = lose(offline, id);
   assert.equal(discover({ states: offline, entities }, "").nasId, null);
-  const el = new UgreenNasMiniCard();
+  const el = new NasMiniCard();
   el._config = {};
   el._hass = { states: offline, entities, language: "en" };
   assert.match(el._render(), /class="warning"/);
@@ -163,7 +163,7 @@ test("an entity of the registry removed from the states does not break discovery
 });
 
 test("a volume without a label sensor is named after its own number, not the pool number", () => {
-  const el = new UgreenNasCard();
+  const el = new NasCard();
   el._config = {};
   el._hass = { states: {}, language: "en" };
   const names = (pools) => [...el._volumes({ pools }).matchAll(/<span class="grow">([^<]*)<\/span>/g)].map((m) => m[1]);
@@ -176,7 +176,7 @@ test("a volume without a label sensor is named after its own number, not the poo
 // Mini card zoom: a mini card on the mock NAS whose renders are captured instead of patched into a DOM.
 const zoomCard = async (config = {}) => {
   const { states } = await import("../scripts/mock-states.mjs");
-  const el = new UgreenNasMiniCard();
+  const el = new NasMiniCard();
   el._config = config;
   el._hass = { states, language: "en" };
   el._update = () => {
@@ -192,7 +192,7 @@ const zoomButton = () => click([], { target: { closest: (sel) => (sel === ".zoom
 
 test("the mini card zoom button switches to the full card content and back", async () => {
   const el = await zoomCard();
-  const full = new UgreenNasCard();
+  const full = new NasCard();
   full._config = {};
   full._hass = el._hass;
   assert.match(el.html, /class="metric/);
@@ -237,14 +237,14 @@ test("a click outside the mini card collapses it, a click inside or in a dialog 
 test("zoom: false removes the mini card zoom button, the full card has none", async () => {
   const el = await zoomCard({ zoom: false });
   assert.doesNotMatch(el.html, /class="zoom"/);
-  const full = new UgreenNasCard();
+  const full = new NasCard();
   full._config = {};
   full._hass = el._hass;
   assert.doesNotMatch(full._render(), /class="zoom"/);
 });
 
 test("the NAS picture follows the model, the image option overrides it", () => {
-  const { nasSvg, nasPicture } = load("ugreen-nas-card.js", ["nasSvg", "nasPicture"]);
+  const { nasSvg, nasPicture } = load("nas-card.js", ["nasSvg", "nasPicture"]);
   const bays = (svg) => (svg.match(/fill="#43c463"/g) || []).length;
   assert.equal(bays(nasSvg("DXP2800")), 2);
   assert.equal(bays(nasSvg("DXP4800 Plus")), 4);
@@ -258,7 +258,7 @@ test("the NAS picture follows the model, the image option overrides it", () => {
 });
 
 test("Synology and QNAP models map to their own towers and rackmounts", () => {
-  const { nasSvg } = load("ugreen-nas-card.js", ["nasSvg"]);
+  const { nasSvg } = load("nas-card.js", ["nasSvg"]);
   const bays = (svg) => (svg.match(/fill="#43c463"/g) || []).length;
   const rack = (svg) => / 72"/.test(svg.split(">")[0]); // rackmount viewBox is 62 + 10 high
   // Synology: the family decides the bay count, the leading digit alone would be wrong.
@@ -342,7 +342,7 @@ test("QNAP discovery: one device, volumes and drives joined on the insert of the
 test("both new brands render without warnings; Synology translates its safety binary status", async () => {
   for (const brand of ["synology", "qnap"]) {
     const hass = await registryHass(brand);
-    for (const Cls of [UgreenNasCard, UgreenNasMiniCard]) {
+    for (const Cls of [NasCard, NasMiniCard]) {
       const el = new Cls();
       el._config = {};
       el._hass = hass;
@@ -351,7 +351,7 @@ test("both new brands render without warnings; Synology translates its safety bi
       assert.match(html, /class="chip clickable ok"|data-key="status"/, brand);
     }
   }
-  const el = new UgreenNasCard();
+  const el = new NasCard();
   el._hass = { states: {}, language: "en" };
   el._config = {};
   assert.equal(el._statusText({ state: "off" }, "synology"), "Normal");
@@ -372,10 +372,14 @@ test("a configured nas picks its own integration, the UGREEN NAS keeps priority 
   assert.equal(discover(hass, "ugreen_nas").brand, "ugreen");
 });
 
-test("the cards register under the custom:nas-card and custom:nas-mini-card aliases", () => {
-  const { customElements } = load("ugreen-nas-card.js", ["customElements"]);
-  assert.ok(customElements.get("nas-card").prototype instanceof customElements.get("ugreen-nas-card"));
-  assert.ok(customElements.get("nas-mini-card").prototype instanceof customElements.get("ugreen-nas-mini-card"));
+test("the cards register as nas-card and nas-mini-card, the former ugreen-* types stay as aliases", () => {
+  const { customElements, NasCard, NasMiniCard, window } = load("nas-card.js", ["customElements", "NasCard", "NasMiniCard", "window"]);
+  assert.equal(customElements.get("nas-card"), NasCard);
+  assert.equal(customElements.get("nas-mini-card"), NasMiniCard);
+  assert.ok(customElements.get("ugreen-nas-card").prototype instanceof NasCard);
+  assert.ok(customElements.get("ugreen-nas-mini-card").prototype instanceof NasMiniCard);
+  assert.ok(customElements.get("nas-card-editor") && customElements.get("nas-mini-card-editor"));
+  assert.deepEqual([...window.customCards.map((c) => c.type)], ["nas-card", "nas-mini-card"]);
 });
 
 test("the status pill sits in the header row; the compact mini card subtitle shows the model only", async () => {
@@ -385,4 +389,18 @@ test("the status pill sits in the header row; the compact mini card subtitle sho
   el._zoomClick(zoomButton());
   // Zoomed in, like the full card: model and UGOS version, then the status pill in the title block (right of the title line).
   assert.match(el.html, /<span>DXP480T Plus<\/span><span>UGOS 1\.20\.0\.0142<\/span><\/div><\/div>\s*<span class="chip clickable ok"/);
+});
+
+test("the editor lists the pictures sorted by brand, then by model, with the brand as prefix", () => {
+  const { modelOptions, NAS_MODELS } = load("nas-card.js", ["modelOptions", "NAS_MODELS"]);
+  const options = [...modelOptions()];
+  assert.equal(options.length, Object.values(NAS_MODELS).flat().length);
+  const brands = [...options.map((o) => o.label.split(" ")[0])];
+  assert.deepEqual([...new Set(brands)], ["QNAP", "Synology", "UGREEN"]);
+  // Brands are contiguous blocks, in alphabetical order.
+  assert.deepEqual(brands, [...brands].sort());
+  // Natural order inside a brand (DS224+ before DS1522+), the value stays the bare model name.
+  const syno = options.filter((o) => o.label.startsWith("Synology ")).map((o) => o.value);
+  assert.ok(syno.indexOf("DS224+") < syno.indexOf("DS1522+"));
+  assert.deepEqual({ ...options.find((o) => o.value === "DXP4800 Plus") }, { value: "DXP4800 Plus", label: "UGREEN DXP4800 Plus" });
 });

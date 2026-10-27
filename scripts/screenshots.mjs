@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { mocks } from "./mock-states.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const cardJs = readFileSync(`${root}dist/ugreen-nas-card.js`, "utf8");
+const cardJs = readFileSync(`${root}dist/nas-card.js`, "utf8");
 
 const THEMES = {
   light: {
@@ -80,18 +80,18 @@ async function openCard(browser, s) {
 }
 
 const shots = [
-  { file: "card", type: "ugreen-nas-card", theme: "light", width: 460, config: {} },
-  { file: "card-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {} },
-  { file: "mini-card", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {} },
-  { file: "mini-card-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 380, config: {} },
-  { file: "mini-card-zoom", type: "ugreen-nas-mini-card", theme: "light", width: 460, config: {}, zoom: true },
-  { file: "mini-card-zoom-dark", type: "ugreen-nas-mini-card", theme: "dark", width: 460, config: {}, zoom: true },
-  { file: "card-synology", type: "ugreen-nas-card", theme: "light", width: 460, config: {}, mock: "synology" },
-  { file: "card-synology-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {}, mock: "synology" },
-  { file: "mini-card-synology", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {}, mock: "synology" },
-  { file: "card-qnap", type: "ugreen-nas-card", theme: "light", width: 460, config: {}, mock: "qnap" },
-  { file: "card-qnap-dark", type: "ugreen-nas-card", theme: "dark", width: 460, config: {}, mock: "qnap" },
-  { file: "mini-card-qnap", type: "ugreen-nas-mini-card", theme: "light", width: 380, config: {}, mock: "qnap" },
+  { file: "card", type: "nas-card", theme: "light", width: 460, config: {} },
+  { file: "card-dark", type: "nas-card", theme: "dark", width: 460, config: {} },
+  { file: "mini-card", type: "nas-mini-card", theme: "light", width: 380, config: {} },
+  { file: "mini-card-dark", type: "nas-mini-card", theme: "dark", width: 380, config: {} },
+  { file: "mini-card-zoom", type: "nas-mini-card", theme: "light", width: 460, config: {}, zoom: true },
+  { file: "mini-card-zoom-dark", type: "nas-mini-card", theme: "dark", width: 460, config: {}, zoom: true },
+  { file: "card-synology", type: "nas-card", theme: "light", width: 460, config: {}, mock: "synology" },
+  { file: "card-synology-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "synology" },
+  { file: "mini-card-synology", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "synology" },
+  { file: "card-qnap", type: "nas-card", theme: "light", width: 460, config: {}, mock: "qnap" },
+  { file: "card-qnap-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "qnap" },
+  { file: "mini-card-qnap", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "qnap" },
 ];
 
 const browser = await chromium.launch(
@@ -112,7 +112,7 @@ for (const s of shots) {
 
 // Record the spinning cooling fans as a looping GIF. Needs ffmpeg on PATH. Every animation is paused and
 // stepped frame by frame, so the GIF is identical whatever the machine's speed.
-const gif = { file: "fans", type: "ugreen-nas-card", theme: "light", width: 460, config: {} };
+const gif = { file: "fans", type: "nas-card", theme: "light", width: 460, config: {} };
 const FPS = 20;
 const SECONDS = 3;
 {
