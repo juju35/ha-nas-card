@@ -25,7 +25,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 ## Features
 
-- Two cards: a full **NAS Card** and a compact **NAS Mini Card**, of type `custom:nas-card` and `custom:nas-mini-card` (the original types `custom:ugreen-nas-card` and `custom:ugreen-nas-mini-card` keep working)
+- Two cards: a full **NAS Card** and a compact **NAS Mini Card**, of type `custom:nas-card` and `custom:nas-mini-card` (the former types `custom:ugreen-nas-card` and `custom:ugreen-nas-mini-card` keep working)
 - Three integrations: **UGREEN NAS**, **Synology DSM** and **QNAP** — automatic discovery, several NAS supported, brands can be mixed
 - CPU, RAM and temperature gauges, uptime and CPU model
 - Network download / upload rates
@@ -69,10 +69,10 @@ Or manually:
 
 ### Manual
 
-1. Download `ugreen-nas-card.js` from the [latest release](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
-2. Copy it to `/config/www/ugreen-nas-card.js`
+1. Download `nas-card.js` from the [latest release](https://github.com/juju35/ha-ugreen-nas-card/releases/latest)
+2. Copy it to `/config/www/nas-card.js`
 3. Go to **Settings → Dashboards → ⋮ → Resources** → Add resource:
-   - URL: `/local/ugreen-nas-card.js`
+   - URL: `/local/nas-card.js`
    - Type: **JavaScript Module**
 4. Clear your browser cache and refresh
 
@@ -219,7 +219,7 @@ The picture is drawn from the model reported by the integration, so a renamed NA
 
 ```bash
 npm install
-npm run build              # bundles src/ugreen-nas-card.js into dist/ugreen-nas-card.js
+npm run build              # bundles src/nas-card.js into dist/nas-card.js
 npm run check              # builds and checks the card (run in CI)
 node scripts/models-svg.mjs  # renders the drawn model galleries of the README into images/models-*.svg
 npm run screenshots        # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif, needs ffmpeg)
@@ -233,7 +233,7 @@ npm run screenshots        # renders the cards with mock data (scripts/mock-stat
 
 1. Bump `version` in `package.json`
 2. Add a `## <version>` section at the top of [CHANGELOG.md](CHANGELOG.md)
-3. Push to `main`: the **Release** workflow builds the card, creates the tag and the GitHub release with the changelog section as notes, and attaches `ugreen-nas-card.js`
+3. Push to `main`: the **Release** workflow builds the card, creates the tag and the GitHub release with the changelog section as notes, and attaches `nas-card.js`
 
 ## Translations
 

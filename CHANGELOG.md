@@ -5,7 +5,8 @@
 ### Changes
 - **Editor**: the NAS pictures are listed by brand (QNAP, Synology, UGREEN), then by model in natural order, each prefixed with its brand (« Synology DS923+ »); the YAML value stays the bare model name.
 - **More models drawn**: 43 models across the three brands — Synology DS124, DS223(j), DS225+, DS423, DS425+, DS1825+, DS2422+, RS422+, RS2423+; QNAP TS-133, TS-433, TS-473A, TS-673A, TS-h973AX, TVS-h874, TS-1264U-RP — next to the existing ones.
-- **Brand-neutral naming**: the cards show up as **NAS Card** and **NAS Mini Card** in the card picker and in HACS (« NAS Card (UGREEN, Synology, QNAP) »); `custom:nas-card` / `custom:nas-mini-card` are the documented types, the `ugreen-*` types keep working.
+- **Renamed to `nas-card` / `nas-mini-card`**: the cards are now registered as `custom:nas-card` and `custom:nas-mini-card` (editors `nas-card-editor` / `nas-mini-card-editor`) and show up as **NAS Card** / **NAS Mini Card** in the card picker and « NAS Card (UGREEN, Synology, QNAP) » in HACS. The former types `custom:ugreen-nas-card` / `custom:ugreen-nas-mini-card` stay registered as aliases: existing dashboards keep working.
+- **The file is now `nas-card.js`** (was `ugreen-nas-card.js`): HACS installs it under the new name. If you added the dashboard resource by hand (`/hacsfiles/ha-ugreen-nas-card/ugreen-nas-card.js` or `/local/ugreen-nas-card.js`), point it to `nas-card.js`.
 - **README** reworked for the three brands, on the model of ha-roborock-card: brand logos, screenshots per brand, one drawn-model gallery per brand (`images/models-<brand>.svg`, from `scripts/models-svg.mjs`), credits.
 
 ## 1.10.0 - 2026-10-27

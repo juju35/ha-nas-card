@@ -6,7 +6,7 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { load } from "../test/load.mjs";
 
-const { nasSvg, modelOptions, NAS_MODELS } = load("ugreen-nas-card.js", ["nasSvg", "modelOptions", "NAS_MODELS"]);
+const { nasSvg, modelOptions, NAS_MODELS } = load("nas-card.js", ["nasSvg", "modelOptions", "NAS_MODELS"]);
 
 const H = 70; // drawing height
 const GAP = 24; // between models

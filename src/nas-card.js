@@ -1,5 +1,5 @@
 /*
- * UGREEN NAS Card for Home Assistant
+ * NAS Card for Home Assistant (UGREEN, Synology, QNAP)
  * https://github.com/juju35/ha-ugreen-nas-card
  *
  * Lovelace cards for the UGREEN NAS integration
@@ -785,7 +785,7 @@ const BASE_STYLE = `
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
-class UgreenNasBase extends HTMLElement {
+class NasBase extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -986,9 +986,9 @@ const FULL_STYLE = `
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 `;
 
-class UgreenNasCard extends UgreenNasBase {
+class NasCard extends NasBase {
   static getConfigElement() {
-    return document.createElement("ugreen-nas-card-editor");
+    return document.createElement("nas-card-editor");
   }
 
   static getStubConfig(hass) {
@@ -1183,9 +1183,9 @@ const MINI_STYLE = `
 
 // The mini card extends the full card: its zoom button (top right, `zoom: false` removes it) switches it to the
 // full card's content, same configuration, and back; a click anywhere outside the card brings it back too.
-class UgreenNasMiniCard extends UgreenNasCard {
+class NasMiniCard extends NasCard {
   static getConfigElement() {
-    return document.createElement("ugreen-nas-mini-card-editor");
+    return document.createElement("nas-mini-card-editor");
   }
 
   constructor() {
@@ -1308,7 +1308,7 @@ class UgreenNasMiniCard extends UgreenNasCard {
 // Visual editors (ha-form)
 // ---------------------------------------------------------------------------
 
-class UgreenNasEditorBase extends HTMLElement {
+class NasEditorBase extends HTMLElement {
   static get toggles() {
     return [];
   }
@@ -1401,13 +1401,13 @@ class UgreenNasEditorBase extends HTMLElement {
   }
 }
 
-class UgreenNasCardEditor extends UgreenNasEditorBase {
+class NasCardEditor extends NasEditorBase {
   static get toggles() {
     return ["show_system", "show_network", "show_volumes", "show_disks", "show_fans"];
   }
 }
 
-class UgreenNasMiniCardEditor extends UgreenNasEditorBase {
+class NasMiniCardEditor extends NasEditorBase {
   static get toggles() {
     return ["show_storage", "show_network", "zoom"];
   }
@@ -1420,24 +1420,24 @@ class UgreenNasMiniCardEditor extends UgreenNasEditorBase {
 const define = (name, cls) => {
   if (!customElements.get(name)) customElements.define(name, cls);
 };
-define("ugreen-nas-card", UgreenNasCard);
-define("ugreen-nas-mini-card", UgreenNasMiniCard);
-define("ugreen-nas-card-editor", UgreenNasCardEditor);
-define("ugreen-nas-mini-card-editor", UgreenNasMiniCardEditor);
-// `custom:nas-card` / `custom:nas-mini-card`: brand-neutral aliases of the two cards (a custom
-// element class registers only once, so the aliases are empty subclasses).
-define("nas-card", class extends UgreenNasCard {});
-define("nas-mini-card", class extends UgreenNasMiniCard {});
+define("nas-card", NasCard);
+define("nas-mini-card", NasMiniCard);
+define("nas-card-editor", NasCardEditor);
+define("nas-mini-card-editor", NasMiniCardEditor);
+// `custom:ugreen-nas-card` / `custom:ugreen-nas-mini-card`: the former types, kept so that existing
+// dashboards keep working (a custom element class registers only once, so they are empty subclasses).
+define("ugreen-nas-card", class extends NasCard {});
+define("ugreen-nas-mini-card", class extends NasMiniCard {});
 
 window.customCards = window.customCards || [];
 for (const card of [
   {
-    type: "ugreen-nas-card",
+    type: "nas-card",
     name: "NAS Card",
     description: "Monitor a UGREEN, Synology or QNAP NAS: CPU, RAM, temperatures, volumes, disks, network and fans.",
   },
   {
-    type: "ugreen-nas-mini-card",
+    type: "nas-mini-card",
     name: "NAS Mini Card",
     description: "Compact NAS overview (UGREEN, Synology, QNAP): CPU, RAM, temperature, storage and network.",
   },
@@ -1447,7 +1447,7 @@ for (const card of [
 }
 
 console.info(
-  `%c UGREEN-NAS-CARD %c v${VERSION} `,
+  `%c NAS-CARD %c v${VERSION} `,
   "color: white; background: #00b46e; font-weight: 700;",
   "color: #00b46e; background: white; font-weight: 700;"
 );
