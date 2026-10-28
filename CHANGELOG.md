@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.12.1 - 2026-10-28
+
+### Fixes
+- **Performance on Synology/QNAP-only installs**: without any UGREEN entity in the registry, the cards no longer re-scan every state of the instance on each update; the visual editor's NAS list also walks the cached registry-backed candidates instead of all states.
+- **Synology/QNAP uptime refreshed**: when the uptime comes from the boot timestamp, the card now re-renders every minute instead of freezing until another state changes.
+- **Accessibility**: gauges and mini-card metrics without an entity (e.g. the aggregated Storage row) are no longer focusable nor shown as clickable.
+
+### Maintenance
+- Internal CSS variables renamed from `--ug-*` to `--nas-accent` / `--nas-ok` / `--nas-warn` / `--nas-crit` (colors unchanged).
+- CI: screenshots workflow safe for fork pull requests (artifact upload instead of push), release gated on `npm ci` + `npm test` with a concurrency group, Ruff stack removed (no Python files), `hacs/action` pinned on a release like the other actions, Dependabot updates for npm.
+
 ## 1.12.0 - 2026-10-27
 
 ### Features
