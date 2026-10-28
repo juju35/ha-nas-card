@@ -120,7 +120,7 @@ const SECONDS = 3;
   await page.waitForTimeout(300);
   const box = await page.locator("#root").boundingBox();
   const clip = { x: 0, y: 0, width: gif.width + 32, height: Math.ceil(box.height) + 32 };
-  const dir = mkdtempSync(join(tmpdir(), "ug-frames-"));
+  const dir = mkdtempSync(join(tmpdir(), "nas-frames-"));
   const frames = Math.round(FPS * SECONDS);
   for (let i = 0; i < frames; i++) {
     await page.evaluate((t) => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = t; } }, (i * 1000) / FPS);

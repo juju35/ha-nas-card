@@ -420,9 +420,12 @@ const _cache = new Map();
  * NAS devices of the registry integrations (Synology DSM, QNAP). */
 const listNas = (hass) => {
   const ids = new Map();
-  for (const s of Object.values(hass.states)) {
-    const id = s.attributes?.UGNAS_device_id;
-    if (id && !ids.has(id)) ids.set(id, s.attributes.UGNAS_global_id || id);
+  // The editor renders on every hass change: go through the registry-backed candidates
+  // (cached, usually a handful of entities) instead of scanning every state.
+  for (const eid of candidateIds(hass)) {
+    const a = hass.states[eid]?.attributes;
+    const id = a?.UGNAS_device_id;
+    if (id && !ids.has(id)) ids.set(id, a.UGNAS_global_id || id);
   }
   const list = [...ids.entries()].map(([value, label]) => ({ value, label }));
   for (const brand of Object.keys(REGISTRY_PLATFORMS))
@@ -778,18 +781,18 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
-  :host { --ug-green: #00b46e; --ug-ok: var(--success-color, #43a047); --ug-warn: var(--warning-color, #ffa600); --ug-crit: var(--error-color, #db4437); }
+  :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437); }
   ha-card { overflow: hidden; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }
   [role="button"]:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
-  .ok { --c: var(--ug-ok); } .warn { --c: var(--ug-warn); } .crit { --c: var(--ug-crit); }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--ug-ok)); flex: none; display: inline-block; }
+  .ok { --c: var(--nas-ok); } .warn { --c: var(--nas-warn); } .crit { --c: var(--nas-crit); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--nas-ok)); flex: none; display: inline-block; }
   .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;
-          background: color-mix(in srgb, var(--c, var(--ug-ok)) 15%, transparent); color: var(--c, var(--ug-ok)); }
+          background: color-mix(in srgb, var(--c, var(--nas-ok)) 15%, transparent); color: var(--c, var(--nas-ok)); }
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
-  .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
+  .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
   /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width. */
   .titles { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
@@ -809,7 +812,7 @@ const BASE_STYLE = `
   .sub .parts { display: flex; flex-wrap: wrap; margin-left: -12px; }
   .sub .parts span { min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub .parts span::before { content: "·"; display: inline-block; width: 12px; text-align: center; }
-  .warning { padding: 16px; color: var(--ug-warn); }
+  .warning { padding: 16px; color: var(--nas-warn); }
   .zoom { all: unset; flex: none; cursor: pointer; width: 24px; height: 24px; margin: -4px -4px -4px 0;
           border-radius: 50%; display: grid; place-items: center; color: var(--secondary-text-color); }
   .zoom .icon { width: 16px; height: 16px; }
@@ -888,6 +891,9 @@ class NasBase extends HTMLElement {
     const nas = discover(h, this._config.nas);
     sig.push(nas);
     if (!nas.nasId) return sig;
+    // The uptime computed from a boot timestamp (Synology, QNAP) ages with the clock, not with a
+    // state: tie the signature to the minute so the text refreshes with the next state change.
+    if (nas.scalars.boot && num(this._s(nas.scalars.runtime)) === null) sig.push(Math.floor(Date.now() / 60000));
     const walk = (o) => {
       for (const v of Object.values(o)) {
         if (typeof v === "string") sig.push(h.states[v]);
@@ -999,7 +1005,7 @@ const FULL_STYLE = `
   .ring { width: 60px; height: 60px; transform: rotate(-90deg); }
   .ring circle { fill: none; stroke-width: 6; }
   .ring .track { stroke: var(--divider-color, rgba(127,127,127,.25)); }
-  .ring .value { stroke: var(--c, var(--ug-green)); stroke-linecap: round; transition: stroke-dasharray .6s ease; }
+  .ring .value { stroke: var(--c, var(--nas-accent)); stroke-linecap: round; transition: stroke-dasharray .6s ease; }
   .gauge .val { position: absolute; top: 0; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .gauge .val b { font-size: 14px; font-weight: 500; }
   .gauge .val .icon { width: 12px; height: 12px; color: var(--secondary-text-color); }
@@ -1010,11 +1016,11 @@ const FULL_STYLE = `
   .net { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
   .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
           background: var(--secondary-background-color, rgba(127,127,127,.08)); }
-  .tile .icon { color: var(--c, var(--ug-green)); }
+  .tile .icon { color: var(--c, var(--nas-accent)); }
   .tile .k { font-size: 11px; color: var(--secondary-text-color); }
   .tile .v { font-size: 14px; font-weight: 500; }
   .tile.up { --c: var(--info-color, #039be5); }
-  .tile.down { --c: var(--ug-green); }
+  .tile.down { --c: var(--nas-accent); }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
@@ -1073,7 +1079,9 @@ class NasCard extends NasBase {
   }
 
   _gauge(id, label, icon, value, display, cls) {
-    return `<div class="gauge clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
+    // Without an entity there is no more-info to open: no button role, no tab stop.
+    const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
+    return `<div class="gauge ${id ? "clickable " : ""}${cls}"${act}>
       ${ring(value, cls)}
       <div class="val">${svgIcon(icon)}<b>${display}</b></div>
       <div class="lbl">${label}</div>
@@ -1291,7 +1299,9 @@ class NasMiniCard extends NasCard {
   }
 
   _metric(id, icon, label, pct, display, cls) {
-    return `<div class="metric clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
+    // Rows without an entity (the aggregated storage row) open no more-info: not focusable.
+    const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
+    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act}>
       ${svgIcon(icon)}<span>${label}</span>
       <div class="bar"><div style="width:${pct === null ? 0 : Math.max(0, Math.min(100, pct))}%"></div></div>
       <span class="v">${display}</span>
