@@ -433,17 +433,23 @@ const listNas = (hass) => {
   return list;
 };
 
-// Candidate entity ids: the entities of the integration in the entity registry, cached on the registry
-// object (replaced only when it changes), not on hass.states, replaced on every state change. Without a
-// registry entry for the integration, every state is a candidate.
+// Candidate entity ids: the entities of the integration in the entity registry (plus entries whose
+// platform is unknown), cached on the registry object (replaced only when it changes), not on
+// hass.states, replaced on every state change. The cached list may be empty: on an install without
+// the UGREEN integration (Synology/QNAP only) no state is a candidate, instead of scanning every
+// state on each state change. Only without a usable registry is every state a candidate.
 const UGNAS_PLATFORM = "ugreen";
 let _registry = { entities: null, ids: [] };
 const candidateIds = (hass) => {
   if (hass.entities && _registry.entities !== hass.entities) {
-    const ids = Object.keys(hass.entities).filter((id) => hass.entities[id]?.platform === UGNAS_PLATFORM);
+    const entries = Object.entries(hass.entities);
+    // An empty registry tells us nothing: ids stays null and the states are scanned.
+    const ids = entries.length
+      ? entries.filter(([, e]) => e?.platform === UGNAS_PLATFORM || e?.platform == null).map(([id]) => id)
+      : null;
     _registry = { entities: hass.entities, ids };
   }
-  return hass.entities && _registry.ids.length ? _registry.ids : Object.keys(hass.states);
+  return hass.entities && _registry.ids ? _registry.ids : Object.keys(hass.states);
 };
 
 // Entity ids carrying UGNAS_device_id right now, re-read from the states on each call. HA leaves the

@@ -75,6 +75,15 @@ test("discovery finds the NAS once UGNAS_device_id appears on already registered
   }
 });
 
+test("a registry without UGREEN entities leaves nothing to discover, an empty registry falls back to the states", () => {
+  const id = "sensor.syno_cpu";
+  const states = { [id]: s(id, 10, "%") };
+  // Non-empty registry, no UGREEN platform: the states are not scanned (no fallback on each state change).
+  assert.equal(discover({ entities: { [id]: { platform: "synology_dsm" } }, states }, "").nasId, null);
+  // Empty registry object: the fallback scan of the states still applies.
+  assert.equal(discover({ entities: {}, states }, "").nasId, "nas");
+});
+
 test("network rates follow the unit of the sensor", () => {
   assert.equal(toBps(s("sensor.r", 2348000, "B/s")), 2348000);
   assert.equal(toBps(s("sensor.r", 2348, "kB/s")), 2348000);
