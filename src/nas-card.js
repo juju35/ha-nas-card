@@ -781,18 +781,18 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
-  :host { --ug-green: #00b46e; --ug-ok: var(--success-color, #43a047); --ug-warn: var(--warning-color, #ffa600); --ug-crit: var(--error-color, #db4437); }
+  :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437); }
   ha-card { overflow: hidden; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }
   [role="button"]:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
-  .ok { --c: var(--ug-ok); } .warn { --c: var(--ug-warn); } .crit { --c: var(--ug-crit); }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--ug-ok)); flex: none; display: inline-block; }
+  .ok { --c: var(--nas-ok); } .warn { --c: var(--nas-warn); } .crit { --c: var(--nas-crit); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--nas-ok)); flex: none; display: inline-block; }
   .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;
-          background: color-mix(in srgb, var(--c, var(--ug-ok)) 15%, transparent); color: var(--c, var(--ug-ok)); }
+          background: color-mix(in srgb, var(--c, var(--nas-ok)) 15%, transparent); color: var(--c, var(--nas-ok)); }
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
-  .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--ug-green)); transition: width .6s ease; }
+  .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
   /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width. */
   .titles { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
@@ -812,7 +812,7 @@ const BASE_STYLE = `
   .sub .parts { display: flex; flex-wrap: wrap; margin-left: -12px; }
   .sub .parts span { min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub .parts span::before { content: "·"; display: inline-block; width: 12px; text-align: center; }
-  .warning { padding: 16px; color: var(--ug-warn); }
+  .warning { padding: 16px; color: var(--nas-warn); }
   .zoom { all: unset; flex: none; cursor: pointer; width: 24px; height: 24px; margin: -4px -4px -4px 0;
           border-radius: 50%; display: grid; place-items: center; color: var(--secondary-text-color); }
   .zoom .icon { width: 16px; height: 16px; }
@@ -1005,7 +1005,7 @@ const FULL_STYLE = `
   .ring { width: 60px; height: 60px; transform: rotate(-90deg); }
   .ring circle { fill: none; stroke-width: 6; }
   .ring .track { stroke: var(--divider-color, rgba(127,127,127,.25)); }
-  .ring .value { stroke: var(--c, var(--ug-green)); stroke-linecap: round; transition: stroke-dasharray .6s ease; }
+  .ring .value { stroke: var(--c, var(--nas-accent)); stroke-linecap: round; transition: stroke-dasharray .6s ease; }
   .gauge .val { position: absolute; top: 0; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .gauge .val b { font-size: 14px; font-weight: 500; }
   .gauge .val .icon { width: 12px; height: 12px; color: var(--secondary-text-color); }
@@ -1016,11 +1016,11 @@ const FULL_STYLE = `
   .net { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
   .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
           background: var(--secondary-background-color, rgba(127,127,127,.08)); }
-  .tile .icon { color: var(--c, var(--ug-green)); }
+  .tile .icon { color: var(--c, var(--nas-accent)); }
   .tile .k { font-size: 11px; color: var(--secondary-text-color); }
   .tile .v { font-size: 14px; font-weight: 500; }
   .tile.up { --c: var(--info-color, #039be5); }
-  .tile.down { --c: var(--ug-green); }
+  .tile.down { --c: var(--nas-accent); }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
