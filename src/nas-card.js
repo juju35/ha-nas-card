@@ -1079,7 +1079,9 @@ class NasCard extends NasBase {
   }
 
   _gauge(id, label, icon, value, display, cls) {
-    return `<div class="gauge clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
+    // Without an entity there is no more-info to open: no button role, no tab stop.
+    const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
+    return `<div class="gauge ${id ? "clickable " : ""}${cls}"${act}>
       ${ring(value, cls)}
       <div class="val">${svgIcon(icon)}<b>${display}</b></div>
       <div class="lbl">${label}</div>
@@ -1297,7 +1299,9 @@ class NasMiniCard extends NasCard {
   }
 
   _metric(id, icon, label, pct, display, cls) {
-    return `<div class="metric clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">
+    // Rows without an entity (the aggregated storage row) open no more-info: not focusable.
+    const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
+    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act}>
       ${svgIcon(icon)}<span>${label}</span>
       <div class="bar"><div style="width:${pct === null ? 0 : Math.max(0, Math.min(100, pct))}%"></div></div>
       <span class="v">${display}</span>
