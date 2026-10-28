@@ -888,6 +888,9 @@ class NasBase extends HTMLElement {
     const nas = discover(h, this._config.nas);
     sig.push(nas);
     if (!nas.nasId) return sig;
+    // The uptime computed from a boot timestamp (Synology, QNAP) ages with the clock, not with a
+    // state: tie the signature to the minute so the text refreshes with the next state change.
+    if (nas.scalars.boot && num(this._s(nas.scalars.runtime)) === null) sig.push(Math.floor(Date.now() / 60000));
     const walk = (o) => {
       for (const v of Object.values(o)) {
         if (typeof v === "string") sig.push(h.states[v]);
