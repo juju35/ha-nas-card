@@ -420,9 +420,12 @@ const _cache = new Map();
  * NAS devices of the registry integrations (Synology DSM, QNAP). */
 const listNas = (hass) => {
   const ids = new Map();
-  for (const s of Object.values(hass.states)) {
-    const id = s.attributes?.UGNAS_device_id;
-    if (id && !ids.has(id)) ids.set(id, s.attributes.UGNAS_global_id || id);
+  // The editor renders on every hass change: go through the registry-backed candidates
+  // (cached, usually a handful of entities) instead of scanning every state.
+  for (const eid of candidateIds(hass)) {
+    const a = hass.states[eid]?.attributes;
+    const id = a?.UGNAS_device_id;
+    if (id && !ids.has(id)) ids.set(id, a.UGNAS_global_id || id);
   }
   const list = [...ids.entries()].map(([value, label]) => ({ value, label }));
   for (const brand of Object.keys(REGISTRY_PLATFORMS))
