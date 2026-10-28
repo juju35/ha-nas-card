@@ -457,3 +457,33 @@ test("the visual editor offers the url and brand_url options after the picture",
   const names = [...ed._schema().map((f) => f.name)];
   assert.deepEqual(names.slice(names.indexOf("image"), names.indexOf("image") + 3), ["image", "url", "brand_url"]);
 });
+
+test("I18N parity: every language has exactly the English keys and placeholders", () => {
+  const keys = Object.keys(STRINGS.en).sort();
+  assert.deepEqual(Object.keys(STRINGS).sort(), ["de", "en", "es", "fr"]);
+  for (const [l, strings] of Object.entries(STRINGS)) {
+    assert.deepEqual(Object.keys(strings).sort(), keys, l);
+    for (const k of keys) {
+      const ph = (s) => [...String(s).matchAll(/\{\w+\}/g)].map((m) => m[0]).sort();
+      assert.deepEqual(ph(strings[k]), ph(STRINGS.en[k]), `${l}.${k}`);
+    }
+  }
+});
+
+test("the editor offers German and Spanish, and de/es locales resolve to their strings", () => {
+  const { NasCardEditor } = load("nas-card.js", ["NasCardEditor"]);
+  const ed = new NasCardEditor();
+  ed._hass = { states: {}, language: "en" };
+  ed._config = {};
+  const language = ed._schema().find((f) => f.name === "language");
+  assert.deepEqual(
+    [...language.selector.select.options.map((o) => o.value)],
+    ["", "en", "fr", "de", "es"],
+  );
+  const el = new NasCard();
+  for (const [hl, l] of [["de-DE", "de"], ["es", "es"], ["it", "en"]]) {
+    el._hass = { states: {}, language: hl };
+    el._config = {};
+    assert.equal(el._t("network"), STRINGS[l].network);
+  }
+});
