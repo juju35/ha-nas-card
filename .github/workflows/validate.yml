@@ -26,8 +26,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The browser download is kept apart from its system libraries so the apt work sits
+      # in one time-boxed, retried step that fails loudly if every attempt failed.
       - name: Install Chromium for the browser tests
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
+
+      - name: Install Chromium system deps
+        timeout-minutes: 12
+        run: |
+          ok=
+          for i in 1 2 3; do
+            timeout 150 sudo apt-get update \
+              && timeout 300 npx playwright install-deps chromium \
+              && { ok=1; break; }
+            echo "apt attempt $i failed or timed out, retrying in 15s"; sleep 15
+          done
+          [ -n "$ok" ] || { echo "::error::apt failed 3 times"; exit 1; }
 
       - name: Build and check the card
         run: npm run check
