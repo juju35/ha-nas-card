@@ -68,6 +68,8 @@ test("discovery finds the NAS once UGNAS_device_id appears on already registered
   const cpu = "sensor.ugreen_nas_cpu_usage";
   const ram = "sensor.ugreen_nas_ram_usage";
   for (const entities of [{ [cpu]: {}, [ram]: {} }, { [cpu]: { platform: "ugreen" }, [ram]: { platform: "ugreen" } }]) {
+    // A freshly loaded card (startup): no mapping seen yet to fall back on while the NAS is offline.
+    const { discover } = load("nas-card.js", ["discover"]);
     assert.equal(discover({ entities, states: { [cpu]: bare(cpu), [ram]: bare(ram) } }, "").nasId, null);
     const partial = discover({ entities, states: { [cpu]: s(cpu, 10, "%"), [ram]: bare(ram) } }, "");
     assert.equal(partial.nasId, "nas");
@@ -156,11 +158,18 @@ test("discovery finds the NAS again after it was entirely offline", async () => 
   const { mock, entities, lose } = await regression();
   let offline = mock;
   for (const id of Object.keys(mock)) offline = lose(offline, id);
-  assert.equal(discover({ states: offline, entities }, "").nasId, null);
+  // Seen online before: the last mapping is kept while offline (values unavailable, no warning).
+  assert.equal(discover({ states: offline, entities }, "").nasId, "ugreen_nas");
   const el = new NasMiniCard();
   el._config = {};
   el._hass = { states: offline, entities, language: "en" };
-  assert.match(el._render(), /class="warning"/);
+  assert.doesNotMatch(el._render(), /class="warning"/);
+  // Never seen online (fresh page): the warning.
+  const fresh = load("nas-card.js", ["NasMiniCard"]);
+  const cold = new fresh.NasMiniCard();
+  cold._config = {};
+  cold._hass = { states: offline, entities, language: "en" };
+  assert.match(cold._render(), /class="warning"/);
   el._hass = { states: { ...mock }, entities, language: "en" };
   assert.doesNotMatch(el._render(), /class="warning"/);
   assert.equal(discover({ states: { ...mock }, entities }, "").nasId, "ugreen_nas");
@@ -550,4 +559,123 @@ test("the mini card network footer opens the upload sensor when there is no down
   assert.equal(discover(mini._hass, "").scalars.lan_down, undefined);
   const html = mini._render();
   assert.match(html, new RegExp(`data-key="network" data-entity="${up.replace(/\./g, "\\.")}"`));
+});
+
+// Two NAS of the same integration whose registry order differs from the sorted order the cards use.
+const twoNas = () => ({
+  synology: {
+    states: {
+      "sensor.office_cpu": { entity_id: "sensor.office_cpu", state: "10", attributes: {} },
+      "sensor.backup_cpu": { entity_id: "sensor.backup_cpu", state: "20", attributes: {} },
+    },
+    entities: {
+      "sensor.office_cpu": { platform: "synology_dsm", device_id: "ffff", translation_key: "cpu_total_load" },
+      "sensor.backup_cpu": { platform: "synology_dsm", device_id: "0000", translation_key: "cpu_total_load" },
+    },
+    devices: { ffff: { id: "ffff", name: "Office NAS" }, "0000": { id: "0000", name: "Backup NAS" } },
+    language: "en",
+  },
+  ugreen: {
+    states: {
+      "sensor.z_nas_cpu_usage": { entity_id: "sensor.z_nas_cpu_usage", state: "10", attributes: { UGNAS_device_id: "Z" } },
+      "sensor.a_nas_cpu_usage": { entity_id: "sensor.a_nas_cpu_usage", state: "20", attributes: { UGNAS_device_id: "A" } },
+    },
+    entities: {
+      "sensor.z_nas_cpu_usage": { platform: "ugreen" },
+      "sensor.a_nas_cpu_usage": { platform: "ugreen" },
+    },
+    language: "en",
+  },
+});
+
+test("without nas, the editor and the stub config pick the NAS the card shows", () => {
+  for (const [brand, hass] of Object.entries(twoNas())) {
+    const m = load("nas-card.js", ["discover", "NasCard", "NasCardEditor", "NasMiniCardEditor"]);
+    const shown = m.discover(hass, "").nasId;
+    assert.equal(shown, brand === "ugreen" ? "A" : "0000");
+    assert.equal(m.NasCard.getStubConfig(hass).nas, shown, brand);
+    for (const Editor of [m.NasCardEditor, m.NasMiniCardEditor]) {
+      const ed = new Editor();
+      ed._hass = hass;
+      ed._config = {};
+      ed._render();
+      assert.equal(ed._form.data.nas, shown, brand);
+      // The NAS list starts with that NAS too.
+      assert.equal(ed._schema()[0].selector.select.options[0].value, shown, brand);
+    }
+  }
+});
+
+test("without any NAS, the editor leaves nas empty", () => {
+  const { NasCardEditor, NasCard: Card } = load("nas-card.js", ["NasCardEditor", "NasCard"]);
+  const ed = new NasCardEditor();
+  ed._hass = { states: {}, entities: {}, devices: {}, language: "en" };
+  ed._config = {};
+  ed._render();
+  assert.equal(ed._form.data.nas, undefined);
+  assert.deepEqual({ ...Card.getStubConfig(ed._hass) }, {});
+});
+
+// The UGREEN coordinator failing (NAS rebooting or unreachable) leaves every entity unavailable
+// without its UGNAS_device_id attribute.
+const ugreenOffline = async () => {
+  const { states: mock } = await import("../scripts/mock-states.mjs");
+  const entities = Object.fromEntries(Object.keys(mock).map((id) => [id, { entity_id: id, platform: "ugreen" }]));
+  const offline = Object.fromEntries(
+    Object.keys(mock).map((id) => [id, { entity_id: id, state: "unavailable", attributes: { friendly_name: "x", restored: true } }])
+  );
+  return { mock, entities, offline };
+};
+
+test("an offline UGREEN NAS keeps its card with unavailable values instead of a setup warning", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  for (const nas of ["ugreen_nas", ""]) {
+    const m = load("nas-card.js", ["discover", "NasCard", "NasMiniCard"]);
+    const online = m.discover({ states: mock, entities }, nas);
+    assert.equal(online.nasId, "ugreen_nas");
+    const down = m.discover({ states: offline, entities }, nas);
+    assert.equal(down.nasId, "ugreen_nas", `nas: "${nas}"`);
+    assert.equal(down.scalars.cpu_usage, online.scalars.cpu_usage);
+    for (const Card of [m.NasCard, m.NasMiniCard]) {
+      const el = new Card();
+      el._config = nas ? { nas } : {};
+      el._hass = { states: offline, entities, language: "en" };
+      const html = el._render();
+      assert.doesNotMatch(html, /class="warning"/, `${Card.name} nas: "${nas}"`);
+      assert.match(html, /—/);
+    }
+    // Back online: the live mapping again.
+    assert.equal(m.discover({ states: { ...mock }, entities }, nas).nasId, "ugreen_nas");
+  }
+});
+
+test("an offline UGREEN NAS never seen online, removed from the registry or another nas still warns", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  const m = load("nas-card.js", ["discover"]);
+  // Never seen since the page loaded: nothing to fall back on.
+  assert.equal(m.discover({ states: offline, entities }, "ugreen_nas").nasId, null);
+  m.discover({ states: mock, entities }, "ugreen_nas");
+  // A NAS id that was never mapped.
+  assert.equal(m.discover({ states: offline, entities }, "other_nas").nasId, null);
+  // Integration removed: its entities left the registry and the states.
+  assert.equal(m.discover({ states: {}, entities: {} }, "ugreen_nas").nasId, null);
+  // Entities still there but moved to another platform in a new registry.
+  const moved = Object.fromEntries(Object.keys(entities).map((id) => [id, { entity_id: id, platform: "other" }]));
+  assert.equal(m.discover({ states: offline, entities: moved }, "ugreen_nas").nasId, null);
+});
+
+test("with two UGREEN NAS, the offline one keeps its card and the other its own", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  const m = load("nas-card.js", ["discover"]);
+  // A second NAS online, with its own entities.
+  const other = { "sensor.b_nas_cpu_usage": { entity_id: "sensor.b_nas_cpu_usage", state: "5", attributes: { UGNAS_device_id: "B" } } };
+  const allEntities = { ...entities, "sensor.b_nas_cpu_usage": { platform: "ugreen" } };
+  m.discover({ states: { ...mock, ...other }, entities: allEntities }, "ugreen_nas");
+  const hass = { states: { ...offline, ...other }, entities: allEntities };
+  assert.equal(m.discover(hass, "ugreen_nas").nasId, "ugreen_nas");
+  assert.equal(m.discover(hass, "B").scalars.cpu_usage, "sensor.b_nas_cpu_usage");
+  // A sensor of the offline NAS deleted meanwhile does not prevent the fallback.
+  const { "sensor.ugreen_nas_cpu_fan": _fan, ...rest } = hass.states;
+  const { "sensor.ugreen_nas_cpu_fan": _fe, ...restEntities } = allEntities;
+  assert.equal(m.discover({ states: rest, entities: restEntities }, "ugreen_nas").nasId, "ugreen_nas");
 });

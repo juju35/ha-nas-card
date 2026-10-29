@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.13.2 - 2026-10-29
+
+### Fixes
+- **UGREEN NAS offline**: while a UGREEN NAS is rebooting or unreachable, the cards keep their layout with unavailable values (`—`) instead of being replaced by a "NAS not found" or "No NAS entities found" warning. The warning still shows when the NAS was never seen online since the dashboard was loaded, or when its integration was removed.
+- **Visual editor default NAS**: with several NAS and no `nas` in the configuration, the editor (and the configuration proposed when adding a card) now selects the NAS the card actually shows, so changing any option in the editor no longer switches the card to another NAS. The editor's NAS list follows the same order.
+
 ## 1.13.1 - 2026-10-29
 
 ### Fixes
