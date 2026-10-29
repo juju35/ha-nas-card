@@ -85,7 +85,7 @@ const STRINGS = {
     volumes: "Volumes",
     disks: "Disques",
     fans: "Ventilateurs",
-    uptime: "Allumé depuis",
+    uptime: "Temps de fonctionnement\u00a0:",
     download: "Réception",
     upload: "Envoi",
     used: "utilisés",
@@ -242,21 +242,27 @@ const num = (s) => {
   return Number.isFinite(v) ? v : null;
 };
 
-const UNIT_FACTORS = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3, TB: 1024 ** 4, PB: 1024 ** 5 };
+// Data sizes follow Home Assistant's UnitOfInformation: kB/MB/GB/TB/PB are decimal (powers of 1000) and
+// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use decimal units,
+// so a sensor reported in GB or TB reads the same on the card as in Home Assistant.
+const UNIT_FACTORS = {
+  b: 1, kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12, pb: 1e15,
+  kib: 1024, mib: 1024 ** 2, gib: 1024 ** 3, tib: 1024 ** 4, pib: 1024 ** 5,
+};
 
 const toBytes = (s) => {
   const v = num(s);
   if (v === null) return null;
-  const unit = String(s.attributes?.unit_of_measurement || "B").toUpperCase().replace("IB", "B");
+  const unit = String(s.attributes?.unit_of_measurement || "B").toLowerCase();
   return v * (UNIT_FACTORS[unit] ?? 1);
 };
 
 const fmtBytes = (b) => {
   if (b === null || b === undefined) return "—";
-  const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+  const units = ["B", "kB", "MB", "GB", "TB", "PB"];
   let i = 0;
-  while (b >= 1024 && i < units.length - 1) {
-    b /= 1024;
+  while (b >= 1000 && i < units.length - 1) {
+    b /= 1000;
     i++;
   }
   const v = b >= 100 || i === 0 ? b.toFixed(0) : b.toFixed(b >= 10 ? 1 : 2);

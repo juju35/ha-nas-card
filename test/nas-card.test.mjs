@@ -2,13 +2,15 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, NasCard, NasMiniCard, toBps, fmtRate, STRINGS } = load("nas-card.js", [
+const { volumeUsage, discover, NasCard, NasMiniCard, toBps, fmtRate, toBytes, fmtBytes, STRINGS } = load("nas-card.js", [
   "volumeUsage",
   "discover",
   "NasCard",
   "NasMiniCard",
   "toBps",
   "fmtRate",
+  "toBytes",
+  "fmtBytes",
   "STRINGS",
 ]);
 
@@ -93,6 +95,21 @@ test("network rates follow the unit of the sensor", () => {
   assert.equal(toBps(s("sensor.r", 5)), 5);
   assert.equal(toBps(s("sensor.r", "unavailable", "B/s")), null);
   assert.equal(fmtRate(toBps(s("sensor.r", 48.475, "MB/s"))), "48.5 MB/s");
+});
+
+test("data sizes follow Home Assistant: kB/MB/GB/TB decimal, KiB/MiB/GiB/TiB binary", () => {
+  assert.equal(toBytes(s("sensor.v", 2, "kB")), 2000);
+  assert.equal(toBytes(s("sensor.v", 2, "GB")), 2e9);
+  assert.equal(toBytes(s("sensor.v", 6.62, "TB")), 6.62e12);
+  assert.equal(toBytes(s("sensor.v", 1, "KiB")), 1024);
+  assert.equal(toBytes(s("sensor.v", 1, "GiB")), 1024 ** 3);
+  assert.equal(toBytes(s("sensor.v", 1, "TiB")), 1024 ** 4);
+  assert.equal(toBytes(s("sensor.v", 5)), 5);
+  // A sensor in GB or TB reads the same on the card as in Home Assistant.
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 6.62, "TB"))), "6.62 TB");
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 1000, "GB"))), "1 TB");
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 1, "GiB"))), "1.07 GB");
+  assert.equal(fmtBytes(1500), "1.5 kB");
 });
 
 test("both cards share setConfig and translate the Normal server status", () => {
@@ -317,7 +334,7 @@ test("Synology DSM discovery: scalars, security status, volumes and disks from t
   assert.equal(vols.length, 1);
   assert.equal(vols[0].labelText, "Volume 1");
   const u = volumeUsage(hass, vols[0]);
-  assert.equal(u.used, 6.62 * 1024 ** 4);
+  assert.equal(u.used, 6.62e12);
   assert.equal(Math.round(u.pct * 10) / 10, 63.1); // the direct percentage completes the missing total
   const disks = Object.values(nas.pools[1].disks);
   assert.equal(disks.length, 4);
@@ -503,11 +520,11 @@ test("the RAM label keeps the unit of the used figure when it differs from the t
   el._config = {};
   const st = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: { unit_of_measurement: unit } });
   const run = (used) => {
-    el._hass = { states: { "sensor.ram_used": st("sensor.ram_used", used, "MB"), "sensor.ram_total": st("sensor.ram_total", 2048, "MB") }, language: "en" };
+    el._hass = { states: { "sensor.ram_used": st("sensor.ram_used", used, "MB"), "sensor.ram_total": st("sensor.ram_total", 2000, "MB") }, language: "en" };
     return el._system({ scalars: { ram_used: "sensor.ram_used", ram_total: "sensor.ram_total" } });
   };
   assert.match(run(800), /RAM · 800 MB \/ 2 GB/);
-  assert.match(run(1536), /RAM · 1\.5 \/ 2 GB/);
+  assert.match(run(1500), /RAM · 1\.5 \/ 2 GB/);
 });
 
 test("a network tile without its sensor is neither focusable nor clickable", () => {

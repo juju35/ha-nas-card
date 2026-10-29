@@ -212,6 +212,10 @@ The cards read the Home Assistant entity and device registries instead of entity
 
 The picture is drawn from the model reported by the integration, so a renamed NAS keeps the right picture: UGREEN DXP towers (aluminium) and DH towers (white) by bay count, the flat all-flash DXP480T; Synology DS towers with the bay count of their family (DS723+ has 2 bays, DS923+ 4, DS1522+ 5, DS1821+ 8…) and RS rackmounts; QNAP towers with the bay count of their name (TS-464 → 4) and rackmounts for the models ending in U (TS-873AeU, TS-1264U-RP). Use the `image` option to pick another one or your own.
 
+### Units
+
+Sizes and rates follow Home Assistant's units: `kB`, `MB`, `GB` and `TB` (and `kB/s`, `MB/s`…) are decimal (powers of 1000), `KiB`, `MiB`, `GiB` and `TiB` (and `KiB/s`, `MiB/s`…) are binary (powers of 1024), whatever unit you choose for a sensor in Home Assistant. The cards display decimal units, so a volume reported as `6.62 TB` reads `6.62 TB` on the card too.
+
 ### Thresholds
 
 | Value | Orange | Red |

@@ -7,9 +7,12 @@
 - **RAM label units**: the used memory keeps its own unit when it differs from the total (`800 MB / 2 GB` instead of `800 / 2 GB`).
 - **Network accessibility**: a download or upload tile without its sensor is no longer focusable nor shown as clickable, and the mini card network footer opens the upload sensor when there is no download sensor.
 - **Spanish mini card**: the storage row label is shortened to "Espacio" so it no longer overflows onto its bar.
+- **Size units aligned with Home Assistant**: `kB`, `MB`, `GB` and `TB` are now read and displayed as decimal units (powers of 1000), like Home Assistant and like the network rates already were; `KiB`, `MiB`, `GiB` and `TiB` stay binary. A sensor in GB or TB now reads the same on the card as in Home Assistant (a 16384 MB RAM total shows 16.4 GB instead of 16 GB).
+- **French uptime label**: "Temps de fonctionnement :" instead of "Allumé depuis", with a colon like the other languages.
 
 ### Maintenance
 - CI: the validate workflow installs Chromium's system libraries in a time-boxed, retried step; validate, release and screenshots workflows now fail explicitly when every apt attempt failed.
+- CI: when the screenshots workflow pushes refreshed screenshots to a pull request, it re-runs the lint, validate and HACS checks on that commit (a push made with `GITHUB_TOKEN` does not trigger them by itself).
 
 ## 1.13.0 - 2026-10-28
 
