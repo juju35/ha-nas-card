@@ -532,15 +532,17 @@ const _cache = new Map();
 const listNas = (hass) => {
   const ids = new Map();
   // The editor renders on every hass change: go through the registry-backed candidates
-  // (cached, usually a handful of entities) instead of scanning every state.
-  for (const eid of candidateIds(hass)) {
-    const a = hass.states[eid]?.attributes;
-    const id = a?.UGNAS_device_id;
-    if (id && !ids.has(id)) ids.set(id, a.UGNAS_global_id || id);
+  // (cached, usually a handful of entities) instead of scanning every state. Both lists follow the
+  // order discover() picks its default NAS in (sorted entity ids, sorted root device ids), so the
+  // first entry is the NAS a card without nas shows.
+  for (const eid of ugnasIds(hass)) {
+    const a = hass.states[eid].attributes;
+    const id = a.UGNAS_device_id;
+    if (!ids.has(id)) ids.set(id, a.UGNAS_global_id || id);
   }
   const list = [...ids.entries()].map(([value, label]) => ({ value, label }));
   for (const brand of Object.keys(REGISTRY_PLATFORMS))
-    for (const rootId of registryRoots(hass, brand).keys()) {
+    for (const rootId of [...registryRoots(hass, brand).keys()].sort()) {
       const d = hass.devices[rootId];
       list.push({ value: rootId, label: d.name_by_user || d.name || rootId });
     }
@@ -1160,8 +1162,9 @@ class NasCard extends NasBase {
   }
 
   static getStubConfig(hass) {
-    const nas = hass ? listNas(hass)[0] : null;
-    return nas ? { nas: nas.value } : {};
+    // The NAS this card shows without nas (the first of the editor's list).
+    const nas = hass ? discover(hass, "").nasId : null;
+    return nas ? { nas } : {};
   }
 
   getCardSize() {
@@ -1569,7 +1572,8 @@ class NasEditorBase extends HTMLElement {
     }
     const data = { ...this._config };
     for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
-    if (!data.nas && this._hass) data.nas = listNas(this._hass)[0]?.value;
+    // Without nas (hand-written YAML), show the NAS the card shows: saving the form then keeps it.
+    if (!data.nas && this._hass) data.nas = discover(this._hass, "").nasId || undefined;
     this._form.hass = this._hass;
     this._form.data = data;
     this._form.schema = this._schema();

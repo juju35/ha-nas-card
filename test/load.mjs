@@ -11,13 +11,14 @@ export const load = (file, names) => {
       return this.shadowRoot;
     }
     dispatchEvent() {}
+    appendChild() {}
   }
   const registry = new Map();
   const context = {
     HTMLElement,
     customElements: { get: (n) => registry.get(n), define: (n, c) => registry.set(n, c) },
     window: {},
-    document: { addEventListener() {}, removeEventListener() {} },
+    document: { addEventListener() {}, removeEventListener() {}, createElement: (tag) => ({ tag, addEventListener() {} }) },
     console: { info() {}, error() {}, log() {} },
     CustomEvent: class {},
     Intl,

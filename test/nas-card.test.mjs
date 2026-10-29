@@ -551,3 +551,58 @@ test("the mini card network footer opens the upload sensor when there is no down
   const html = mini._render();
   assert.match(html, new RegExp(`data-key="network" data-entity="${up.replace(/\./g, "\\.")}"`));
 });
+
+// Two NAS of the same integration whose registry order differs from the sorted order the cards use.
+const twoNas = () => ({
+  synology: {
+    states: {
+      "sensor.office_cpu": { entity_id: "sensor.office_cpu", state: "10", attributes: {} },
+      "sensor.backup_cpu": { entity_id: "sensor.backup_cpu", state: "20", attributes: {} },
+    },
+    entities: {
+      "sensor.office_cpu": { platform: "synology_dsm", device_id: "ffff", translation_key: "cpu_total_load" },
+      "sensor.backup_cpu": { platform: "synology_dsm", device_id: "0000", translation_key: "cpu_total_load" },
+    },
+    devices: { ffff: { id: "ffff", name: "Office NAS" }, "0000": { id: "0000", name: "Backup NAS" } },
+    language: "en",
+  },
+  ugreen: {
+    states: {
+      "sensor.z_nas_cpu_usage": { entity_id: "sensor.z_nas_cpu_usage", state: "10", attributes: { UGNAS_device_id: "Z" } },
+      "sensor.a_nas_cpu_usage": { entity_id: "sensor.a_nas_cpu_usage", state: "20", attributes: { UGNAS_device_id: "A" } },
+    },
+    entities: {
+      "sensor.z_nas_cpu_usage": { platform: "ugreen" },
+      "sensor.a_nas_cpu_usage": { platform: "ugreen" },
+    },
+    language: "en",
+  },
+});
+
+test("without nas, the editor and the stub config pick the NAS the card shows", () => {
+  for (const [brand, hass] of Object.entries(twoNas())) {
+    const m = load("nas-card.js", ["discover", "NasCard", "NasCardEditor", "NasMiniCardEditor"]);
+    const shown = m.discover(hass, "").nasId;
+    assert.equal(shown, brand === "ugreen" ? "A" : "0000");
+    assert.equal(m.NasCard.getStubConfig(hass).nas, shown, brand);
+    for (const Editor of [m.NasCardEditor, m.NasMiniCardEditor]) {
+      const ed = new Editor();
+      ed._hass = hass;
+      ed._config = {};
+      ed._render();
+      assert.equal(ed._form.data.nas, shown, brand);
+      // The NAS list starts with that NAS too.
+      assert.equal(ed._schema()[0].selector.select.options[0].value, shown, brand);
+    }
+  }
+});
+
+test("without any NAS, the editor leaves nas empty", () => {
+  const { NasCardEditor, NasCard: Card } = load("nas-card.js", ["NasCardEditor", "NasCard"]);
+  const ed = new NasCardEditor();
+  ed._hass = { states: {}, entities: {}, devices: {}, language: "en" };
+  ed._config = {};
+  ed._render();
+  assert.equal(ed._form.data.nas, undefined);
+  assert.deepEqual({ ...Card.getStubConfig(ed._hass) }, {});
+});
