@@ -679,3 +679,49 @@ test("with two UGREEN NAS, the offline one keeps its card and the other its own"
   const { "sensor.ugreen_nas_cpu_fan": _fe, ...restEntities } = allEntities;
   assert.equal(m.discover({ states: rest, entities: restEntities }, "ugreen_nas").nasId, "ugreen_nas");
 });
+
+// Texts shown by the card, outside the status chip: title, subtitle, CPU model, volume and disk labels.
+const shownTexts = (html) => {
+  const out = [];
+  for (const re of [/class="name">([^<]*)</g, /class="sub"><div class="parts">(.*?)<\/div>/g, /class="grow">([^<]*)</g, /class="top">.*?<span>([^<]*)</g, /class="tag">([^<]*)</g, /class="model">([^<]*)</g]) {
+    for (const m of html.matchAll(re)) out.push(m[1]);
+  }
+  const facts = html.match(/class="facts">([\s\S]*?)<\/div>/);
+  if (facts) out.push(facts[1]);
+  return out.join("\n");
+};
+
+test("an offline UGREEN NAS keeps its last known name, model and labels instead of showing unavailable", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  for (const Card of ["NasCard", "NasMiniCard"]) {
+    const m = load("nas-card.js", ["NasCard", "NasMiniCard"]);
+    const el = new m[Card]();
+    el._config = {};
+    el._hass = { states: mock, entities, language: "en" };
+    const live = el._render();
+    assert.match(live, /class="name">ugreen-nas</);
+    el._hass = { states: offline, entities, language: "en" };
+    const html = el._render();
+    assert.doesNotMatch(shownTexts(html), /unavailable/, Card);
+    assert.match(html, /class="name">ugreen-nas</, Card);
+    assert.match(html, /<span>DXP480T Plus<\/span>/, Card);
+    // The picture of the model, not the generic fallback.
+    assert.equal(html.match(/<img class="nas" src="([^"]*)"/)?.[1], live.match(/<img class="nas" src="([^"]*)"/)?.[1], Card);
+  }
+});
+
+test("an offline UGREEN NAS whose texts were never shown falls back to generic names, never unavailable", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  const m = load("nas-card.js", ["discover", "NasCard", "NasMiniCard"]);
+  // Mapped online (e.g. by the editor) but never rendered before going offline.
+  m.discover({ states: mock, entities }, "");
+  for (const Card of [m.NasCard, m.NasMiniCard]) {
+    const el = new Card();
+    el._config = {};
+    el._hass = { states: offline, entities, language: "en" };
+    const html = el._render();
+    assert.doesNotMatch(html, /class="warning"/);
+    assert.doesNotMatch(shownTexts(html), /unavailable/, Card.name);
+    assert.match(html, /class="name">UGREEN NAS</, Card.name);
+  }
+});
