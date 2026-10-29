@@ -487,3 +487,50 @@ test("the editor offers German and Spanish, and de/es locales resolve to their s
     assert.equal(el._t("network"), STRINGS[l].network);
   }
 });
+
+test("volume and disk keys built from free-text QNAP names are escaped in the data-key attribute", () => {
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states: {}, language: "en" };
+  const nas = { pools: { 1: { volumes: { 'My "Vol"': { labelText: 'My "Vol"' } }, disks: { 'a"b': { labelText: "Disk" } } } } };
+  assert.match(el._volumes(nas), /data-key="1-My &quot;Vol&quot;"/);
+  assert.doesNotMatch(el._volumes(nas), /data-key="1-My "/);
+  assert.match(el._disks(nas), /data-key="1-a&quot;b"/);
+});
+
+test("the RAM label keeps the unit of the used figure when it differs from the total's", () => {
+  const el = new NasCard();
+  el._config = {};
+  const st = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: { unit_of_measurement: unit } });
+  const run = (used) => {
+    el._hass = { states: { "sensor.ram_used": st("sensor.ram_used", used, "MB"), "sensor.ram_total": st("sensor.ram_total", 2048, "MB") }, language: "en" };
+    return el._system({ scalars: { ram_used: "sensor.ram_used", ram_total: "sensor.ram_total" } });
+  };
+  assert.match(run(800), /RAM · 800 MB \/ 2 GB/);
+  assert.match(run(1536), /RAM · 1\.5 \/ 2 GB/);
+});
+
+test("a network tile without its sensor is neither focusable nor clickable", () => {
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states: { "sensor.rx": { entity_id: "sensor.rx", state: "1", attributes: { unit_of_measurement: "MB/s" } } }, language: "en" };
+  const html = el._network({ scalars: { lan_down: "sensor.rx" } });
+  assert.equal((html.match(/role="button"/g) || []).length, 1);
+  assert.doesNotMatch(html, /data-entity=""/);
+});
+
+test("the mini card network footer opens the upload sensor when there is no download sensor", async () => {
+  const hass = await registryHass("qnap");
+  const { lan_down: down, lan_up: up } = discover(hass, "").scalars;
+  assert.ok(down && up, "the QNAP mock has both rate sensors");
+  const states = { ...hass.states };
+  const entities = { ...hass.entities };
+  delete states[down];
+  delete entities[down];
+  const mini = new NasMiniCard();
+  mini._config = {};
+  mini._hass = { ...hass, states, entities };
+  assert.equal(discover(mini._hass, "").scalars.lan_down, undefined);
+  const html = mini._render();
+  assert.match(html, new RegExp(`data-key="network" data-entity="${up.replace(/\./g, "\\.")}"`));
+});
