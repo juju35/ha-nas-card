@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.3 - 2026-10-29
+
+### Fixes
+- **UGREEN NAS offline names**: while a UGREEN NAS is rebooting or unreachable, the cards keep showing its last known name, model, UGOS version, CPU model and volume and disk names (and the picture of its model) instead of "unavailable" everywhere. Names never seen since the dashboard was loaded fall back to the generic ones ("UGREEN NAS", "Volume 1", "Disk 1").
+
 ## 1.13.2 - 2026-10-29
 
 ### Fixes

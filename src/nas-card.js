@@ -637,6 +637,9 @@ const discoverUgreen = (hass, nasId) => {
 // mapped entities still in the states are all UGREEN candidates of the registry and none of them
 // carries the attribute (a NAS id found elsewhere, or a removed integration, is not served from here).
 const _lastGood = new Map();
+// Last known text of the name and label entities, by entity id (see NasCard._text).
+const _lastText = new Map();
+const NO_VALUE = new Set(["unavailable", "unknown"]);
 const mappedIds = (nas) => {
   const ids = [...Object.values(nas.scalars), ...Object.values(nas.fans)];
   for (const pool of Object.values(nas.pools)) {
@@ -1025,6 +1028,20 @@ class NasBase extends HTMLElement {
     return id ? this._hass.states[id] : undefined;
   }
 
+  // Text of an entity shown as a name or a label (NAS name and model, OS version, CPU model, volume
+  // and disk labels): never "unavailable" / "unknown". While the entity has no value (UGREEN NAS
+  // offline), the last value shown is kept, so the card still tells which NAS and which disk it is;
+  // without one, null lets the caller fall back on its generic name.
+  _text(id) {
+    const s = this._s(id);
+    if (!s) return null;
+    if (!NO_VALUE.has(s.state) && s.state !== "") {
+      _lastText.set(id, s.state);
+      return s.state;
+    }
+    return _lastText.get(id) ?? null;
+  }
+
   // What the render depends on: language, dark mode, the registries (registry integrations are
   // rediscovered when an entity or a device changes) and the states of the NAS entities.
   _signature() {
@@ -1063,9 +1080,9 @@ class NasBase extends HTMLElement {
     const c = this._config;
     const status = this._s(sc.server_status);
     const ok = statusOk(nas, status);
-    const name = c.title || this._s(sc.name)?.state || nas.info?.name || `${BRAND_NAMES[nas.brand]} NAS`;
-    const model = this._s(sc.model)?.state || nas.info?.model;
-    const version = this._s(sc.version)?.state;
+    const name = c.title || this._text(sc.name) || nas.info?.name || `${BRAND_NAMES[nas.brand]} NAS`;
+    const model = this._text(sc.model) || nas.info?.model;
+    const version = this._text(sc.version);
     const os = version ? `UGOS ${version}` : osVersion(nas.info?.version, nas.brand);
     // The compact mini card shares its header with the NAS picture: the model alone, the OS version zoomed in.
     const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
@@ -1250,7 +1267,7 @@ class NasCard extends NasBase {
           this._config
         )}</span>`
       );
-    const cpuModel = this._s(sc.cpu_model)?.state;
+    const cpuModel = this._text(sc.cpu_model);
     if (cpuModel) facts.push(`<span>${svgIcon(ICONS.cpu)}${esc(cpuModel.replace(/\(R\)|\(TM\)/g, ""))}</span>`);
     return `<div>
       <div class="gauges">
@@ -1291,12 +1308,12 @@ class NasCard extends NasBase {
     // Volume numbers start again in each pool: with several pools, the fallback name carries the pool number.
     const multi = Object.keys(nas.pools).length > 1;
     for (const [pn, pool] of Object.entries(nas.pools)) {
-      const raid = this._s(pool.level)?.state;
+      const raid = this._text(pool.level);
       for (const [vn, vol] of Object.entries(pool.volumes)) {
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
-        const label = this._s(vol.label)?.state || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
-        const fs = this._s(vol.filesystem)?.state;
+        const label = this._text(vol.label) || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
+        const fs = this._text(vol.filesystem);
         const cls = level(u.pct, 80, 90);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
@@ -1326,9 +1343,9 @@ class NasCard extends NasBase {
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
-          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || d.labelText || `Disk ${dn}`)}</span>
+          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || `Disk ${dn}`)}</span>
             <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
-          <div class="model">${esc(this._s(d.model)?.state || d.modelText || "")}</div>
+          <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
             <span class="temp ${level(temp, 60, 70)}">${temp === null ? "—" : `${Math.round(temp)}°C`}</span>
             <span class="muted">${size !== null ? fmtBytes(size) : ""}${
