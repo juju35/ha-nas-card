@@ -725,3 +725,22 @@ test("an offline UGREEN NAS whose texts were never shown falls back to generic n
     assert.match(html, /class="name">UGREEN NAS</, Card.name);
   }
 });
+
+test("a NAS renamed while offline shows its new name once back online", async () => {
+  const { mock, entities, offline } = await ugreenOffline();
+  const m = load("nas-card.js", ["NasCard"]);
+  const el = new m.NasCard();
+  el._config = {};
+  el._hass = { states: mock, entities, language: "en" };
+  el._render();
+  el._hass = { states: offline, entities, language: "en" };
+  assert.match(el._render(), /class="name">ugreen-nas</);
+  const id = "sensor.ugreen_nas_nas_name";
+  assert.ok(mock[id], id);
+  el._hass = { states: { ...mock, [id]: { ...mock[id], state: "backup-nas" } }, entities, language: "en" };
+  assert.match(el._render(), /class="name">backup-nas</);
+  // An entity that left the states is not shown from memory either: the generic name.
+  const { [id]: _gone, ...rest } = mock;
+  el._hass = { states: rest, entities, language: "en" };
+  assert.match(el._render(), /class="name">UGREEN NAS</);
+});
