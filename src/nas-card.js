@@ -621,8 +621,37 @@ const discoverUgreen = (hass, nasId) => {
       }
     }
   }
-  if (nas.nasId) _cache.set(key, nas);
-  return nas;
+  if (nas.nasId) {
+    _cache.set(key, nas);
+    _lastGood.set(nas.nasId, nas);
+    _lastGood.set(nasId || "", nas);
+    return nas;
+  }
+  return offlineUgreen(hass, nasId) || nas;
+};
+
+// Last mapping found for each UGREEN NAS (and for the default NAS under ""). When the integration's
+// coordinator fails (NAS rebooting or unreachable), every entity turns unavailable and Home Assistant
+// drops UGNAS_device_id from it, so nothing carries the NAS id any more: the last mapping is served
+// again, the card then shows its values as unavailable instead of a setup warning. Only while the
+// mapped entities still in the states are all UGREEN candidates of the registry and none of them
+// carries the attribute (a NAS id found elsewhere, or a removed integration, is not served from here).
+const _lastGood = new Map();
+const mappedIds = (nas) => {
+  const ids = [...Object.values(nas.scalars), ...Object.values(nas.fans)];
+  for (const pool of Object.values(nas.pools)) {
+    for (const [k, v] of Object.entries(pool)) if (k !== "volumes" && k !== "disks") ids.push(v);
+    for (const group of [pool.volumes, pool.disks]) for (const slot of Object.values(group)) ids.push(...Object.values(slot));
+  }
+  return ids;
+};
+const offlineUgreen = (hass, nasId) => {
+  const nas = _lastGood.get(nasId || "");
+  if (!nas) return null;
+  const candidates = new Set(candidateIds(hass));
+  const present = mappedIds(nas).filter((id) => hass.states[id]);
+  const offline = present.length > 0 && present.every((id) => candidates.has(id) && !hass.states[id].attributes?.UGNAS_device_id);
+  return offline ? nas : null;
 };
 
 // ---------------------------------------------------------------------------
