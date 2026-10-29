@@ -26,8 +26,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The browser download is kept apart from its system libraries so the apt work sits
+      # in one time-boxed, retried step that fails loudly if every attempt failed.
       - name: Install Chromium for the browser tests
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
+
+      - name: Install Chromium system deps
+        timeout-minutes: 12
+        run: .github/scripts/install-browser-deps.sh
 
       - name: Build and check the card
         run: npm run check

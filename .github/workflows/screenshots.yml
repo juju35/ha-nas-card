@@ -10,8 +10,12 @@ on:
 
 # Protected main is never pushed to: the job commits the refreshed screenshots
 # back onto the pull request's own branch, so they land through the normal merge.
+# A push made with GITHUB_TOKEN does not trigger `pull_request` workflows, so the
+# job re-runs the PR checks on the screenshot commit through workflow_dispatch
+# (which GITHUB_TOKEN may trigger): hence `actions: write`.
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: screenshots-${{ github.head_ref || github.ref_name }}
@@ -41,13 +45,7 @@ jobs:
       - name: Install ffmpeg, Roboto and browser deps
         timeout-minutes: 12
         run: |
-          for i in 1 2 3; do
-            timeout 150 sudo apt-get update \
-              && timeout 300 sudo apt-get install -y ffmpeg fonts-roboto \
-              && timeout 300 npx playwright install-deps chromium \
-              && break
-            echo "apt attempt $i failed or timed out, retrying in 15s"; sleep 15
-          done
+          .github/scripts/install-browser-deps.sh ffmpeg fonts-roboto
           ffmpeg -version > /dev/null
       - run: npm run build
       - name: Render screenshots
@@ -58,6 +56,7 @@ jobs:
             exit 1
           }
       - name: Commit refreshed screenshots
+        id: commit
         # Only same-repo PRs: fork PRs have a read-only GITHUB_TOKEN and manual
         # runs must never push; both get the artifact below instead.
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
@@ -71,6 +70,15 @@ jobs:
           git add screenshots
           git commit -m "chore: refresh screenshots"
           git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+      - name: Re-run checks on the screenshot commit
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in lint.yml validate.yml hacs.yml; do
+            [ -f ".github/workflows/$wf" ] && gh workflow run "$wf" --ref "${{ github.head_ref }}"
+          done
       - name: Upload screenshots artifact
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

@@ -85,7 +85,7 @@ const STRINGS = {
     volumes: "Volumes",
     disks: "Disques",
     fans: "Ventilateurs",
-    uptime: "Allumé depuis",
+    uptime: "Temps de fonctionnement\u00a0:",
     download: "Réception",
     upload: "Envoi",
     used: "utilisés",
@@ -177,7 +177,7 @@ const STRINGS = {
     ram: "RAM",
     temperature: "Temp.",
     network: "Red",
-    storage: "Almacenamiento",
+    storage: "Espacio",
     volumes: "Volúmenes",
     disks: "Discos",
     fans: "Ventiladores",
@@ -242,25 +242,40 @@ const num = (s) => {
   return Number.isFinite(v) ? v : null;
 };
 
-const UNIT_FACTORS = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3, TB: 1024 ** 4, PB: 1024 ** 5 };
+// Data sizes follow Home Assistant's UnitOfInformation: kB/MB/GB/TB/PB are decimal (powers of 1000) and
+// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use decimal units,
+// so a sensor reported in GB or TB reads the same on the card as in Home Assistant.
+const UNIT_FACTORS = {
+  b: 1, kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12, pb: 1e15,
+  kib: 1024, mib: 1024 ** 2, gib: 1024 ** 3, tib: 1024 ** 4, pib: 1024 ** 5,
+};
 
 const toBytes = (s) => {
   const v = num(s);
   if (v === null) return null;
-  const unit = String(s.attributes?.unit_of_measurement || "B").toUpperCase().replace("IB", "B");
+  const unit = String(s.attributes?.unit_of_measurement || "B").toLowerCase();
   return v * (UNIT_FACTORS[unit] ?? 1);
 };
 
 const fmtBytes = (b) => {
   if (b === null || b === undefined) return "—";
-  const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+  const units = ["B", "kB", "MB", "GB", "TB", "PB"];
   let i = 0;
-  while (b >= 1024 && i < units.length - 1) {
-    b /= 1024;
+  while (b >= 1000 && i < units.length - 1) {
+    b /= 1000;
     i++;
   }
   const v = b >= 100 || i === 0 ? b.toFixed(0) : b.toFixed(b >= 10 ? 1 : 2);
   return `${v.includes(".") ? v.replace(/\.?0+$/, "") : v} ${units[i]}`;
+};
+
+// "used / total" for the RAM gauge: the used figure drops its unit only when both share it
+// ("1.5 / 2 GB", but "800 MB / 2 GB").
+const ramPair = (used, total) => {
+  const u = fmtBytes(used);
+  const tot = fmtBytes(total);
+  const [uv, uu] = u.split(" ");
+  return uu === tot.split(" ")[1] ? `${uv} / ${tot}` : `${u} / ${tot}`;
 };
 
 // Rate in B/s from a sensor, whatever unit it is displayed in (the integration reports B/s, but the
@@ -1192,10 +1207,7 @@ class NasCard extends NasBase {
     const ramUsed =
       toBytes(this._s(sc.ram_used)) ??
       (ramTotal !== null && ramAvail !== null ? ramTotal - ramAvail : ramTotal !== null && ram !== null ? (ramTotal * ram) / 100 : null);
-    const ramLabel =
-      ramUsed !== null && ramTotal !== null
-        ? `${this._t("ram")} · ${fmtBytes(ramUsed).split(" ")[0]} / ${fmtBytes(ramTotal)}`
-        : this._t("ram");
+    const ramLabel = ramUsed !== null && ramTotal !== null ? `${this._t("ram")} · ${ramPair(ramUsed, ramTotal)}` : this._t("ram");
     const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const facts = [];
     if (runtime !== null)
@@ -1228,8 +1240,9 @@ class NasCard extends NasBase {
   _network(nas) {
     const sc = nas.scalars;
     if (!sc.lan_down && !sc.lan_up) return "";
+    // A tile without its sensor (e.g. QNAP without upload rate) opens no more-info: not focusable.
     const tile = (id, cls, icon, k) =>
-      `<div class="tile clickable ${cls}" role="button" tabindex="0" data-entity="${id || ""}">${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
+      `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
         toBps(this._s(id))
       )}</div></div></div>`;
     return `<div>
@@ -1253,7 +1266,7 @@ class NasCard extends NasBase {
         const label = this._s(vol.label)?.state || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
         const fs = this._s(vol.filesystem)?.state;
         const cls = level(u.pct, 80, 90);
-        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${pn}-${vn}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
+        rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
             <span class="dot ${isOk(status) ? "ok" : "crit"}"></span>
             <span class="grow">${esc(label)}</span>
@@ -1280,7 +1293,7 @@ class NasCard extends NasBase {
         const temp = num(this._s(d.temperature));
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
-        items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${pn}-${dn}" data-entity="${d.temperature || d.status || ""}">
+        items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._s(d.label)?.state || d.labelText || `Disk ${dn}`)}</span>
             <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
           <div class="model">${esc(this._s(d.model)?.state || d.modelText || "")}</div>
@@ -1445,7 +1458,7 @@ class NasMiniCard extends NasCard {
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
       foot.push(
-        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || ""}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
           ICONS.up
         )}${fmtRate(toBps(this._s(sc.lan_up)))}</span>`
       );
