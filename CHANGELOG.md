@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.13.1 - 2026-10-29
+
+### Fixes
+- **QNAP volume and drive names with quotes**: a `"` in a volume or drive name no longer breaks the card markup.
+- **RAM label units**: the used memory keeps its own unit when it differs from the total (`800 MB / 2 GB` instead of `800 / 2 GB`).
+- **Network accessibility**: a download or upload tile without its sensor is no longer focusable nor shown as clickable, and the mini card network footer opens the upload sensor when there is no download sensor.
+- **Spanish mini card**: the storage row label is shortened to "Espacio" so it no longer overflows onto its bar.
+
+### Maintenance
+- CI: the validate workflow installs Chromium's system libraries in a time-boxed, retried step; validate, release and screenshots workflows now fail explicitly when every apt attempt failed.
+
 ## 1.13.0 - 2026-10-28
 
 ### Features
@@ -9,7 +20,7 @@
 
 ### Fixes
 - **Performance on Synology/QNAP-only installs**: without any UGREEN entity in the registry, the cards no longer re-scan every state of the instance on each update; the visual editor's NAS list also walks the cached registry-backed candidates instead of all states.
-- **Synology/QNAP uptime refreshed**: when the uptime comes from the boot timestamp, the card now re-renders every minute instead of freezing until another state changes.
+- **Synology/QNAP uptime refreshed**: when the uptime comes from the boot timestamp, the card now refreshes it on the first Home Assistant update after each minute change instead of freezing until the boot sensor itself changes.
 - **Accessibility**: gauges and mini-card metrics without an entity (e.g. the aggregated Storage row) are no longer focusable nor shown as clickable.
 
 ### Maintenance
