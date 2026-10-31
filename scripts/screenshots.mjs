@@ -89,9 +89,11 @@ const shots = [
   { file: "card-synology", type: "nas-card", theme: "light", width: 460, config: {}, mock: "synology" },
   { file: "card-synology-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "synology" },
   { file: "mini-card-synology", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "synology" },
+  { file: "mini-card-synology-dark", type: "nas-mini-card", theme: "dark", width: 380, config: {}, mock: "synology" },
   { file: "card-qnap", type: "nas-card", theme: "light", width: 460, config: {}, mock: "qnap" },
   { file: "card-qnap-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "qnap" },
   { file: "mini-card-qnap", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "qnap" },
+  { file: "mini-card-qnap-dark", type: "nas-mini-card", theme: "dark", width: 380, config: {}, mock: "qnap" },
 ];
 
 const browser = await chromium.launch(
