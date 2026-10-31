@@ -114,10 +114,14 @@ for (const s of shots) {
 
 // Record the spinning cooling fans as a looping GIF. Needs ffmpeg on PATH. Every animation is paused and
 // stepped frame by frame, so the GIF is identical whatever the machine's speed.
-const gif = { file: "fans", type: "nas-card", theme: "light", width: 460, config: {} };
+// Recorded in both themes with the same setup: fans.gif light, fans-dark.gif dark.
+const gifs = [
+  { file: "fans", type: "nas-card", theme: "light", width: 460, config: {} },
+  { file: "fans-dark", type: "nas-card", theme: "dark", width: 460, config: {} },
+];
 const FPS = 20;
 const SECONDS = 3;
-{
+for (const gif of gifs) {
   const page = await openCard(browser, gif);
   await page.waitForTimeout(300);
   const box = await page.locator("#root").boundingBox();
