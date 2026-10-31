@@ -174,7 +174,7 @@ DS923+ set up with Synology DSM: the volume and the drives come from the NAS chi
 | Light | Dark |
 |---|---|
 | ![card synology](screenshots/card-synology.png) | ![card synology dark](screenshots/card-synology-dark.png) |
-| ![mini card synology](screenshots/mini-card-synology.png) | |
+| ![mini card synology](screenshots/mini-card-synology.png) | ![mini card synology dark](screenshots/mini-card-synology-dark.png) |
 
 Drawn Synology models (black DS towers, RS rackmounts):
 
@@ -187,7 +187,7 @@ TS-464 set up with QNAP, with the drive temperatures and the volume used space e
 | Light | Dark |
 |---|---|
 | ![card qnap](screenshots/card-qnap.png) | ![card qnap dark](screenshots/card-qnap-dark.png) |
-| ![mini card qnap](screenshots/mini-card-qnap.png) | |
+| ![mini card qnap](screenshots/mini-card-qnap.png) | ![mini card qnap dark](screenshots/mini-card-qnap-dark.png) |
 
 Drawn QNAP models (graphite towers with the copper strip, rackmounts for the models ending in U):
 
