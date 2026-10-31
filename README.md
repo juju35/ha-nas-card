@@ -150,7 +150,9 @@ language: fr
 
 While the NAS is running, the card animates: the cooling fans spin at their live speed. It settles to a still card when they stop (and honours `prefers-reduced-motion`).
 
-![cooling fans animation](screenshots/fans.gif)
+| Light | Dark |
+|---|---|
+| ![cooling fans animation](screenshots/fans.gif) | ![cooling fans animation, dark theme](screenshots/fans-dark.gif) |
 
 | Light | Dark |
 |---|---|
@@ -233,7 +235,7 @@ npm install
 npm run build              # bundles src/nas-card.js into dist/nas-card.js
 npm run check              # builds and checks the card (run in CI)
 node scripts/models-svg.mjs  # renders the drawn model galleries of the README into images/models-*.svg
-npm run screenshots        # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif, needs ffmpeg)
+npm run screenshots        # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif / fans-dark.gif, needs ffmpeg)
 ```
 
 `npm run screenshots` loads the Synology and QNAP logos from the Home Assistant brand images; set `BRANDS_DIR` to a checkout of [home-assistant/brands](https://github.com/home-assistant/brands) to render them offline.
