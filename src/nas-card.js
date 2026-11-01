@@ -326,7 +326,8 @@ const osVersion = (v, brand) => (!v ? null : brand === "qnap" ? `${/^h/i.test(v)
 const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.state));
 
 // Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found).
-const statusOk = (nas, s) => (nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
+// An entity without value (NAS offline) is never "ok", whatever the brand.
+const statusOk = (nas, s) => (s && NO_VALUE.has(s.state) ? false : nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
 
 const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
 
@@ -713,6 +714,8 @@ const rootDevice = (hass, id) => {
   return d;
 };
 
+const naturalOrder = (a, b) => a.localeCompare(b, "en", { numeric: true });
+
 /** The NAS of one registry integration: root device id → sorted entity ids (NAS and child devices). */
 const registryRoots = (hass, brand) => {
   const cache = registryCache(hass);
@@ -727,7 +730,9 @@ const registryRoots = (hass, brand) => {
       if (!byRoot.has(root.id)) byRoot.set(root.id, []);
       byRoot.get(root.id).push(id);
     }
-    for (const ids of byRoot.values()) ids.sort();
+    // Numeric order: bay 10 after bay 9 ("drive_10_…" sorts before "drive_1_…" as plain strings),
+    // eth10 after eth2. Synology and QNAP slots are created, and then shown, in this order.
+    for (const ids of byRoot.values()) ids.sort(naturalOrder);
   }
   cache.set(key, byRoot);
   return byRoot;
@@ -938,6 +943,7 @@ const BASE_STYLE = `
           background: color-mix(in srgb, var(--c, var(--nas-ok)) 15%, transparent); color: var(--c, var(--nas-ok)); }
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
+  @media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
   /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width. */
   .titles { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
@@ -1007,9 +1013,10 @@ class NasBase extends HTMLElement {
 
   // Server status as shown: the healthy words of the integrations ("Normal", "good") go through
   // the translations, any other value is shown as reported. The Synology safety binary sensor has
-  // no word at all: both of its states are translated.
+  // no word at all: both of its states are translated. Without value (NAS offline), every brand shows
+  // the raw state rather than a security warning.
   _statusText(status, brand) {
-    if (brand === "synology") return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
+    if (brand === "synology" && !NO_VALUE.has(status.state)) return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
     return /^(normal|good|healthy|ok)$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
   }
 
@@ -1199,7 +1206,7 @@ const FULL_STYLE = `
   .fans { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
   .spin { animation: spin 1.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } .ring .value { transition: none; } }
 `;
 
 class NasCard extends NasBase {
