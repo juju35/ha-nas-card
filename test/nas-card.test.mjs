@@ -550,7 +550,7 @@ test("the editor offers German, Spanish, Serbian, Italian, Dutch, Portuguese and
   assert.equal(labels["sr-Latn"], "Srpski (latinica)");
   assert.equal(labels.it, "Italiano");
   assert.equal(labels.nl, "Nederlands");
-  assert.equal(labels.pt, "Português");
+  assert.equal(labels.pt, "Português (Portugal)");
   assert.equal(labels.pl, "Polski");
   const el = new NasCard();
   for (const [hl, l] of [["de-DE", "de"], ["es", "es"], ["it", "it"], ["nl", "nl"], ["pt-PT", "pt"], ["pl", "pl"], ["ja", "en"]]) {
@@ -558,6 +558,21 @@ test("the editor offers German, Spanish, Serbian, Italian, Dutch, Portuguese and
     el._config = {};
     assert.equal(el._t("network"), STRINGS[l].network);
   }
+});
+
+test("Intl formatting uses pt-PT for Home Assistant's pt, keeps pt-BR, and honours the language option", () => {
+  const { fmtLang } = load("nas-card.js", ["fmtLang"]);
+  assert.equal(fmtLang({ language: "pt" }, {}), "pt-PT");
+  assert.equal(fmtLang({ locale: { language: "pt" }, language: "pt" }, {}), "pt-PT");
+  assert.equal(fmtLang({ language: "pt-BR" }, {}), "pt-BR");
+  assert.equal(fmtLang({ language: "de-CH" }, {}), "de-CH");
+  assert.equal(fmtLang({ language: "ja" }, {}), "en");
+  assert.equal(fmtLang({ language: "sr-Latn" }, {}), "sr-Latn");
+  // The card's language option keeps priority over Home Assistant's locale.
+  assert.equal(fmtLang({ language: "en" }, { language: "pt" }), "pt-PT");
+  assert.equal(fmtLang({ language: "pt" }, { language: "de" }), "de");
+  assert.equal(fmtLang({ language: "pt-BR" }, { language: "fr" }), "fr");
+  assert.equal((1234567).toLocaleString(fmtLang({ language: "pt" }, {})), (1234567).toLocaleString("pt-PT"));
 });
 
 test("volume and disk keys built from free-text QNAP names are escaped in the data-key attribute", () => {

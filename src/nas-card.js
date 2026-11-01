@@ -522,6 +522,16 @@ const lang = (hass, config) => {
   return STRINGS[l] ? l : STRINGS[l.split("-")[0]] ? l.split("-")[0] : "en";
 };
 
+// Locale for Intl/toLocale*: Home Assistant's full locale when its base matches the card's resolved language
+// (keeps the region, e.g. pt-BR or de-CH), otherwise the resolved language. Home Assistant's "pt" is European
+// Portuguese, which Intl would format as Brazilian, so bare "pt" becomes "pt-PT". sr-Latn stays as resolved.
+const fmtLang = (hass, config) => {
+  const l = lang(hass, config);
+  const ha = hass && (hass.locale?.language || hass.language);
+  const loc = ha && ha.split("-")[0] === l ? ha : l;
+  return loc === "pt" ? "pt-PT" : loc;
+};
+
 const t = (hass, config, key) => STRINGS[lang(hass, config)][key] ?? STRINGS.en[key] ?? key;
 
 const num = (s) => {
@@ -1644,7 +1654,7 @@ class NasCard extends NasBase {
           <div class="meta">
             <span class="temp ${level(temp, 60, 70)}">${temp === null ? "—" : `${Math.round(temp)}°C`}</span>
             <span class="muted">${size !== null ? fmtBytes(size) : ""}${
-              hours !== null ? ` · ${Math.round(hours).toLocaleString(lang(this._hass, this._config))} ${this._t("hours")}` : ""
+              hours !== null ? ` · ${Math.round(hours).toLocaleString(fmtLang(this._hass, this._config))} ${this._t("hours")}` : ""
             }</span>
           </div>
         </div>`);
@@ -1890,7 +1900,7 @@ class NasEditorBase extends HTMLElement {
               { value: "sr-Latn", label: "Srpski (latinica)" },
               { value: "it", label: "Italiano" },
               { value: "nl", label: "Nederlands" },
-              { value: "pt", label: "Português" },
+              { value: "pt", label: "Português (Portugal)" },
               { value: "pl", label: "Polski" },
             ],
           },
