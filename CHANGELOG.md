@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.13.4 - 2026-10-29
+
+### Fixes
+- **Synology and QNAP NAS with ten bays or more**: drives (and volumes) are listed in bay order (`Drive 1` … `Drive 12`) instead of `Drive 10, 11, 12, 1, 2 …`. With several network interfaces, the QNAP network tiles follow the first one in numeric order (`eth2` before `eth10`).
+- **Synology security status while the NAS is offline**: the status chip shows the unavailable state like UGREEN and QNAP, instead of a security "Warning".
+- **Reduced motion**: with "reduce motion" enabled in the system, the usage bars and gauge rings no longer animate.
+
+### Maintenance
+- CI: Biome runs as a pre-commit hook too, and the Biome lint job reads its version from `.pre-commit-config.yaml`, so both stay on the same version.
+
 ## 1.13.3 - 2026-10-29
 
 ### Fixes
