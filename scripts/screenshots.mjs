@@ -135,15 +135,30 @@ const saveGif = (path, tmp) => {
   console.log(path.slice(root.length));
 };
 
+// Waits for the card pictures (brand logos from the HA brand CDN, NAS pictures) and returns those that failed:
+// a capture without its logo is not a change of the card, so it never replaces the committed one.
+const failedImages = async (page) => {
+  const imgs = () => [...(document.querySelector("#root > *")?.shadowRoot?.querySelectorAll("img") ?? [])];
+  await page.waitForFunction(`(${imgs})().every((i) => i.complete)`, null, { timeout: 15000 }).catch(() => {});
+  return page.evaluate(`(${imgs})().filter((i) => !i.complete || !i.naturalWidth).map((i) => i.src)`);
+};
+
 for (const s of shots) {
   const page = await openCard(browser, s);
   await page.waitForTimeout(800);
+  const path = `${root}screenshots/${s.file}.png`;
+  const failed = await failedImages(page);
+  if (failed.length && existsSync(path)) {
+    console.warn(`${path.slice(root.length)} kept: picture not loaded (${failed.join(", ")})`);
+    await page.close();
+    continue;
+  }
   const box = await page.locator("#root").boundingBox();
   const png = await page.screenshot({
     clip: { x: 0, y: 0, width: s.width + 32, height: Math.ceil(box.height) + 32 },
     animations: "disabled",
   });
-  await savePng(`${root}screenshots/${s.file}.png`, png);
+  await savePng(path, png);
   await page.close();
 }
 
@@ -160,6 +175,12 @@ const SECONDS = 3;
 for (const gif of gifs) {
   const page = await openCard(browser, gif);
   await page.waitForTimeout(300);
+  const failed = await failedImages(page);
+  if (failed.length && existsSync(`${root}screenshots/${gif.file}.gif`)) {
+    console.warn(`screenshots/${gif.file}.gif kept: picture not loaded (${failed.join(", ")})`);
+    await page.close();
+    continue;
+  }
   const box = await page.locator("#root").boundingBox();
   const clip = { x: 0, y: 0, width: gif.width + 32, height: Math.ceil(box.height) + 32 };
   const dir = mkdtempSync(join(tmpdir(), "nas-frames-"));
