@@ -937,7 +937,7 @@ test("temperatures in °F are shown in °F, and the thresholds apply to their °
   mini._config = {};
   mini._hass = { states, language: "en" };
   const m = mini._render();
-  assert.match(m, /<div class="metric clickable ok" role="button" tabindex="0" data-entity="sensor\.ugreen_nas_cpu_temperature">[\s\S]*?width:51\.\d+%[\s\S]*?124°F/);
+  assert.match(m, /<div class="metric clickable ok" role="button" tabindex="0" data-entity="sensor\.ugreen_nas_cpu_temperature" title="Temp\.">[\s\S]*?width:51\.\d+%[\s\S]*?124°F/);
 });
 
 test("°F temperatures past the °C thresholds still raise the alerts; °C and unitless sensors are unchanged", async () => {
@@ -1030,13 +1030,14 @@ test("narrow header: the title truncates but keeps a few characters, the status 
   assert.match(rule(BASE_STYLE, "ha-card"), /container-type: inline-size/);
   const titles = rule(BASE_STYLE, ".titles");
   assert.match(titles, /min-width: 0/);
-  assert.match(titles, /flex: 1 1 auto/);
+  // The title block starts from nothing (flex-basis 0): it never takes the room of the pill or the buttons.
+  assert.match(titles, /flex: 1 1 0/);
   const name = rule(BASE_STYLE, ".name");
   assert.match(name, /text-overflow: ellipsis/);
   assert.match(name, /min-width: \d+(\.\d+)?ch/);
-  // The pill sits in the second column of the titles grid: at most half of the block (fit-content(50%)),
-  // and it shrinks (min-width: 0) rather than push the title out.
-  assert.match(titles, /grid-template-columns: 1fr fit-content\(50%\)/);
+  // The pill sits in the second column of the titles grid, at its whole width (auto) as long as the title keeps
+  // its minimum (first column), and it shrinks (min-width: 0) rather than push the title out.
+  assert.match(titles, /grid-template-columns: minmax\(\d+px, 1fr\) auto/);
   const chip = rule(BASE_STYLE, ".titles > .chip");
   assert.match(chip, /min-width: 0/);
   assert.match(chip, /overflow: hidden/);
@@ -1081,4 +1082,32 @@ test("status pill and disk temperature text mix their state color with the text 
   assert.match(rule(BASE_STYLE, ".warning"), /color: color-mix\(in srgb, var\(--nas-warn\) 40%, var\(--primary-text-color, #212121\)\)/);
   // The dot keeps the pure state color.
   assert.match(rule(BASE_STYLE, ".dot"), /background: var\(--c, var\(--nas-ok\)\)/);
+});
+
+test("the keyboard zoom gives the focus back to the button without scrolling the page", async () => {
+  const el = await zoomCard();
+  const calls = [];
+  el.shadowRoot.querySelector = (sel) => (sel === ".zoom" ? { focus: (...args) => calls.push(args) } : null);
+  // Keyboard activation (Enter / Space): no click count.
+  el._zoomClick({ ...zoomButton(), detail: 0 });
+  assert.equal(calls.length, 1);
+  assert.deepEqual({ ...calls[0][0] }, { preventScroll: true });
+  // A mouse click leaves the focus where the browser puts it.
+  el._zoomClick(zoomButton());
+  assert.equal(calls.length, 1);
+});
+
+test("the mini card footer status carries its full text in title and aria-label", async () => {
+  const el = await zoomCard({ language: "pl" });
+  const span = el.html.match(/<span class="clickable [^"]*"[^>]*data-key="status"[^>]*>/)?.[0];
+  assert.ok(span, "status span");
+  assert.match(span, /title="Normalny"/);
+  assert.match(span, /aria-label="Normalny"/);
+});
+
+test("the full card asks for 9 columns at least (234 px on a phone), the mini card 6", async () => {
+  const el = await zoomCard();
+  assert.deepEqual({ ...el.getGridOptions() }, { columns: 6, min_columns: 6 });
+  const full = new NasCard();
+  assert.deepEqual({ ...full.getGridOptions() }, { columns: 12, min_columns: 9 });
 });
