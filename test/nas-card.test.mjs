@@ -868,9 +868,9 @@ test("Synology security status unavailable: shown as unavailable, not as a secur
   const el = new NasCard();
   el._hass = { states: {}, language: "en" };
   el._config = {};
-  for (const state of ["unavailable", "unknown"]) {
-    assert.equal(el._statusText({ state }, "synology"), state);
-    assert.equal(el._statusText({ state }, "qnap"), state);
+  for (const [state, text] of [["unavailable", "Unavailable"], ["unknown", "Unknown"]]) {
+    assert.equal(el._statusText({ state }, "synology"), text);
+    assert.equal(el._statusText({ state }, "qnap"), text);
   }
   assert.equal(el._statusText({ state: "on" }, "synology"), "Warning");
   assert.equal(el._statusText({ state: "off" }, "synology"), "Normal");
@@ -886,7 +886,7 @@ test("Synology security status unavailable: the chip reads unavailable", async (
     el._hass = hass;
     const html = el._render();
     assert.doesNotMatch(html, />Warning</);
-    assert.match(html, /unavailable/);
+    assert.match(html, />Unavailable</);
   }
 });
 
@@ -901,4 +901,184 @@ test("reduced motion also stops the bar (both cards) and ring transitions", () =
   const full = reduced(`${BASE_STYLE}${FULL_STYLE}`);
   assert.match(full, /\.ring \.value[^{]*\{[^}]*transition: none/);
   assert.match(full, /\.spin \{ animation: none; \}/);
+});
+
+// Review pass 9 -------------------------------------------------------------------------------------
+
+// The UGREEN mock with some states replaced (state and unit).
+const ugreenWith = async (patch) => {
+  const { states } = await import("../scripts/mock-states.mjs");
+  const out = { ...states };
+  for (const [id, [state, unit]] of Object.entries(patch))
+    out[id] = { ...states[id], state: String(state), attributes: { ...states[id].attributes, unit_of_measurement: unit } };
+  return out;
+};
+const CPU_T = "sensor.ugreen_nas_cpu_temperature";
+const DISK_T = "sensor.ugreen_nas_pool_1_disk_1_temperature";
+// Class of the element whose text is exactly `text` (the gauge, metric row or disk temperature holding it).
+const tempOf = (html, re) => html.match(re);
+
+test("temperatures in °F are shown in °F, and the thresholds apply to their °C value", async () => {
+  // 124 °F = 51 °C (CPU, below 75 °C), 113 °F = 45 °C (disk, below 60 °C): no alert.
+  const states = await ugreenWith({ [CPU_T]: [124, "°F"], [DISK_T]: [113, "°F"] });
+  const full = new NasCard();
+  full._config = {};
+  full._hass = { states, language: "en" };
+  const html = full._render();
+  assert.match(html, /<b>124°F<\/b>/);
+  assert.doesNotMatch(html, /°F<\/b>[\s\S]*?°C<\/b>|124°C|113°C/);
+  const gauge = tempOf(html, /<div class="gauge clickable ([a-z]+)"[^>]*data-entity="sensor\.ugreen_nas_cpu_temperature"/);
+  assert.equal(gauge[1], "ok");
+  assert.match(html, /<span class="temp ok">113°F<\/span>/);
+  // The ring is filled to the °C value (51 of 100), not to 124 (full).
+  const ring = html.match(/data-entity="sensor\.ugreen_nas_cpu_temperature">\s*<svg class="ring ok"[\s\S]*?class="value" stroke-dasharray="([\d.]+) ([\d.]+)"/);
+  assert.equal(Math.round((+ring[1] / +ring[2]) * 100), 51);
+  const mini = new NasMiniCard();
+  mini._config = {};
+  mini._hass = { states, language: "en" };
+  const m = mini._render();
+  assert.match(m, /<div class="metric clickable ok" role="button" tabindex="0" data-entity="sensor\.ugreen_nas_cpu_temperature">[\s\S]*?width:51\.\d+%[\s\S]*?124°F/);
+});
+
+test("°F temperatures past the °C thresholds still raise the alerts; °C and unitless sensors are unchanged", async () => {
+  // 176 °F = 80 °C (CPU warn), 158 °F = 70 °C (disk crit).
+  let states = await ugreenWith({ [CPU_T]: [176, "°F"], [DISK_T]: [158, "°F"] });
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states, language: "en" };
+  let html = el._render();
+  assert.match(html, /<div class="gauge clickable warn"[^>]*data-entity="sensor\.ugreen_nas_cpu_temperature"/);
+  assert.match(html, /<span class="temp crit">158°F<\/span>/);
+  // °C: 80 °C warns, as before.
+  states = await ugreenWith({ [CPU_T]: [80, "°C"], [DISK_T]: [45, "°C"] });
+  el._hass = { states, language: "en" };
+  html = el._render();
+  assert.match(html, /<div class="gauge clickable warn"[^>]*data-entity="sensor\.ugreen_nas_cpu_temperature"/);
+  assert.match(html, /<b>80°C<\/b>/);
+  assert.match(html, /<span class="temp ok">45°C<\/span>/);
+  // No unit: °C (the integrations' native unit), unless Home Assistant runs in °F.
+  states = await ugreenWith({ [CPU_T]: [50, undefined] });
+  el._hass = { states, language: "en" };
+  assert.match(el._render(), /<b>50°C<\/b>/);
+  el._hass = { states, language: "en", config: { unit_system: { temperature: "°F" } } };
+  assert.match(el._render(), /<b>50°F<\/b>/);
+  // Kelvin: 350 K = 76.85 °C warns.
+  states = await ugreenWith({ [CPU_T]: [350, "K"] });
+  el._hass = { states, language: "en" };
+  html = el._render();
+  assert.match(html, /<b>350 K<\/b>/);
+  assert.match(html, /<div class="gauge clickable warn"[^>]*data-entity="sensor\.ugreen_nas_cpu_temperature"/);
+  // Unavailable: no value, no alert.
+  states = await ugreenWith({ [CPU_T]: ["unavailable", "°F"], [DISK_T]: ["unknown", "°F"] });
+  el._hass = { states, language: "en" };
+  html = el._render();
+  assert.match(html, /<div class="gauge clickable "[^>]*data-entity="sensor\.ugreen_nas_cpu_temperature"[\s\S]*?<b>—<\/b>/);
+  assert.match(html, /<span class="temp ">—<\/span>/);
+});
+
+test("a server status without value reads the translated unavailable / unknown state, in every brand and card", async () => {
+  const synoId = "binary_sensor.diskstation_security_status";
+  const ugId = "sensor.ugreen_nas_server_status";
+  const expected = { en: ["Unavailable", "Unknown"], fr: ["Indisponible", "Inconnu"], de: ["Nicht verfügbar", "Unbekannt"], sr: ["Недоступно", "Непознато"] };
+  for (const brand of ["synology", "qnap", "ugreen"]) {
+    const base = brand === "ugreen" ? { ...(await import("../scripts/mock-states.mjs")).mocks.ugreen } : await registryHass(brand);
+    const id = { synology: synoId, qnap: "sensor.qnap_nas_status", ugreen: ugId }[brand];
+    for (const [i, state] of ["unavailable", "unknown"].entries())
+      for (const [language, words] of Object.entries(expected)) {
+        const hass = { ...base, language, states: { ...base.states, [id]: { ...base.states[id], state } } };
+        for (const Cls of [NasCard, NasMiniCard]) {
+          const el = new Cls();
+          el._config = {};
+          el._hass = hass;
+          const html = el._render();
+          assert.ok(html.includes(`>${words[i]}<`) || html.includes(`&nbsp;${words[i]}<`), `${brand} ${Cls.name} ${language} ${state}`);
+          assert.doesNotMatch(html, new RegExp(`>(&nbsp;)?${state}<`), `${brand} ${Cls.name} ${language} ${state}`);
+          assert.doesNotMatch(html, />Warning</);
+        }
+      }
+  }
+});
+
+test("a volume or disk status without value shows a neutral dot titled with the translated state, not a red one", async () => {
+  const states = await ugreenWith({});
+  const vol = "sensor.ugreen_nas_pool_1_volume_1_status";
+  const disk = "sensor.ugreen_nas_pool_1_disk_1_status";
+  states[vol] = { ...states[vol], state: "unavailable" };
+  states[disk] = { ...states[disk], state: "unavailable" };
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states, language: "fr" };
+  const html = el._render();
+  assert.match(html, /data-key="1-1"[\s\S]*?<span class="dot na" title="Indisponible"><\/span>/);
+  assert.match(html, /<span class="dot na" title="Indisponible"><\/span><\/div>/);
+  // A real problem still turns red.
+  states[disk] = { ...states[disk], state: "Warning" };
+  el._hass = { states, language: "fr" };
+  assert.match(el._render(), /<span class="dot crit" title="Warning"><\/span><\/div>/);
+});
+
+// CSS rules of the cards, read from the stylesheets (the browser test measures the result).
+const styles = () => load("nas-card.js", ["BASE_STYLE", "FULL_STYLE", "MINI_STYLE"]);
+const rule = (css, sel) => {
+  const esc = sel.replace(/[.*+?^${}()|[\]\\>]/g, "\\$&");
+  return [...css.matchAll(new RegExp(`(?:^|[}\\s])${esc}\\s*\\{([^}]*)\\}`, "g"))].map((m) => m[1]).join(";");
+};
+const containerRules = (css) => [...css.matchAll(/@container[^{]*\{((?:[^{}]*\{[^}]*\})*)\s*\}/g)].map((m) => m[1]).join(" ");
+
+test("narrow header: the title truncates but keeps a few characters, the status pill shrinks, buttons never do", () => {
+  const { BASE_STYLE, FULL_STYLE, MINI_STYLE } = styles();
+  assert.match(rule(BASE_STYLE, "ha-card"), /container-type: inline-size/);
+  const titles = rule(BASE_STYLE, ".titles");
+  assert.match(titles, /min-width: 0/);
+  assert.match(titles, /flex: 1 1 auto/);
+  const name = rule(BASE_STYLE, ".name");
+  assert.match(name, /text-overflow: ellipsis/);
+  assert.match(name, /min-width: \d+(\.\d+)?ch/);
+  // The pill sits in the second column of the titles grid: at most half of the block (fit-content(50%)),
+  // and it shrinks (min-width: 0) rather than push the title out.
+  assert.match(titles, /grid-template-columns: 1fr fit-content\(50%\)/);
+  const chip = rule(BASE_STYLE, ".titles > .chip");
+  assert.match(chip, /min-width: 0/);
+  assert.match(chip, /overflow: hidden/);
+  assert.match(rule(BASE_STYLE, ".chip .txt"), /text-overflow: ellipsis/);
+  // Below the threshold, the pill only shows its dot.
+  assert.match(containerRules(BASE_STYLE), /\.chip \.txt\s*\{[^}]*display: none/);
+  for (const sel of [".zoom", ".brand-link, .nas-link", ".logo"]) assert.match(rule(BASE_STYLE, sel), /flex: none/, sel);
+  // Full card below ~340 px: no picture, the volume detail under its bar, tags that shrink.
+  const full = containerRules(`${BASE_STYLE}${FULL_STYLE}`);
+  assert.match(full, /\.nas-link\s*\{[^}]*display: none/);
+  assert.match(full, /\.vol \.detail\s*\{[^}]*grid-row: 3/);
+  assert.match(rule(FULL_STYLE, ".row .tag"), /min-width: 0/);
+  // Mini card footer: one line per item, the uptime goes first.
+  assert.match(rule(MINI_STYLE, ".foot span"), /white-space: nowrap/);
+  assert.match(containerRules(`${BASE_STYLE}${MINI_STYLE}`), /\.foot \[data-key="uptime"\]\s*\{[^}]*display: none/);
+});
+
+test("the status pill carries its text in aria-label, so the dot-only pill still reads it", async () => {
+  const hass = await registryHass("synology");
+  const el = new NasCard();
+  el._config = {};
+  el._hass = hass;
+  assert.match(el._render(), /<span class="chip clickable ok" role="button" tabindex="0" data-entity="binary_sensor\.diskstation_security_status" title="Normal" aria-label="Normal"><span class="dot"><\/span><span class="txt">Normal<\/span><\/span>/);
+});
+
+test("mini card metric labels share one column sized to the longest label (subgrid, fixed fallback)", () => {
+  const { MINI_STYLE } = styles();
+  const metrics = rule(MINI_STYLE, ".metrics");
+  assert.match(metrics, /display: grid/);
+  assert.match(metrics, /grid-template-columns: 18px minmax\(64px, max-content\) minmax\(0, 1fr\) 56px/);
+  const metric = rule(MINI_STYLE, ".metric");
+  // The fixed columns stay first: a browser without subgrid keeps them.
+  assert.match(metric, /grid-template-columns: 18px 64px 1fr 56px;\s*grid-template-columns: subgrid/);
+  assert.match(metric, /grid-column: 1 \/ -1/);
+});
+
+test("status pill and disk temperature text mix their state color with the text color (contrast)", () => {
+  const { BASE_STYLE, FULL_STYLE } = styles();
+  const ink = /color: color-mix\(in srgb, var\(--c, var\(--nas-ok\)\) 40%, var\(--primary-text-color, #212121\)\)/;
+  assert.match(rule(BASE_STYLE, ".chip"), ink);
+  assert.match(rule(FULL_STYLE, ".disk .temp"), /color: color-mix\(in srgb, var\(--c, currentColor\) 40%, var\(--primary-text-color, #212121\)\)/);
+  assert.match(rule(BASE_STYLE, ".warning"), /color: color-mix\(in srgb, var\(--nas-warn\) 40%, var\(--primary-text-color, #212121\)\)/);
+  // The dot keeps the pure state color.
+  assert.match(rule(BASE_STYLE, ".dot"), /background: var\(--c, var\(--nas-ok\)\)/);
 });
