@@ -744,3 +744,100 @@ test("a NAS renamed while offline shows its new name once back online", async ()
   el._hass = { states: rest, entities, language: "en" };
   assert.match(el._render(), /class="name">UGREEN NAS</);
 });
+
+// Registry NAS with ten bays or more: entity ids sort "drive_10_…" before "drive_1_…" ('0' < '_'),
+// so the slots must follow the bay numbers, not the plain string order of their entity ids.
+const bigRegistryHass = async (brand, bays) => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  const base = mocks[brand];
+  const hass = { states: { ...base.states }, entities: { ...base.entities }, devices: { ...base.devices }, language: "en" };
+  const rootId = brand === "synology" ? "syno_nas" : "qnap_nas";
+  const platform = brand === "synology" ? "synology_dsm" : "qnap";
+  const add = (id, tk, state, name, deviceId = rootId) => {
+    hass.states[id] = { entity_id: id, state, attributes: { friendly_name: name } };
+    hass.entities[id] = { entity_id: id, platform, device_id: deviceId, translation_key: tk };
+  };
+  for (let n = 1; n <= bays; n++) {
+    if (brand === "synology") {
+      const dev = `syno_big_d${n}`;
+      hass.devices[dev] = { id: dev, name: `diskstation (Drive ${n})`, model: "HAT5300", via_device_id: rootId };
+      add(`sensor.diskstation_drive_${n}_status`, "disk_status", "normal", `diskstation (Drive ${n}) Status`, dev);
+      add(`sensor.diskstation_drive_${n}_temperature`, "disk_temp", "38", `diskstation (Drive ${n}) Temperature`, dev);
+    } else {
+      add(`sensor.qnap_nas_drive_0_${n}_temperature`, "drive_temp", "34", `qnap-nas Drive 0:${n} temperature`);
+      add(`sensor.qnap_nas_drive_0_${n}_status`, "drive_smart_status", "GOOD", `qnap-nas Drive 0:${n} status`);
+    }
+  }
+  return hass;
+};
+
+test("Synology with twelve bays: the drives keep the order of their bays", async () => {
+  const hass = await bigRegistryHass("synology", 12);
+  const labels = Object.values(discover(hass, "").pools[1].disks).map((d) => d.labelText);
+  // The four drives of the mock (devices syno_d1…d4) come along with the twelve added ones.
+  const want = [];
+  for (let n = 1; n <= 12; n++) want.push(`Drive ${n}`);
+  assert.deepEqual([...new Set(labels)], want);
+  const el = new NasCard();
+  el._config = {};
+  el._hass = hass;
+  const html = el._render();
+  const order = [...html.matchAll(/Drive (\d+)/g)].map((m) => Number(m[1]));
+  assert.deepEqual([...new Set(order)], want.map((_, i) => i + 1));
+});
+
+test("QNAP with ten drives: the drives keep the order of their bays", async () => {
+  const hass = await bigRegistryHass("qnap", 10);
+  const keys = Object.keys(discover(hass, "").pools[1].disks);
+  assert.deepEqual(keys, ["0:1", "0:2", "0:3", "0:4", "0:5", "0:6", "0:7", "0:8", "0:9", "0:10"]);
+});
+
+test("QNAP network tiles follow the first interface in numeric order (eth2 before eth10)", async () => {
+  const hass = await bigRegistryHass("qnap", 2);
+  for (const iface of ["eth10", "eth2"]) {
+    const id = `sensor.qnap_nas_${iface}_download`;
+    hass.states[id] = { entity_id: id, state: "1", attributes: { friendly_name: `qnap-nas ${iface} download` } };
+    hass.entities[id] = { entity_id: id, platform: "qnap", device_id: "qnap_nas", translation_key: "network_rx" };
+  }
+  delete hass.entities["sensor.qnap_nas_eth0_download"];
+  assert.equal(discover(hass, "").scalars.lan_down, "sensor.qnap_nas_eth2_download");
+});
+
+test("Synology security status unavailable: shown as unavailable, not as a security warning", () => {
+  const el = new NasCard();
+  el._hass = { states: {}, language: "en" };
+  el._config = {};
+  for (const state of ["unavailable", "unknown"]) {
+    assert.equal(el._statusText({ state }, "synology"), state);
+    assert.equal(el._statusText({ state }, "qnap"), state);
+  }
+  assert.equal(el._statusText({ state: "on" }, "synology"), "Warning");
+  assert.equal(el._statusText({ state: "off" }, "synology"), "Normal");
+});
+
+test("Synology security status unavailable: the chip reads unavailable", async () => {
+  const hass = await registryHass("synology");
+  const id = "binary_sensor.diskstation_security_status";
+  hass.states = { ...hass.states, [id]: { ...hass.states[id], state: "unavailable" } };
+  for (const Cls of [NasCard, NasMiniCard]) {
+    const el = new Cls();
+    el._config = {};
+    el._hass = hass;
+    const html = el._render();
+    assert.doesNotMatch(html, />Warning</);
+    assert.match(html, /unavailable/);
+  }
+});
+
+test("reduced motion also stops the bar (both cards) and ring transitions", () => {
+  const { FULL_STYLE, BASE_STYLE, MINI_STYLE } = load("nas-card.js", ["FULL_STYLE", "BASE_STYLE", "MINI_STYLE"]);
+  // The rules inside the reduced-motion blocks of a stylesheet (one level of nesting).
+  const reduced = (css) => [...css.matchAll(/@media \(prefers-reduced-motion: reduce\) \{((?:[^{}]*\{[^}]*\})*)\s*\}/g)].map((m) => m[1]).join(" ");
+  for (const css of [`${BASE_STYLE}${FULL_STYLE}`, `${BASE_STYLE}${MINI_STYLE}`]) {
+    assert.match(reduced(css), /\.bar > div[^{]*\{[^}]*transition: none/);
+  }
+  // Rings and the spinner only exist on the full card.
+  const full = reduced(`${BASE_STYLE}${FULL_STYLE}`);
+  assert.match(full, /\.ring \.value[^{]*\{[^}]*transition: none/);
+  assert.match(full, /\.spin \{ animation: none; \}/);
+});
