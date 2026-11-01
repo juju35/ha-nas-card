@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.13.7 - 2026-11-01
+
+### Fixes
+- **Temperatures in °F**: with Home Assistant in imperial units (or a sensor set to °F), CPU, system and disk temperatures read `124°F` instead of `124°C`, and the orange and red alerts apply to the °C value (124 °F = 51 °C is no longer red). Kelvin works too.
+- **Unavailable status**: while the NAS is offline, the status pill and the mini card footer show "Unavailable" / "Unknown" in the card language, in grey, instead of the raw English `unavailable`. Volume and disk dots without a status turn grey instead of red.
+- **Narrow cards**: at 6 columns of a sections view, the full card keeps the NAS name and its volume names readable (the NAS picture is hidden, the volume details move under their bar, the RAID and file system tags no longer cover the sizes) and the status pill shrinks to its dot; the mini card keeps each footer item on one line and drops the uptime first.
+- **Serbian mini card**: the "Складиште" label no longer runs into its bar: the labels column follows the longest label.
+- **Readability**: the status pill text, disk temperatures and the setup warning mix their state color with the text color, for a contrast of at least 4.5:1 in light and dark themes (the colored dot is unchanged).
+
+### Maintenance
+- `biome.json` schema aligned with Biome 2.6.4, the version used by pre-commit and CI.
+
 ## 1.13.6 - 2026-11-01
 
 ### Added
