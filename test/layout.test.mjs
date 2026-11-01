@@ -185,28 +185,65 @@ test("from 245 to 500 px, the status pill shows its whole label", { timeout: 120
   });
 });
 
-test("in a container sized by its content (inline-block, grid auto column), the cards keep a usable width", { timeout: 60000 }, async (t) => {
+// Contexts that size the card from its content (inline-block, grid auto column: button-card, layout-card) or
+// squeeze it (grid 1fr 1fr: grid card, horizontal-stack, layout-card), with the card placed directly or wrapped
+// in a <div> (whose min-width stays auto). The card must keep a usable width in the first two, and never
+// overflow its column nor collapse to 0 px in the last.
+test("in a container sized by its content or a 1fr 1fr grid, the cards keep a usable width and never overflow", { timeout: 60000 }, async (t) => {
   if (skip) return t.skip(skip);
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
   await page.route("https://brands.home-assistant.io/**", (r) => r.fulfill({ status: 404 }));
   await page.setContent("<!doctype html><body style='margin:0;font-family:Roboto,Arial,sans-serif'></body>");
   await page.addScriptTag({ content: HA_CARD });
   await page.addScriptTag({ content: src });
-  const widths = await page.evaluate((mocks) => {
-    const out = {};
+  const results = await page.evaluate((mocks) => {
+    const out = [];
+    const contexts = [
+      ["inline-block", "display:inline-block", 1],
+      ["grid auto", "display:grid;grid-template-columns:auto", 1],
+      ...[320, 360, 500].map((w) => [`grid 1fr 1fr ${w}px`, `display:grid;grid-template-columns:1fr 1fr;gap:8px;width:${w}px`, 2]),
+    ];
     for (const type of ["nas-card", "nas-mini-card"])
-      for (const [name, css] of [["inline-block", "display:inline-block"], ["grid auto", "display:grid;grid-template-columns:auto"]]) {
-        const box = document.createElement("div");
-        box.style.cssText = css;
-        document.body.appendChild(box);
-        const el = document.createElement(type);
-        el.setConfig({ type: `custom:${type}` });
-        el.hass = { ...mocks.ugreen, language: "en", locale: { language: "en" } };
-        box.appendChild(el);
-        out[`${type} ${name}`] = el.shadowRoot.querySelector("ha-card").getBoundingClientRect().width;
-      }
+      for (const wrapped of [false, true])
+        for (const [name, css, n] of contexts) {
+          const box = document.createElement("div");
+          box.style.cssText = css;
+          document.body.appendChild(box);
+          const cards = [];
+          for (let i = 0; i < n; i++) {
+            const el = document.createElement(type);
+            el.setConfig({ type: `custom:${type}` });
+            el.hass = { ...mocks.ugreen, language: "en", locale: { language: "en" } };
+            if (wrapped) {
+              const div = document.createElement("div");
+              div.appendChild(el);
+              box.appendChild(div);
+            } else box.appendChild(el);
+            cards.push(el);
+          }
+          const boxRect = box.getBoundingClientRect();
+          const widths = cards.map((el) => el.shadowRoot.querySelector("ha-card").getBoundingClientRect().width);
+          // Overflow: a card past the box, or past the half of the box it should get in a 1fr 1fr grid.
+          const overflow = Math.max(
+            box.scrollWidth - box.clientWidth,
+            ...cards.map((el, i) => {
+              const r = el.shadowRoot.querySelector("ha-card").getBoundingClientRect();
+              const cellRight = n === 2 ? boxRect.left + (i + 1) * (boxRect.width - 8) / 2 + i * 8 : boxRect.right;
+              return Math.max(r.right - cellRight, r.right - boxRect.right);
+            }),
+          );
+          out.push({ label: `${type} ${wrapped ? "in a div" : "direct"} ${name}`, n, boxWidth: boxRect.width, widths, overflow });
+          box.remove();
+        }
     return out;
   }, mocks);
   await page.close();
-  for (const [k, w] of Object.entries(widths)) assert.ok(w >= 240, `${k}: ${w.toFixed(0)} px`);
+  const failures = [];
+  for (const r of results) {
+    const ws = r.widths.map((w) => w.toFixed(0)).join("/");
+    if (r.overflow > 0.5) failures.push(`${r.label}: overflows by ${r.overflow.toFixed(0)} px (widths ${ws})`);
+    else if (r.n === 1 ? r.widths[0] < 240 : r.widths.some((w) => w < (r.boxWidth - 8) / 2 - 0.5))
+      failures.push(`${r.label}: ${ws} px in ${r.boxWidth} px`);
+  }
+  assert.deepEqual(failures, []);
 });
