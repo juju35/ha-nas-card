@@ -48,6 +48,8 @@ const STRINGS = {
     unknown_nas: "NAS not found",
     status_ok: "Normal",
     status_problem: "Warning",
+    unavailable: "Unavailable",
+    unknown: "Unknown",
     cpu_fan: "CPU fan",
     device_fan: "Fan",
     zoom_in: "Show the full card",
@@ -97,6 +99,8 @@ const STRINGS = {
     unknown_nas: "NAS introuvable",
     status_ok: "Normal",
     status_problem: "Alerte",
+    unavailable: "Indisponible",
+    unknown: "Inconnu",
     cpu_fan: "Ventilateur CPU",
     device_fan: "Ventilateur",
     zoom_in: "Afficher la carte complète",
@@ -145,6 +149,8 @@ const STRINGS = {
     unknown_nas: "NAS nicht gefunden",
     status_ok: "Normal",
     status_problem: "Warnung",
+    unavailable: "Nicht verfügbar",
+    unknown: "Unbekannt",
     cpu_fan: "CPU-Lüfter",
     device_fan: "Lüfter",
     zoom_in: "Vollständige Karte anzeigen",
@@ -193,6 +199,8 @@ const STRINGS = {
     unknown_nas: "NAS no encontrado",
     status_ok: "Normal",
     status_problem: "Alerta",
+    unavailable: "No disponible",
+    unknown: "Desconocido",
     cpu_fan: "Ventilador de la CPU",
     device_fan: "Ventilador",
     zoom_in: "Mostrar la tarjeta completa",
@@ -241,6 +249,8 @@ const STRINGS = {
     unknown_nas: "NAS није пронађен",
     status_ok: "Нормално",
     status_problem: "Упозорење",
+    unavailable: "Недоступно",
+    unknown: "Непознато",
     cpu_fan: "CPU вентилатор",
     device_fan: "Вентилатор",
     zoom_in: "Прикажи целу картицу",
@@ -289,6 +299,8 @@ const STRINGS = {
     unknown_nas: "NAS nije pronađen",
     status_ok: "Normalno",
     status_problem: "Upozorenje",
+    unavailable: "Nedostupno",
+    unknown: "Nepoznato",
     cpu_fan: "CPU ventilator",
     device_fan: "Ventilator",
     zoom_in: "Prikaži celu karticu",
@@ -337,6 +349,8 @@ const STRINGS = {
     unknown_nas: "NAS non trovato",
     status_ok: "Normale",
     status_problem: "Avviso",
+    unavailable: "Non disponibile",
+    unknown: "Sconosciuto",
     cpu_fan: "Ventola CPU",
     device_fan: "Ventola",
     zoom_in: "Mostra la scheda completa",
@@ -385,6 +399,8 @@ const STRINGS = {
     unknown_nas: "NAS niet gevonden",
     status_ok: "Normaal",
     status_problem: "Waarschuwing",
+    unavailable: "Niet beschikbaar",
+    unknown: "Onbekend",
     cpu_fan: "CPU-ventilator",
     device_fan: "Ventilator",
     zoom_in: "Volledige kaart weergeven",
@@ -433,6 +449,8 @@ const STRINGS = {
     unknown_nas: "NAS não encontrado",
     status_ok: "Normal",
     status_problem: "Aviso",
+    unavailable: "Indisponível",
+    unknown: "Desconhecido",
     cpu_fan: "Ventoinha CPU",
     device_fan: "Ventoinha",
     zoom_in: "Mostrar o cartão completo",
@@ -481,6 +499,8 @@ const STRINGS = {
     unknown_nas: "Nie znaleziono NAS",
     status_ok: "Normalny",
     status_problem: "Ostrzeżenie",
+    unavailable: "Niedostępny",
+    unknown: "Nieznany",
     cpu_fan: "Wentylator CPU",
     device_fan: "Wentylator",
     zoom_in: "Pokaż pełną kartę",
@@ -628,6 +648,20 @@ const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.s
 const statusOk = (nas, s) => (s && NO_VALUE.has(s.state) ? false : nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
 
 const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
+
+// Temperature of a sensor: Home Assistant converts temperature sensors to the unit of its unit system (or the
+// one picked for the sensor), so the value is shown in its own unit (`unit_of_measurement`, else Home
+// Assistant's temperature unit, else °C) and converted to °C for the thresholds and the gauges.
+const temperature = (s, hass) => {
+  const v = num(s);
+  if (v === null) return { c: null, text: "—" };
+  const unit = String(s.attributes?.unit_of_measurement || hass?.config?.unit_system?.temperature || "°C");
+  const c = /^°?F$/i.test(unit) ? ((v - 32) * 5) / 9 : unit === "K" ? v - 273.15 : v;
+  return { c, text: `${Math.round(v)}${unit.startsWith("°") ? "" : " "}${esc(unit)}` };
+};
+
+// Class of a status dot: no value (unavailable / unknown) is neither healthy nor a problem.
+const dotClass = (s) => (s && NO_VALUE.has(s.state) ? "na" : isOk(s) ? "ok" : "crit");
 
 const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
 
@@ -1229,24 +1263,33 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
-  :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437); }
-  ha-card { overflow: hidden; }
+  :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437);
+          --nas-na: var(--disabled-text-color, #9e9e9e); }
+  /* The card is the container of the width queries below (narrow header, volume rows, mini card footer). */
+  ha-card { overflow: hidden; container-type: inline-size; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }
   [role="button"]:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
-  .ok { --c: var(--nas-ok); } .warn { --c: var(--nas-warn); } .crit { --c: var(--nas-crit); }
+  .ok { --c: var(--nas-ok); } .warn { --c: var(--nas-warn); } .crit { --c: var(--nas-crit); } .na { --c: var(--nas-na); }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--nas-ok)); flex: none; display: inline-block; }
+  /* The state color stays on the dot and the tint; the text mixes it with the text color to stay readable (>= 4.5:1). */
   .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;
-          background: color-mix(in srgb, var(--c, var(--nas-ok)) 15%, transparent); color: var(--c, var(--nas-ok)); }
+          background: color-mix(in srgb, var(--c, var(--nas-ok)) 15%, transparent);
+          color: color-mix(in srgb, var(--c, var(--nas-ok)) 40%, var(--primary-text-color, #212121)); }
+  .chip .txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .bar { height: 4px; border-radius: 3px; background: var(--divider-color, rgba(127,127,127,.25)); overflow: hidden; }
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
   @media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
-  /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width. */
-  .titles { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width.
+     Narrow cards: the title truncates but keeps a few characters (its min-width sizes the first column), the pill
+     takes at most half of the block (fit-content(50%)) and truncates its text, down to its dot alone. */
+  .titles { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: 1fr fit-content(50%); }
   .titles > .name, .titles > .sub { grid-column: 1; }
-  .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; }
+  .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
+                    overflow: hidden; box-sizing: border-box; }
+  @container (max-width: 260px) { .chip .txt { display: none; } }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
   .brand-link, .nas-link { display: flex; flex: none; border-radius: 8px; }
   .brand-link { align-self: flex-start; }
@@ -1254,14 +1297,14 @@ const BASE_STYLE = `
   .nas-link .nas { max-width: 100%; }
   .logo.brand { object-fit: contain; }
   .logo.brand.inverted { filter: invert(1); }
-  .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 4ch; }
   .sub { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; }
   /* Model and UGOS version on one line when they fit, else one per line: the "·" separator that starts a line
      sits in the negative margin, clipped by .sub. */
   .sub .parts { display: flex; flex-wrap: wrap; margin-left: -12px; }
   .sub .parts span { min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub .parts span::before { content: "·"; display: inline-block; width: 12px; text-align: center; }
-  .warning { padding: 16px; color: var(--nas-warn); }
+  .warning { padding: 16px; color: color-mix(in srgb, var(--nas-warn) 40%, var(--primary-text-color, #212121)); }
   .zoom { all: unset; flex: none; cursor: pointer; width: 24px; height: 24px; margin: -4px -4px -4px 0;
           border-radius: 50%; display: grid; place-items: center; color: var(--secondary-text-color); }
   .zoom .icon { width: 16px; height: 16px; }
@@ -1312,10 +1355,21 @@ class NasBase extends HTMLElement {
   // Server status as shown: the healthy words of the integrations ("Normal", "good") go through
   // the translations, any other value is shown as reported. The Synology safety binary sensor has
   // no word at all: both of its states are translated. Without value (NAS offline), every brand shows
-  // the raw state rather than a security warning.
+  // the translated unavailable / unknown state rather than a security warning.
   _statusText(status, brand) {
-    if (brand === "synology" && !NO_VALUE.has(status.state)) return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
+    if (NO_VALUE.has(status.state)) return this._t(status.state);
+    if (brand === "synology") return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
     return /^(normal|good|healthy|ok)$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
+  }
+
+  // Class of the server status: healthy, problem, or no value (neutral).
+  _statusClass(nas, status) {
+    return NO_VALUE.has(status.state) ? "na" : statusOk(nas, status) ? "ok" : "warn";
+  }
+
+  // Title of a status dot (volume, disk): the reported state, translated when it has no value.
+  _dotTitle(status) {
+    return !status ? "" : NO_VALUE.has(status.state) ? this._t(status.state) : status.state;
   }
 
   _t(key) {
@@ -1326,7 +1380,8 @@ class NasBase extends HTMLElement {
   // integration reports one, system temperature otherwise.
   _vitals(sc) {
     const tempId = sc.cpu_temp || sc.sys_temp;
-    return { cpu: num(this._s(sc.cpu_usage)), ram: num(this._s(sc.ram_usage)), tempId, temp: num(this._s(tempId)) };
+    const { c, text } = temperature(this._s(tempId), this._hass);
+    return { cpu: num(this._s(sc.cpu_usage)), ram: num(this._s(sc.ram_usage)), tempId, temp: c, tempText: text };
   }
 
   _s(id) {
@@ -1384,7 +1439,11 @@ class NasBase extends HTMLElement {
     const sc = nas.scalars;
     const c = this._config;
     const status = this._s(sc.server_status);
-    const ok = statusOk(nas, status);
+    const statusText = status ? this._statusText(status, nas.brand) : "";
+    // The system message (UGREEN) explains the status; without one, the pill's title repeats its text,
+    // which the narrow pill (dot only) hides.
+    const message = this._s(sc.system_message);
+    const messageText = message && !NO_VALUE.has(message.state) ? message.state : "";
     const name = c.title || this._text(sc.name) || nas.info?.name || `${BRAND_NAMES[nas.brand]} NAS`;
     const model = this._text(sc.model) || nas.info?.model;
     const version = this._text(sc.version);
@@ -1399,9 +1458,9 @@ class NasBase extends HTMLElement {
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
           ${
             status
-              ? `<span class="chip clickable ${ok ? "ok" : "warn"}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
-                  this._s(sc.system_message)?.state || ""
-                )}"><span class="dot"></span>${esc(this._statusText(status, nas.brand))}</span>`
+              ? `<span class="chip clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
+                  messageText || statusText
+                )}" aria-label="${esc(statusText)}"><span class="dot"></span><span class="txt">${esc(statusText)}</span></span>`
               : ""
           }
         </div>
@@ -1491,7 +1550,8 @@ const FULL_STYLE = `
   .row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
   .row .grow { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .row .tag { font-size: 11px; padding: 1px 6px; border-radius: 6px; background: var(--secondary-background-color, rgba(127,127,127,.12));
-              color: var(--secondary-text-color); text-transform: uppercase; }
+              color: var(--secondary-text-color); text-transform: uppercase; flex: 0 1 auto; min-width: 0; overflow: hidden;
+              text-overflow: ellipsis; white-space: nowrap; }
   .vol .bar { margin: 4px 0 0; grid-column: 1 / -1; grid-row: 2; }
   .vol .detail { font-size: 11px; color: var(--secondary-text-color); display: flex; justify-content: flex-end; grid-column: 2; grid-row: 1; gap: 8px; }
   .disks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
@@ -1500,11 +1560,19 @@ const FULL_STYLE = `
   .disk .top span:nth-child(2) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .disk .model { font-size: 11px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 0 2px; }
   .disk .meta { display: flex; justify-content: space-between; font-size: 11px; }
-  .disk .temp { color: var(--c, inherit); font-weight: 500; }
+  .disk .temp { color: color-mix(in srgb, var(--c, currentColor) 40%, var(--primary-text-color, #212121)); font-weight: 500; }
   .fans { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
   .spin { animation: spin 1.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } .ring .value { transition: none; } }
+  /* Narrow card (6 columns of a sections view): no picture, so the title keeps its room, and each volume puts its
+     detail under the bar, so its name keeps the row. */
+  @container (max-width: 340px) {
+    .nas-link { display: none; }
+    .header > .nas { display: none; }
+    .vol { grid-template-columns: minmax(0, 1fr); }
+    .vol .detail { grid-column: 1 / -1; grid-row: 3; justify-content: space-between; margin-top: 2px; }
+  }
 `;
 
 class NasCard extends NasBase {
@@ -1555,7 +1623,7 @@ class NasCard extends NasBase {
 
   _system(nas) {
     const sc = nas.scalars;
-    const { cpu, ram, tempId, temp } = this._vitals(sc);
+    const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
     const ramTotal = toBytes(this._s(sc.ram_total));
     const ramAvail = toBytes(this._s(sc.ram_available));
     const ramUsed =
@@ -1583,7 +1651,7 @@ class NasCard extends NasBase {
           sc.cpu_temp ? `${this._t("temperature")} ${this._t("cpu")}` : this._t("temperature"),
           ICONS.temp,
           temp,
-          temp === null ? "—" : `${Math.round(temp)}°C`,
+          tempText,
           level(temp, 75, 90)
         )}
       </div>
@@ -1622,7 +1690,7 @@ class NasCard extends NasBase {
         const cls = level(u.pct, 80, 90);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
-            <span class="dot ${isOk(status) ? "ok" : "crit"}"></span>
+            <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span>
             <span class="grow">${esc(label)}</span>
             ${raid ? `<span class="tag">${esc(raid)}</span>` : ""}
             ${fs ? `<span class="tag">${esc(fs)}</span>` : ""}
@@ -1644,15 +1712,15 @@ class NasCard extends NasBase {
     for (const [pn, pool] of Object.entries(nas.pools)) {
       for (const [dn, d] of Object.entries(pool.disks)) {
         const status = this._s(d.status);
-        const temp = num(this._s(d.temperature));
+        const temp = temperature(this._s(d.temperature), this._hass);
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || `Disk ${dn}`)}</span>
-            <span class="dot ${isOk(status) ? "ok" : "crit"}" title="${esc(status?.state || "")}"></span></div>
+            <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span></div>
           <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
-            <span class="temp ${level(temp, 60, 70)}">${temp === null ? "—" : `${Math.round(temp)}°C`}</span>
+            <span class="temp ${level(temp.c, 60, 70)}">${temp.text}</span>
             <span class="muted">${size !== null ? fmtBytes(size) : ""}${
               hours !== null ? ` · ${Math.round(hours).toLocaleString(fmtLang(this._hass, this._config))} ${this._t("hours")}` : ""
             }</span>
@@ -1696,12 +1764,22 @@ const MINI_STYLE = `
   .titles > .chip { display: none; }
   .name { font-size: 16px; }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .metric { display: grid; grid-template-columns: 18px 64px 1fr 56px; align-items: center; gap: 8px; font-size: 13px; }
+  /* One label column for all the rows, as wide as the longest label (subgrid); without subgrid, the fixed columns. */
+  .metrics { display: grid; grid-template-columns: 18px minmax(64px, max-content) minmax(0, 1fr) 56px; gap: 8px; }
+  .metric { grid-column: 1 / -1; display: grid; grid-template-columns: 18px 64px 1fr 56px; grid-template-columns: subgrid;
+            align-items: center; gap: 8px; font-size: 13px; }
+  .metric > span:first-of-type { white-space: nowrap; }
   .metric .icon { color: var(--secondary-text-color); }
   .metric .v { text-align: right; font-weight: 500; }
   .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
-  .foot span { display: inline-flex; align-items: center; gap: 2px; }
+  .foot span { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
+  .foot > span { flex: none; }
+  .foot > [data-key="status"] { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+  .foot .txt { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .foot .icon { width: 14px; height: 14px; }
+  /* Narrow mini card: the uptime goes first, then the picture. */
+  @container (max-width: 340px) { .foot [data-key="uptime"] { display: none; } }
+  @container (max-width: 220px) { .nas-link { display: none; } .header > .nas { display: none; } }
 `;
 
 // The mini card extends the full card: its zoom button (top right, `zoom: false` removes it) switches it to the
@@ -1778,12 +1856,12 @@ class NasMiniCard extends NasCard {
     const c = this._config;
     const sc = nas.scalars;
     const status = this._s(sc.server_status);
-    const { cpu, ram, tempId, temp } = this._vitals(sc);
+    const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
     const rows = [];
     rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, level(cpu, 70, 90)));
     rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95)));
     rows.push(
-      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, temp === null ? "—" : `${Math.round(temp)}°C`, level(temp, 75, 90))
+      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, level(temp, 75, 90))
     );
     if (c.show_storage !== false) {
       let used = 0;
@@ -1806,9 +1884,9 @@ class NasMiniCard extends NasCard {
     const foot = [];
     if (status)
       foot.push(
-        `<span class="clickable ${statusOk(nas, status) ? "ok" : "warn"}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;${esc(
+        `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;<span class="txt">${esc(
           this._statusText(status, nas.brand)
-        )}</span>`
+        )}</span></span>`
       );
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
       foot.push(
@@ -1822,7 +1900,7 @@ class NasMiniCard extends NasCard {
       <ha-card>
         ${this._header(nas)}
         <div class="content">
-          ${rows.join("")}
+          <div class="metrics">${rows.join("")}</div>
           ${foot.length ? `<div class="foot">${foot.join("")}</div>` : ""}
         </div>
       </ha-card>`;

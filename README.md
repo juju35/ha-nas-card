@@ -228,6 +228,12 @@ Sizes and rates follow Home Assistant's units: `kB`, `MB`, `GB` and `TB` (and `k
 | Disk temperature | 60 °C | 70 °C |
 | Volume usage | 80 % | 90 % |
 
+Temperatures are shown in the unit of their sensor, which follows your Home Assistant unit system (°C, °F or K); the temperature thresholds are in °C and apply to the converted value, so 124 °F (51 °C) stays green.
+
+### Narrow cards
+
+The cards fit down to 6 columns of a sections view (about 245 px). On narrow cards, the NAS picture is hidden (below about 340 px on the full card, 220 px on the mini card) so that the name keeps its room, the status pill shrinks to its colored dot (its text stays in its tooltip), the volume details move under their bar and the mini card drops the uptime from its footer.
+
 ## Development
 
 ```bash
