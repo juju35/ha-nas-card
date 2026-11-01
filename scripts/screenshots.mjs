@@ -2,7 +2,7 @@
 // Usage: npm run build && npm run screenshots
 import { chromium } from "playwright";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -99,21 +99,57 @@ const shots = [
 const browser = await chromium.launch(
   process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}
 );
+
+// A screenshot is only rewritten when its pixels change: two encodings of the same image (another libpng or
+// zlib) differ in bytes, not on screen. The browser decodes both PNGs and compares their pixels.
+const decoder = await browser.newPage();
+const samePixels = (a, b) =>
+  decoder.evaluate(
+    async ([a, b]) => {
+      const pixels = async (b64) => {
+        const bmp = await createImageBitmap(await (await fetch(`data:image/png;base64,${b64}`)).blob());
+        const canvas = new OffscreenCanvas(bmp.width, bmp.height);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(bmp, 0, 0);
+        return { w: bmp.width, h: bmp.height, d: ctx.getImageData(0, 0, bmp.width, bmp.height).data };
+      };
+      const [x, y] = await Promise.all([pixels(a), pixels(b)]);
+      return x.w === y.w && x.h === y.h && x.d.every((v, i) => v === y.d[i]);
+    },
+    [a.toString("base64"), b.toString("base64")]
+  );
+const savePng = async (path, png) => {
+  if (existsSync(path) && (await samePixels(readFileSync(path), png))) return console.log(`${path.slice(root.length)} (unchanged)`);
+  writeFileSync(path, png);
+  console.log(path.slice(root.length));
+};
+// Same for the GIFs: the decoded frames (RGBA) are compared through their checksums.
+const frameSums = (path) =>
+  execFileSync("ffmpeg", ["-loglevel", "error", "-i", path, "-pix_fmt", "rgba", "-f", "framemd5", "-"], { encoding: "utf8" })
+    .split("\n")
+    .filter((l) => l && !l.startsWith("#"))
+    .map((l) => l.split(",").pop().trim());
+const saveGif = (path, tmp) => {
+  if (existsSync(path) && frameSums(path).join() === frameSums(tmp).join()) return console.log(`${path.slice(root.length)} (unchanged)`);
+  copyFileSync(tmp, path);
+  console.log(path.slice(root.length));
+};
+
 for (const s of shots) {
   const page = await openCard(browser, s);
   await page.waitForTimeout(800);
   const box = await page.locator("#root").boundingBox();
-  await page.screenshot({
-    path: `${root}screenshots/${s.file}.png`,
+  const png = await page.screenshot({
     clip: { x: 0, y: 0, width: s.width + 32, height: Math.ceil(box.height) + 32 },
     animations: "disabled",
   });
-  console.log(`screenshots/${s.file}.png`);
+  await savePng(`${root}screenshots/${s.file}.png`, png);
   await page.close();
 }
 
 // Record the spinning cooling fans as a looping GIF. Needs ffmpeg on PATH. Every animation is paused and
-// stepped frame by frame, so the GIF is identical whatever the machine's speed.
+// stepped frame by frame, so the GIF is identical whatever the machine's speed; the palette and the ordered
+// (Bayer) dithering are computed from the frames alone, with no random dithering.
 // Recorded in both themes with the same setup: fans.gif light, fans-dark.gif dark.
 const gifs = [
   { file: "fans", type: "nas-card", theme: "light", width: 460, config: {} },
@@ -129,17 +165,24 @@ for (const gif of gifs) {
   const dir = mkdtempSync(join(tmpdir(), "nas-frames-"));
   const frames = Math.round(FPS * SECONDS);
   for (let i = 0; i < frames; i++) {
-    await page.evaluate((t) => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = t; } }, (i * 1000) / FPS);
+    // document.getAnimations() leaves out the card's shadow tree (the spinning fans): its own list is added.
+    await page.evaluate((t) => {
+      const card = document.querySelector("#root > *");
+      for (const a of [...document.getAnimations(), ...(card?.shadowRoot?.getAnimations() ?? [])]) {
+        a.pause();
+        a.currentTime = t;
+      }
+    }, (i * 1000) / FPS);
     await page.screenshot({ path: join(dir, `f${String(i).padStart(3, "0")}.png`), clip });
   }
   await page.close();
-  const out = `${root}screenshots/${gif.file}.gif`;
+  const out = join(dir, "out.gif");
   execFileSync("ffmpeg", [
     "-y", "-loglevel", "error", "-framerate", String(FPS), "-i", join(dir, "f%03d.png"),
     "-vf", `scale=${clip.width}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=4`,
     "-loop", "0", out,
   ]);
+  saveGif(`${root}screenshots/${gif.file}.gif`, out);
   rmSync(dir, { recursive: true });
-  console.log(`screenshots/${gif.file}.gif`);
 }
 await browser.close();
