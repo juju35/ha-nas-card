@@ -1263,14 +1263,17 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
-  :host { min-width: 0; }
   :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437);
           --nas-na: var(--disabled-text-color, #9e9e9e); }
-  /* The card is the container of the width queries below (narrow header, volume rows, mini card footer).
-     Its content no longer sizes it: in a container sized by its content (inline-block, grid auto column,
-     button-card / layout-card), it takes the width given here instead of collapsing to nothing, and the host's
-     min-width: 0 lets it shrink below that width in a flex row or a grid column narrower than it. */
-  ha-card { overflow: hidden; container-type: inline-size; contain-intrinsic-inline-size: 400px; }
+  /* The card is the container of the width queries below (narrow header, volume rows, mini card footer). */
+  ha-card { overflow: hidden; container-type: inline-size; }
+  /* A size container has no width of its own content: in a parent that sizes to its content (inline-block,
+     grid auto column: button-card, layout-card) the card would fall to a few pixels. This empty, zero-height
+     grid gives the card a natural (max-content) width of 400 px without any minimum (its min-content width
+     is 0): in a "1fr 1fr" grid (grid card, horizontal-stack, layout-card), wrapped in a <div> or not, the card
+     still shrinks to its column. contain-intrinsic-inline-size or a min-width on the host would be a minimum
+     and overflow there. */
+  :host::before { content: ""; display: grid; grid-template-columns: minmax(0, 400px); height: 0; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }

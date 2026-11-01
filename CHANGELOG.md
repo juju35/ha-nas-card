@@ -10,7 +10,7 @@
 - **Readability**: the status pill text, disk temperatures and the setup warning mix their state color with the text color, for a contrast of at least 4.5:1 in light and dark themes (the colored dot is unchanged).
 - **Phones**: the full card now asks for 9 columns at least in a sections view (6 columns on a phone, about 156 px, were too narrow for its gauges and tiles). The mini card works down to 6 columns on a phone: below about 200 px its rows keep their icon, bar and value (the label is in the row tooltip), and its footer puts the upload rate under the download rate instead of running past the card edge.
 - **Status pill**: it shows its whole label ("Normal", "Unavailable"…) as long as the NAS name keeps a few characters (from 234 px upwards in all languages), and only truncates it when the room really runs out. The mini card footer status carries its full text in its tooltip.
-- **Cards sized by their content**: in a container that takes the width of its content (grid `auto` column, inline-block wrapper, some layout-card or button-card setups), the cards take a width of 400 px instead of collapsing to a few pixels.
+- **Cards sized by their content**: in a container that takes the width of its content (grid `auto` column, inline-block wrapper, some layout-card or button-card setups), the cards take a width of 400 px instead of collapsing to a few pixels, and still shrink to their column in a two-column grid (grid card, horizontal stack, layout-card), even when wrapped in another element.
 - **Keyboard**: zooming the mini card in or out with Enter or Space keeps the focus on the zoom button without scrolling the page.
 
 ### Maintenance
