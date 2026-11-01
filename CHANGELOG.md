@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.6 - 2026-11-01
+
+### Added
+- Added Italian, Dutch, European Portuguese and Polish translations: `it`, `nl`, `pt` and `pl`, picked automatically from the Home Assistant language (`pt-BR` falls back to European Portuguese) or set with `language`, and offered in the visual editor.
+
 ## 1.13.5 - 2026-11-01
 
 ### Added

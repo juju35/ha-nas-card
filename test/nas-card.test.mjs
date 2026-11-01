@@ -486,7 +486,7 @@ test("the visual editor offers the url and brand_url options after the picture",
 
 test("I18N parity: every language has exactly the English keys and placeholders", () => {
   const keys = Object.keys(STRINGS.en).sort();
-  assert.deepEqual(Object.keys(STRINGS).sort(), ["de", "en", "es", "fr", "sr", "sr-Latn"]);
+  assert.deepEqual(Object.keys(STRINGS).sort(), ["de", "en", "es", "fr", "it", "nl", "pl", "pt", "sr", "sr-Latn"]);
   for (const [l, strings] of Object.entries(STRINGS)) {
     assert.deepEqual(Object.keys(strings).sort(), keys, l);
     for (const k of keys) {
@@ -494,6 +494,7 @@ test("I18N parity: every language has exactly the English keys and placeholders"
       assert.deepEqual(ph(strings[k]), ph(STRINGS.en[k]), `${l}.${k}`);
       assert.equal(typeof strings[k], typeof STRINGS.en[k], `${l}.${k}`);
       if (Array.isArray(STRINGS.en[k])) assert.equal(strings[k].length, STRINGS.en[k].length, `${l}.${k}`);
+      assert.notEqual(String(strings[k]).trim(), "", `${l}.${k} is empty`);
     }
   }
 });
@@ -512,7 +513,7 @@ test("Serbian: no Latin letters in sr outside names, brands and units, no Cyrill
 
 test("language resolution: full code first, then the part before the dash, then English", () => {
   const el = new NasCard();
-  for (const [hl, l] of [["fr-FR", "fr"], ["sr-Latn", "sr-Latn"], ["sr", "sr"], ["pt-BR", "en"]]) {
+  for (const [hl, l] of [["fr-FR", "fr"], ["sr-Latn", "sr-Latn"], ["sr", "sr"], ["pt-BR", "pt"], ["ja", "en"]]) {
     for (const hass of [{ language: hl }, { locale: { language: hl }, language: "en" }]) {
       el._hass = { states: {}, ...hass };
       el._config = {};
@@ -523,11 +524,18 @@ test("language resolution: full code first, then the part before the dash, then 
     el._config = { language: hl };
     assert.equal(el._t("network"), STRINGS[l].network, `config ${hl}`);
   }
+  // Italian, Dutch, European Portuguese and Polish: regional variants fall back to the base language,
+  // pt-BR to European Portuguese, and an unsupported language to English.
+  for (const [hl, l] of [["it-IT", "it"], ["nl-BE", "nl"], ["pt", "pt"], ["pt-BR", "pt"], ["pl-PL", "pl"], ["sr-Latn", "sr-Latn"], ["ja", "en"]]) {
+    el._hass = { states: {}, language: hl };
+    el._config = {};
+    assert.equal(el._t("network"), STRINGS[l].network, hl);
+  }
   // Numbers formatted with the sr-Latn locale stay in Latin script.
   assert.doesNotMatch((12345).toLocaleString("sr-Latn"), /[\u0400-\u04FF]/);
 });
 
-test("the editor offers German, Spanish and Serbian, and de/es locales resolve to their strings", () => {
+test("the editor offers German, Spanish, Serbian, Italian, Dutch, Portuguese and Polish, and locales resolve to their strings", () => {
   const { NasCardEditor } = load("nas-card.js", ["NasCardEditor"]);
   const ed = new NasCardEditor();
   ed._hass = { states: {}, language: "en" };
@@ -535,13 +543,17 @@ test("the editor offers German, Spanish and Serbian, and de/es locales resolve t
   const language = ed._schema().find((f) => f.name === "language");
   assert.deepEqual(
     [...language.selector.select.options.map((o) => o.value)],
-    ["", "en", "fr", "de", "es", "sr", "sr-Latn"],
+    ["", "en", "fr", "de", "es", "sr", "sr-Latn", "it", "nl", "pt", "pl"],
   );
   const labels = Object.fromEntries(language.selector.select.options.map((o) => [o.value, o.label]));
   assert.equal(labels.sr, "Српски");
   assert.equal(labels["sr-Latn"], "Srpski (latinica)");
+  assert.equal(labels.it, "Italiano");
+  assert.equal(labels.nl, "Nederlands");
+  assert.equal(labels.pt, "Português");
+  assert.equal(labels.pl, "Polski");
   const el = new NasCard();
-  for (const [hl, l] of [["de-DE", "de"], ["es", "es"], ["it", "en"]]) {
+  for (const [hl, l] of [["de-DE", "de"], ["es", "es"], ["it", "it"], ["nl", "nl"], ["pt-PT", "pt"], ["pl", "pl"], ["ja", "en"]]) {
     el._hass = { states: {}, language: hl };
     el._config = {};
     assert.equal(el._t("network"), STRINGS[l].network);
