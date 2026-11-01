@@ -5,12 +5,17 @@
 ### Fixes
 - **Temperatures in °F**: with Home Assistant in imperial units (or a sensor set to °F), CPU, system and disk temperatures read `124°F` instead of `124°C`, and the orange and red alerts apply to the °C value (124 °F = 51 °C is no longer red). Kelvin works too.
 - **Unavailable status**: while the NAS is offline, the status pill and the mini card footer show "Unavailable" / "Unknown" in the card language, in grey, instead of the raw English `unavailable`. Volume and disk dots without a status turn grey instead of red.
-- **Narrow cards**: at 6 columns of a sections view, the full card keeps the NAS name and its volume names readable (the NAS picture is hidden, the volume details move under their bar, the RAID and file system tags no longer cover the sizes) and the status pill shrinks to its dot; the mini card keeps each footer item on one line and drops the uptime first.
+- **Narrow cards**: on narrow cards, the full card keeps the NAS name and its volume names readable (the NAS picture is hidden, the volume details move under their bar, the RAID and file system tags no longer cover the sizes) and, below about 200 px, the status pill shrinks to its dot; the mini card keeps each footer item on one line and drops the uptime first.
 - **Serbian mini card**: the "Складиште" label no longer runs into its bar: the labels column follows the longest label.
 - **Readability**: the status pill text, disk temperatures and the setup warning mix their state color with the text color, for a contrast of at least 4.5:1 in light and dark themes (the colored dot is unchanged).
+- **Phones**: the full card now asks for 9 columns at least in a sections view (6 columns on a phone, about 156 px, were too narrow for its gauges and tiles). The mini card works down to 6 columns on a phone: below about 200 px its rows keep their icon, bar and value (the label is in the row tooltip), and its footer puts the upload rate under the download rate instead of running past the card edge.
+- **Status pill**: it shows its whole label ("Normal", "Unavailable"…) as long as the NAS name keeps a few characters (from 234 px upwards in all languages), and only truncates it when the room really runs out. The mini card footer status carries its full text in its tooltip.
+- **Cards sized by their content**: in a container that takes the width of its content (grid `auto` column, inline-block wrapper, some layout-card or button-card setups), the cards take a width of 400 px instead of collapsing to a few pixels.
+- **Keyboard**: zooming the mini card in or out with Enter or Space keeps the focus on the zoom button without scrolling the page.
 
 ### Maintenance
 - `biome.json` schema aligned with Biome 2.6.4, the version used by pre-commit and CI.
+- Screenshots: a PNG or GIF is only rewritten when its decoded pixels change, and the fan GIFs are deterministic (the card's own animations are now stepped frame by frame too).
 
 ## 1.13.6 - 2026-11-01
 
