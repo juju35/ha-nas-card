@@ -486,17 +486,48 @@ test("the visual editor offers the url and brand_url options after the picture",
 
 test("I18N parity: every language has exactly the English keys and placeholders", () => {
   const keys = Object.keys(STRINGS.en).sort();
-  assert.deepEqual(Object.keys(STRINGS).sort(), ["de", "en", "es", "fr"]);
+  assert.deepEqual(Object.keys(STRINGS).sort(), ["de", "en", "es", "fr", "sr", "sr-Latn"]);
   for (const [l, strings] of Object.entries(STRINGS)) {
     assert.deepEqual(Object.keys(strings).sort(), keys, l);
     for (const k of keys) {
       const ph = (s) => [...String(s).matchAll(/\{\w+\}/g)].map((m) => m[0]).sort();
       assert.deepEqual(ph(strings[k]), ph(STRINGS.en[k]), `${l}.${k}`);
+      assert.equal(typeof strings[k], typeof STRINGS.en[k], `${l}.${k}`);
+      if (Array.isArray(STRINGS.en[k])) assert.equal(strings[k].length, STRINGS.en[k].length, `${l}.${k}`);
     }
   }
 });
 
-test("the editor offers German and Spanish, and de/es locales resolve to their strings", () => {
+test("Serbian: no Latin letters in sr outside names, brands and units, no Cyrillic in sr-Latn", () => {
+  // Proper names, brands, acronyms, units and the example URL stay in Latin script in both variants.
+  const allowed =
+    /\{\w+\}|https?:\/\/\S+|Home Assistant|UGREEN|Synology|QNAP|DSM|NAS|CPU|RAM|URL|\b(?:h|d|min)\b/g;
+  for (const [k, v] of Object.entries(STRINGS.sr)) {
+    assert.doesNotMatch(String(v).replace(allowed, ""), /[A-Za-z]/, `sr.${k}: ${v}`);
+  }
+  for (const [k, v] of Object.entries(STRINGS["sr-Latn"])) {
+    assert.doesNotMatch(String(v), /[\u0400-\u04FF]/, `sr-Latn.${k}: ${v}`);
+  }
+});
+
+test("language resolution: full code first, then the part before the dash, then English", () => {
+  const el = new NasCard();
+  for (const [hl, l] of [["fr-FR", "fr"], ["sr-Latn", "sr-Latn"], ["sr", "sr"], ["pt-BR", "en"]]) {
+    for (const hass of [{ language: hl }, { locale: { language: hl }, language: "en" }]) {
+      el._hass = { states: {}, ...hass };
+      el._config = {};
+      assert.equal(el._t("network"), STRINGS[l].network, hl);
+    }
+    // config.language keeps priority over the Home Assistant language.
+    el._hass = { states: {}, language: "de" };
+    el._config = { language: hl };
+    assert.equal(el._t("network"), STRINGS[l].network, `config ${hl}`);
+  }
+  // Numbers formatted with the sr-Latn locale stay in Latin script.
+  assert.doesNotMatch((12345).toLocaleString("sr-Latn"), /[\u0400-\u04FF]/);
+});
+
+test("the editor offers German, Spanish and Serbian, and de/es locales resolve to their strings", () => {
   const { NasCardEditor } = load("nas-card.js", ["NasCardEditor"]);
   const ed = new NasCardEditor();
   ed._hass = { states: {}, language: "en" };
@@ -504,8 +535,11 @@ test("the editor offers German and Spanish, and de/es locales resolve to their s
   const language = ed._schema().find((f) => f.name === "language");
   assert.deepEqual(
     [...language.selector.select.options.map((o) => o.value)],
-    ["", "en", "fr", "de", "es"],
+    ["", "en", "fr", "de", "es", "sr", "sr-Latn"],
   );
+  const labels = Object.fromEntries(language.selector.select.options.map((o) => [o.value, o.label]));
+  assert.equal(labels.sr, "Српски");
+  assert.equal(labels["sr-Latn"], "Srpski (latinica)");
   const el = new NasCard();
   for (const [hl, l] of [["de-DE", "de"], ["es", "es"], ["it", "en"]]) {
     el._hass = { states: {}, language: hl };

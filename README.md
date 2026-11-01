@@ -142,7 +142,7 @@ language: fr
 | `show_fans` | full | `true` | Fans speed |
 | `show_storage` | mini | `true` | Overall storage usage bar |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
-| `language` | both | Auto | Force language: `en`, `fr`, `de` or `es` (auto-detects from HA settings) |
+| `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr` or `sr-Latn` (auto-detects from HA settings) |
 
 ## Screenshots
 
@@ -258,6 +258,8 @@ The cards auto-detect the language from your Home Assistant settings. Currently 
 | Français | `fr` |
 | Deutsch | `de` |
 | Español | `es` |
+| Српски (Serbian, Cyrillic) | `sr` |
+| Srpski (Serbian, Latin) | `sr-Latn` |
 
 Contributions for additional languages are welcome!
 
