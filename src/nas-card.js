@@ -1263,10 +1263,14 @@ const fireMoreInfo = (node, entityId) => {
 // ---------------------------------------------------------------------------
 
 const BASE_STYLE = `
+  :host { min-width: 0; }
   :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437);
           --nas-na: var(--disabled-text-color, #9e9e9e); }
-  /* The card is the container of the width queries below (narrow header, volume rows, mini card footer). */
-  ha-card { overflow: hidden; container-type: inline-size; }
+  /* The card is the container of the width queries below (narrow header, volume rows, mini card footer).
+     Its content no longer sizes it: in a container sized by its content (inline-block, grid auto column,
+     button-card / layout-card), it takes the width given here instead of collapsing to nothing, and the host's
+     min-width: 0 lets it shrink below that width in a flex row or a grid column narrower than it. */
+  ha-card { overflow: hidden; container-type: inline-size; contain-intrinsic-inline-size: 400px; }
   .icon { width: 18px; height: 18px; fill: currentColor; flex: none; }
   .muted { color: var(--secondary-text-color); }
   .clickable { cursor: pointer; }
@@ -1283,13 +1287,13 @@ const BASE_STYLE = `
   @media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
   /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width.
-     Narrow cards: the title truncates but keeps a few characters (its min-width sizes the first column), the pill
-     takes at most half of the block (fit-content(50%)) and truncates its text, down to its dot alone. */
-  .titles { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: 1fr fit-content(50%); }
+     The pill keeps its whole label as long as the title keeps a few characters (the first column's minimum):
+     only then does it truncate its text, and on a very narrow card it shows its dot alone. */
+  .titles { flex: 1 1 0; min-width: 0; display: grid; grid-template-columns: minmax(48px, 1fr) auto; }
   .titles > .name, .titles > .sub { grid-column: 1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
                     overflow: hidden; box-sizing: border-box; }
-  @container (max-width: 260px) { .chip .txt { display: none; } }
+  @container (max-width: 200px) { .chip .txt { display: none; } }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
   .brand-link, .nas-link { display: flex; flex: none; border-radius: 8px; }
   .brand-link { align-self: flex-start; }
@@ -1590,8 +1594,9 @@ class NasCard extends NasBase {
     return 8;
   }
 
+  // 9 columns: 234 px on a phone (narrower, the gauges and the tiles no longer fit).
   getGridOptions() {
-    return { columns: 12, min_columns: 6 };
+    return { columns: 12, min_columns: 9 };
   }
 
   _render() {
@@ -1771,15 +1776,24 @@ const MINI_STYLE = `
   .metric > span:first-of-type { white-space: nowrap; }
   .metric .icon { color: var(--secondary-text-color); }
   .metric .v { text-align: right; font-weight: 500; }
-  .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
+  /* The items wrap rather than truncate the status when they do not fit on one line. */
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
   .foot span { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
   .foot > span { flex: none; }
   .foot > [data-key="status"] { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+  .foot > [data-key="network"] { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; column-gap: 8px; }
   .foot .txt { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .foot .icon { width: 14px; height: 14px; }
   /* Narrow mini card: the uptime goes first, then the picture. */
   @container (max-width: 340px) { .foot [data-key="uptime"] { display: none; } }
   @container (max-width: 220px) { .nas-link { display: none; } .header > .nas { display: none; } }
+  /* Very narrow mini card (6 columns on a phone, about 156 px): icon, bar and value; the label stays for screen
+     readers (and in the row's title). */
+  @container (max-width: 200px) {
+    .metrics { grid-template-columns: 18px minmax(0, 1fr) auto; }
+    .metric { grid-template-columns: 18px minmax(0, 1fr) auto; grid-template-columns: subgrid; position: relative; }
+    .metric > span:first-of-type { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  }
 `;
 
 // The mini card extends the full card: its zoom button (top right, `zoom: false` removes it) switches it to the
@@ -1825,8 +1839,8 @@ class NasMiniCard extends NasCard {
     if (!ev.target?.closest?.(".zoom")) return;
     ev.stopPropagation();
     this._setZoom(!this._zoomed);
-    // Keyboard use (Enter / Space: no click count) keeps the focus on the button.
-    if (ev.detail === 0) this.shadowRoot.querySelector(".zoom")?.focus();
+    // Keyboard use (Enter / Space: no click count) keeps the focus on the button, without scrolling the page.
+    if (ev.detail === 0) this.shadowRoot.querySelector(".zoom")?.focus({ preventScroll: true });
   }
 
   _compactHeader() {
@@ -1842,7 +1856,8 @@ class NasMiniCard extends NasCard {
   _metric(id, icon, label, pct, display, cls) {
     // Rows without an entity (the aggregated storage row) open no more-info: not focusable.
     const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
-    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act}>
+    // The title gives the label back on a very narrow card, where only the icon shows.
+    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act} title="${esc(label)}">
       ${svgIcon(icon)}<span>${label}</span>
       <div class="bar"><div style="width:${pct === null ? 0 : Math.max(0, Math.min(100, pct))}%"></div></div>
       <span class="v">${display}</span>
@@ -1882,17 +1897,19 @@ class NasMiniCard extends NasCard {
         rows.push(this._metric("", ICONS.database, this._t("storage"), pct, `${pct.toFixed(0)}%`, level(pct, 80, 90)));
     }
     const foot = [];
-    if (status)
+    if (status) {
+      // The full text in title and aria-label too: on a narrow card, the visible one may be truncated.
+      const text = esc(this._statusText(status, nas.brand));
       foot.push(
-        `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}"><span class="dot"></span>&nbsp;<span class="txt">${esc(
-          this._statusText(status, nas.brand)
-        )}</span></span>`
+        `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
       );
+    }
     if (c.show_network !== false && (sc.lan_down || sc.lan_up))
+      // Each rate stays on one line; on a very narrow card, the upload rate goes under the download rate.
       foot.push(
-        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}&nbsp;&nbsp;${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}"><span class="rate">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}</span><span class="rate">${svgIcon(
           ICONS.up
-        )}${fmtRate(toBps(this._s(sc.lan_up)))}</span>`
+        )}${fmtRate(toBps(this._s(sc.lan_up)))}</span></span>`
       );
     const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);

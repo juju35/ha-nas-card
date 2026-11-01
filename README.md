@@ -232,7 +232,7 @@ Temperatures are shown in the unit of their sensor, which follows your Home Assi
 
 ### Narrow cards
 
-The cards fit down to 6 columns of a sections view (about 245 px). On narrow cards, the NAS picture is hidden (below about 340 px on the full card, 220 px on the mini card) so that the name keeps its room, the status pill shrinks to its colored dot (its text stays in its tooltip), the volume details move under their bar and the mini card drops the uptime from its footer.
+The full card fits down to 9 columns of a sections view (about 234 px on a phone), the mini card down to 6 columns (about 156 px on a phone). On narrow cards, the NAS picture is hidden (below about 340 px on the full card, 220 px on the mini card) so that the name keeps its room, the volume details move under their bar and the mini card drops the uptime from its footer, then puts its upload rate under the download rate. Below about 200 px, the status pill shrinks to its colored dot (its text stays in its tooltip) and the mini card rows keep their icon, bar and value (the label stays in their tooltip). In a container sized by its content (a grid `auto` column, an inline-block wrapper), the cards take a width of 400 px instead of collapsing.
 
 ## Development
 
