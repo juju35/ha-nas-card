@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.13.8 - 2026-11-02
 
 ### Changed
 - Cards: the header shows the round NAS icon of the project's showcase page instead of the UGREEN, Synology or QNAP logo, tinted with the status color like the chip (green normal, orange warning, grey unavailable). Clicking it still opens the brand's website (`brand_url`). The Synology and QNAP logos are no longer loaded from the Home Assistant brand images.
