@@ -440,7 +440,7 @@ test("the editor lists the pictures sorted by brand, then by model, with the bra
   assert.deepEqual({ ...options.find((o) => o.value === "DXP4800 Plus") }, { value: "DXP4800 Plus", label: "UGREEN DXP4800 Plus" });
 });
 
-test("the logo opens the brand website and the picture the NAS interface, both configurable", async () => {
+test("the header icon opens the brand website and the picture the NAS interface, both configurable", async () => {
   const { mocks } = await import("../scripts/mock-states.mjs");
   const render = (hass, config = {}) => {
     const el = new NasCard();
@@ -1110,4 +1110,15 @@ test("the full card asks for 9 columns at least (234 px on a phone), the mini ca
   assert.deepEqual({ ...el.getGridOptions() }, { columns: 6, min_columns: 6 });
   const full = new NasCard();
   assert.deepEqual({ ...full.getGridOptions() }, { columns: 12, min_columns: 9 });
+});
+
+test("header icon: the NAS icon in the status color, for every brand", async () => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  const icon = (hass) => {
+    const el = new NasCard();
+    el._config = {};
+    el._hass = { ...hass, language: "en" };
+    return el._render().match(/<a class="brand-link"[^>]*><span class="logo (\w+)" aria-hidden="true"><svg /)?.[1];
+  };
+  for (const brand of ["ugreen", "synology", "qnap"]) assert.equal(icon(mocks[brand]), "ok", brand);
 });

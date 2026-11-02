@@ -52,13 +52,6 @@ async function openCard(browser, s) {
   // A fresh page for each capture: the card script declares its classes and custom elements once per page.
   const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1000, height: 2000 } });
   page.on("pageerror", (err) => console.error(`${s.file}: ${err.message}`));
-  // Brand icons (Synology, QNAP) load from the HA brand images CDN: point BRANDS_DIR at a checkout
-  // of github.com/home-assistant/brands to render them offline.
-  if (process.env.BRANDS_DIR)
-    await page.route("https://brands.home-assistant.io/**", (route) => {
-      const path = join(process.env.BRANDS_DIR, "core_integrations", new URL(route.request().url()).pathname);
-      return existsSync(path) ? route.fulfill({ path }) : route.continue();
-    });
   await page.setContent(page_html(s.theme, s.width));
   await page.addScriptTag({ content: HA_CARD });
   await page.addScriptTag({ content: cardJs });
@@ -135,8 +128,8 @@ const saveGif = (path, tmp) => {
   console.log(path.slice(root.length));
 };
 
-// Waits for the card pictures (brand logos from the HA brand CDN, NAS pictures) and returns those that failed:
-// a capture without its logo is not a change of the card, so it never replaces the committed one.
+// Waits for the card pictures (NAS pictures) and returns those that failed:
+// a capture without its picture is not a change of the card, so it never replaces the committed one.
 const failedImages = async (page) => {
   const imgs = () => [...(document.querySelector("#root > *")?.shadowRoot?.querySelectorAll("img") ?? [])];
   await page.waitForFunction(`(${imgs})().every((i) => i.complete)`, null, { timeout: 15000 }).catch(() => {});

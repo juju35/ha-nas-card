@@ -36,12 +36,12 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
 - Detail button on the mini card (top right): it switches the mini card to the full card's content and back; a click anywhere outside the card brings the compact view back
 - Click any value to open its Home Assistant history (more-info dialog)
-- Brand logo next to the NAS name (UGREEN, Synology or QNAP), adapted to dark mode: a click opens the brand's website
+- Round NAS icon next to the NAS name, in the status color (green when the NAS is normal, orange on a warning, grey when the status is unavailable): a click opens the brand's website
 - Click the NAS picture to open the NAS web interface (UGOS, DSM, QTS), found automatically from Home Assistant for UGREEN and Synology; both addresses can be changed in the visual editor
 - Drawn NAS picture that follows the model: 43 models drawn across the three brands — towers by bay count, all-flash DXP480T, rackmounts (see [Screenshots](#screenshots)) — or your own picture
 - Visual editor in the dashboard UI for both cards (no YAML needed), with the pictures listed by brand
 - Light and dark mode, English, French, German, Spanish, Serbian (Cyrillic and Latin), Italian, Dutch, European Portuguese and Polish
-- Single file, no external dependency: the NAS pictures and the UGREEN logo are embedded, the Synology and QNAP logos load from the [Home Assistant brand images](https://brands.home-assistant.io) (the ones the Home Assistant interface itself shows)
+- Single file, no external dependency: the NAS pictures are embedded
 
 > **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to HACS as a custom repository, remove it and add `https://github.com/juju35/ha-nas-card` instead.
 
@@ -134,7 +134,7 @@ language: fr
 | `show_image` | both | `true` | Show the NAS picture |
 | `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`… — see the [drawn models](#screenshots)) or an image URL (e.g. `/local/my-nas.png`). By default the picture follows the model reported by the integration; an unknown model of a known family is drawn from its bay count |
 | `url` | both | Device configuration URL | Web interface of the NAS, opened by a click on the NAS picture. By default the configuration URL of the NAS device in Home Assistant (the « Visit » link of the device page), set by the UGREEN NAS and Synology DSM integrations; the QNAP integration has none, so set it for a QNAP NAS (e.g. `http://192.168.1.10:8080`) |
-| `brand_url` | both | Brand website | Website opened by a click on the brand logo: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com) or [qnap.com](https://www.qnap.com) by default |
+| `brand_url` | both | Brand website | Website opened by a click on the header icon: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com) or [qnap.com](https://www.qnap.com) by default |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
 | `show_volumes` | full | `true` | Volumes and used space |
@@ -244,8 +244,6 @@ node scripts/models-svg.mjs  # renders the drawn model galleries of the README i
 npm run screenshots        # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif / fans-dark.gif, needs ffmpeg)
 ```
 
-`npm run screenshots` loads the Synology and QNAP logos from the Home Assistant brand images; set `BRANDS_DIR` to a checkout of [home-assistant/brands](https://github.com/home-assistant/brands) to render them offline.
-
 `dist/` is not committed: `npm run build` creates it locally, CI builds it on every push, and the release workflow attaches the built file to the release, which is where HACS downloads it from.
 
 ### Releasing
@@ -275,7 +273,7 @@ Contributions for additional languages are welcome!
 
 ## Credits
 
-UGREEN and its logo are trademarks of UGREEN Group; Synology, DSM and the Synology logo are trademarks of Synology Inc.; QNAP, QTS, QuTS hero and the QNAP logo are trademarks of QNAP Systems, Inc. (Synology and QNAP logos from the [Home Assistant brands](https://github.com/home-assistant/brands) repository). The NAS pictures are drawings, not product photos. This project is not affiliated with UGREEN, Synology or QNAP.
+UGREEN and its logo are trademarks of UGREEN Group; Synology, DSM and the Synology logo are trademarks of Synology Inc.; QNAP, QTS, QuTS hero and the QNAP logo are trademarks of QNAP Systems, Inc.. The NAS pictures are drawings, not product photos. This project is not affiliated with UGREEN, Synology or QNAP.
 
 ## License
 
