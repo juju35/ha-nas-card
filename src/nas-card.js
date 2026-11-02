@@ -783,10 +783,6 @@ const nasSvg = (model, brand) => {
 const nasPicture = (image, model, brand) =>
   /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model, brand))}`;
 
-// Brand logo next to the title. The UGREEN mark stays embedded; the Synology and QNAP marks load
-// from the Home Assistant brand images CDN (the one the HA interface itself uses for integration
-// logos). Both marks are grayscale, so dark mode simply inverts them.
-const BRAND_DOMAINS = { synology: "synology_dsm", qnap: "qnap" };
 const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
 const BRAND_SITES = { ugreen: "https://nas.ugreen.com", synology: "https://www.synology.com", qnap: "https://www.qnap.com" };
 // Only web addresses become links (a configuration_url can also be a homeassistant:// path).
@@ -810,19 +806,9 @@ const modelOptions = () =>
         .sort((x, y) => x.localeCompare(y, "en", { numeric: true, sensitivity: "base" }))
         .map((m) => ({ value: m, label: `${BRAND_NAMES[b]} ${m}` }))
     );
-const logo = (brand, dark) => {
-  if (BRAND_DOMAINS[brand])
-    return `<img class="logo brand${dark ? " inverted" : ""}" src="https://brands.home-assistant.io/${BRAND_DOMAINS[brand]}/icon.png" alt="${BRAND_NAMES[brand]}">`;
-  return ugreenLogo(dark);
-};
-// UGREEN logo. The bottom of the gradient is lightened in dark mode, the original
-// near-black end would blend into the card background.
-const ugreenLogo = (dark) => `<svg class="logo" viewBox="31.54 11.44 86.93 129.63" role="img" aria-label="UGREEN">
-  <defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="${dark ? "#0b8f5c" : "#001509"}"/>
-  </linearGradient></defs>
-  <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/>
-</svg>`;
+// Header icon: the round NAS icon of the project page on the showcase site, in the status colour.
+const NAS_ICON = "M4,5C2.89,5 2,5.89 2,7V17C2,18.11 2.89,19 4,19H20C21.11,19 22,18.11 22,17V7C22,5.89 21.11,5 20,5H4M4.5,7A1,1 0 0,1 5.5,8A1,1 0 0,1 4.5,9A1,1 0 0,1 3.5,8A1,1 0 0,1 4.5,7M7,7H20V17H7V7M8,8V16H11V8H8M12,8V16H15V8H12M16,8V16H19V8H16M9,9H10V10H9V9M13,9H14V10H13V9M17,9H18V10H17V9Z";
+const headerIcon = (cls) => `<span class="logo ${cls}" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${NAS_ICON}"/></svg></span>`;
 
 // ---------------------------------------------------------------------------
 // Entity discovery
@@ -1297,13 +1283,14 @@ const BASE_STYLE = `
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
                     overflow: hidden; box-sizing: border-box; }
   @container (max-width: 200px) { .chip .txt { display: none; } }
-  .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; }
+  .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; border-radius: 50%; display: grid; place-items: center;
+          color: var(--c, var(--nas-ok)); background: color-mix(in srgb, var(--c, var(--nas-ok)) 16%, transparent); }
+  .logo svg { width: 24px; height: 24px; fill: currentColor; }
   .brand-link, .nas-link { display: flex; flex: none; border-radius: 8px; }
+  .brand-link { border-radius: 50%; }
   .brand-link { align-self: flex-start; }
   .brand-link:focus-visible, .nas-link:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
   .nas-link .nas { max-width: 100%; }
-  .logo.brand { object-fit: contain; }
-  .logo.brand.inverted { filter: invert(1); }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 4ch; }
   .sub { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; }
   /* Model and UGOS version on one line when they fit, else one per line: the "·" separator that starts a line
@@ -1459,7 +1446,7 @@ class NasBase extends HTMLElement {
     const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
     return `
       <div class="header">
-        ${this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", logo(nas.brand, this._hass.themes?.darkMode))}
+        ${this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", headerIcon(status ? this._statusClass(nas, status) : "na"))}
         <div class="titles">
           <div class="name">${esc(name)}</div>
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
@@ -1766,6 +1753,7 @@ class NasCard extends NasBase {
 
 const MINI_STYLE = `
   .logo { height: 32px; width: 32px; }
+  .logo svg { width: 18px; height: 18px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .nas-link { max-width: 35%; }
   /* The status shows in the footer. */
