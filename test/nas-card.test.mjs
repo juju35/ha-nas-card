@@ -1045,6 +1045,9 @@ test("narrow header: the title truncates but keeps a few characters, the status 
   // Below the threshold, the pill only shows its dot.
   assert.match(containerRules(BASE_STYLE), /\.chip \.txt\s*\{[^}]*display: none/);
   for (const sel of [".zoom", ".brand-link, .nas-link", ".logo"]) assert.match(rule(BASE_STYLE, sel), /flex: none/, sel);
+  // The mini card keeps the full-size header icon (40 px, 24 px icon): its style does not resize it.
+  assert.match(rule(BASE_STYLE, ".logo"), /height: 40px; width: 40px/);
+  assert.doesNotMatch(MINI_STYLE, /\.logo(\s+svg)?\s*\{/);
   // Full card below ~340 px: no picture, the volume detail under its bar, tags that shrink.
   const full = containerRules(`${BASE_STYLE}${FULL_STYLE}`);
   assert.match(full, /\.nas-link\s*\{[^}]*display: none/);

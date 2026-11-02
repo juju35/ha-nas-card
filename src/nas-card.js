@@ -1752,8 +1752,6 @@ class NasCard extends NasBase {
 // ---------------------------------------------------------------------------
 
 const MINI_STYLE = `
-  .logo { height: 32px; width: 32px; }
-  .logo svg { width: 18px; height: 18px; }
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .nas-link { max-width: 35%; }
   /* The status shows in the footer. */
