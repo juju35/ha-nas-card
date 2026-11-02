@@ -45,6 +45,16 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 > **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to HACS as a custom repository, remove it and add `https://github.com/juju35/ha-nas-card` instead.
 
+## Supported integrations
+
+| Integration | NAS | What the cards show |
+|---|---|---|
+| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (HACS) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, link to UGOS |
+| [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks, security status, DSM version, link to DSM; no fans |
+| [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
+
+Several NAS are supported, and brands can be mixed. Some sensors of the Synology DSM and QNAP integrations are disabled by default, see [How it works](#how-it-works).
+
 ## Prerequisites
 
 Home Assistant 2024.8 or later, and at least one of:
