@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.14.0 - 2026-11-03
+
+### Features
+- Header: the brand logo (UGREEN, Synology or QNAP) is back as a badge on the round NAS icon, on the full card and the mini cards. The logos are embedded (no network request); the icon keeps its status colour.
+
 ## 1.13.9 - 2026-11-02
 
 ### Fixes

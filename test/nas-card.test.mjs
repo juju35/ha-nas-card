@@ -1125,3 +1125,15 @@ test("header icon: the NAS icon in the status color, for every brand", async () 
   };
   for (const brand of ["ugreen", "synology", "qnap"]) assert.equal(icon(mocks[brand]), "ok", brand);
 });
+
+test("header icon: the brand logo as an embedded badge, for every brand", async () => {
+  const { mocks } = await import("../scripts/mock-states.mjs");
+  const badge = (hass) => {
+    const el = new NasCard();
+    el._config = {};
+    el._hass = { ...hass, language: "en" };
+    return el._render().match(/<span class="badge">(<svg viewBox="31\.54|<img src="data:image\/png)/)?.[1];
+  };
+  assert.match(badge(mocks.ugreen), /^<svg/);
+  for (const brand of ["synology", "qnap"]) assert.match(badge(mocks[brand]), /^<img/, brand);
+});
