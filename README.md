@@ -41,7 +41,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Click the NAS picture to open the NAS web interface (UGOS, DSM, QTS), found automatically from Home Assistant for UGREEN and Synology; both addresses can be changed in the visual editor
 - Drawn NAS picture that follows the model: 43 models drawn across the three brands — towers by bay count, all-flash DXP480T, rackmounts (see [Screenshots](#screenshots)) — or your own picture
 - Visual editor in the dashboard UI for both cards (no YAML needed), with the pictures listed by brand
-- Light and dark mode, English, French, German, Spanish, Serbian (Cyrillic and Latin), Italian, Dutch, European Portuguese, Polish, Romanian, Danish, Swedish, Bulgarian, Russian, Ukrainian, Hungarian, Irish, Slovak, Czech, Slovenian, Maltese, Latvian and Greek
+- Light and dark mode, English, French, German, Spanish, Serbian (Cyrillic and Latin), Italian, Dutch, European Portuguese, Polish, Romanian, Danish, Swedish, Bulgarian, Russian, Ukrainian, Hungarian, Slovak, Czech, Slovenian, Latvian and Greek
 - Single file, no external dependency: the NAS pictures are embedded
 
 > **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to HACS as a custom repository, remove it and add `https://github.com/juju35/ha-nas-card` instead.
@@ -153,7 +153,7 @@ language: fr
 | `show_fans` | full | `true` | Fans speed |
 | `show_storage` | mini | `true` | Overall storage usage bar |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
-| `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `ga`, `sk`, `cs`, `sl`, `mt`, `lv` or `el` (auto-detects from HA settings) |
+| `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |
 
 ## Screenshots
 
@@ -286,11 +286,9 @@ The cards auto-detect the language from your Home Assistant settings. Currently 
 | Русский | `ru` |
 | Українська | `uk` |
 | Magyar | `hu` |
-| Gaeilge | `ga` |
 | Slovenčina | `sk` |
 | Čeština | `cs` |
 | Slovenščina | `sl` |
-| Malti | `mt` |
 | Latviešu | `lv` |
 | Ελληνικά | `el` |
 
