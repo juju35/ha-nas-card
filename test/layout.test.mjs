@@ -112,7 +112,7 @@ const matrix = (types, widths, extra = {}, states = ["ok"]) => {
   const cases = [];
   for (const brand of ["ugreen", "synology", "qnap"])
     for (const type of types)
-      for (const lang of ["en", "pl", "sr", "sr-Latn"])
+      for (const lang of ["en", "pl", "sr", "sr-Latn", "bg", "el", "lv"])
         for (const theme of ["light", "dark"])
           for (const st of states) for (const width of widths) cases.push({ brand, type, lang, theme, st, width, ...extra });
   return cases;
