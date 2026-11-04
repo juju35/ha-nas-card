@@ -22,8 +22,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="" width="20"> UGREEN | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="20"> Synology | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="20"> QNAP |
 |---|---|---|
-| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png" alt="ugreen card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png" alt="synology card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png" alt="qnap card"></picture> |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png" alt="ugreen mini card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png" alt="synology mini card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png" alt="qnap mini card"></picture> |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png" alt="ugreen card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png" alt="synology card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png" alt="qnap card" width="400"></picture> |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png" alt="ugreen mini card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png" alt="synology mini card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png" alt="qnap mini card" width="400"></picture> |
 
 ## Features
 
@@ -164,18 +164,18 @@ While the NAS is running, the card animates: the cooling fans spin at their live
 
 | Light | Dark |
 |---|---|
-| ![cooling fans animation](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans.gif) | ![cooling fans animation, dark theme](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans-dark.gif) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans.gif" alt="cooling fans animation" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans-dark.gif" alt="cooling fans animation, dark theme" width="400"> |
 
 | Light | Dark |
 |---|---|
-| ![card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png) | ![card dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png) |
-| ![mini card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png) | ![mini card dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png" alt="card" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png" alt="card dark" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png" alt="mini card" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png" alt="mini card dark" width="400"> |
 
 Mini card zoomed in with its detail button (top right, click it again or anywhere outside the card to go back):
 
 | Light | Dark |
 |---|---|
-| ![mini card zoomed in](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom.png) | ![mini card zoomed in dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom-dark.png) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom.png" alt="mini card zoomed in" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom-dark.png" alt="mini card zoomed in dark" width="400"> |
 
 Drawn UGREEN models (aluminium DXP series, white DH series, flat all-flash DXP480T):
 
@@ -187,8 +187,8 @@ DS923+ set up with Synology DSM: the volume and the drives come from the NAS chi
 
 | Light | Dark |
 |---|---|
-| ![card synology](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png) | ![card synology dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png) |
-| ![mini card synology](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png) | ![mini card synology dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png" alt="card synology" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png" alt="card synology dark" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png" alt="mini card synology" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png" alt="mini card synology dark" width="400"> |
 
 Drawn Synology models (black DS towers, RS rackmounts):
 
@@ -200,8 +200,8 @@ TS-464 set up with QNAP, with the drive temperatures and the volume used space e
 
 | Light | Dark |
 |---|---|
-| ![card qnap](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png) | ![card qnap dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png) |
-| ![mini card qnap](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png) | ![mini card qnap dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png" alt="card qnap" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png" alt="card qnap dark" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png" alt="mini card qnap" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png" alt="mini card qnap dark" width="400"> |
 
 Drawn QNAP models (graphite towers with the copper strip, rackmounts for the models ending in U):
 
