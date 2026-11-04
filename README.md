@@ -5,13 +5,13 @@
 [![Validate](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml)
 [![Lint](https://github.com/juju35/ha-nas-card/actions/workflows/lint.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/lint.yml)
 [![Release](https://img.shields.io/github/v/release/juju35/ha-nas-card)](https://github.com/juju35/ha-nas-card/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/juju35/ha-nas-card/blob/main/LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/julienstep9)
 
 <p align="center">
-  <img src="images/ugreen.svg" alt="UGREEN" width="64">&nbsp;&nbsp;
-  <img src="images/synology.png" alt="Synology" width="64">&nbsp;&nbsp;
-  <img src="images/qnap.png" alt="QNAP" width="64">
+  <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="UGREEN" width="64">&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="Synology" width="64">&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="QNAP" width="64">
 </p>
 
 Lovelace cards for Home Assistant to monitor NAS devices — [UGREEN](https://nas.ugreen.com), [Synology](https://www.synology.com) and [QNAP](https://www.qnap.com): CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
@@ -20,7 +20,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
-| <img src="images/ugreen.svg" alt="" width="20"> UGREEN | <img src="images/synology.png" alt="" width="20"> Synology | <img src="images/qnap.png" alt="" width="20"> QNAP |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="" width="20"> UGREEN | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="20"> Synology | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="20"> QNAP |
 |---|---|---|
 | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png" alt="ugreen card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png" alt="synology card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png" alt="qnap card"></picture> |
 | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png" alt="ugreen mini card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png" alt="synology mini card"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png" alt="qnap mini card"></picture> |
@@ -158,54 +158,54 @@ language: fr
 
 ## Screenshots
 
-### <img src="images/ugreen.svg" alt="" width="24"> UGREEN
+### <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="" width="24"> UGREEN
 
 While the NAS is running, the card animates: the cooling fans spin at their live speed. It settles to a still card when they stop (and honours `prefers-reduced-motion`).
 
 | Light | Dark |
 |---|---|
-| ![cooling fans animation](screenshots/fans.gif) | ![cooling fans animation, dark theme](screenshots/fans-dark.gif) |
+| ![cooling fans animation](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans.gif) | ![cooling fans animation, dark theme](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/fans-dark.gif) |
 
 | Light | Dark |
 |---|---|
-| ![card](screenshots/card.png) | ![card dark](screenshots/card-dark.png) |
-| ![mini card](screenshots/mini-card.png) | ![mini card dark](screenshots/mini-card-dark.png) |
+| ![card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card.png) | ![card dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-dark.png) |
+| ![mini card](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card.png) | ![mini card dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-dark.png) |
 
 Mini card zoomed in with its detail button (top right, click it again or anywhere outside the card to go back):
 
 | Light | Dark |
 |---|---|
-| ![mini card zoomed in](screenshots/mini-card-zoom.png) | ![mini card zoomed in dark](screenshots/mini-card-zoom-dark.png) |
+| ![mini card zoomed in](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom.png) | ![mini card zoomed in dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-zoom-dark.png) |
 
 Drawn UGREEN models (aluminium DXP series, white DH series, flat all-flash DXP480T):
 
-<p align="center"><img src="images/models-ugreen.svg" alt="UGREEN NAS pictures" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/models-ugreen.svg" alt="UGREEN NAS pictures" width="760"></p>
 
-### <img src="images/synology.png" alt="" width="24"> Synology
+### <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="24"> Synology
 
 DS923+ set up with Synology DSM: the volume and the drives come from the NAS child devices, the pill shows the security status.
 
 | Light | Dark |
 |---|---|
-| ![card synology](screenshots/card-synology.png) | ![card synology dark](screenshots/card-synology-dark.png) |
-| ![mini card synology](screenshots/mini-card-synology.png) | ![mini card synology dark](screenshots/mini-card-synology-dark.png) |
+| ![card synology](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology.png) | ![card synology dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-synology-dark.png) |
+| ![mini card synology](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology.png) | ![mini card synology dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-synology-dark.png) |
 
 Drawn Synology models (black DS towers, RS rackmounts):
 
-<p align="center"><img src="images/models-synology.svg" alt="Synology NAS pictures" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/models-synology.svg" alt="Synology NAS pictures" width="760"></p>
 
-### <img src="images/qnap.png" alt="" width="24"> QNAP
+### <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="24"> QNAP
 
 TS-464 set up with QNAP, with the drive temperatures and the volume used space enabled:
 
 | Light | Dark |
 |---|---|
-| ![card qnap](screenshots/card-qnap.png) | ![card qnap dark](screenshots/card-qnap-dark.png) |
-| ![mini card qnap](screenshots/mini-card-qnap.png) | ![mini card qnap dark](screenshots/mini-card-qnap-dark.png) |
+| ![card qnap](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png) | ![card qnap dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png) |
+| ![mini card qnap](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png) | ![mini card qnap dark](https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png) |
 
 Drawn QNAP models (graphite towers with the copper strip, rackmounts for the models ending in U):
 
-<p align="center"><img src="images/models-qnap.svg" alt="QNAP NAS pictures" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/models-qnap.svg" alt="QNAP NAS pictures" width="760"></p>
 
 ## How it works
 
@@ -261,7 +261,7 @@ npm run screenshots        # renders the cards with mock data (scripts/mock-stat
 ### Releasing
 
 1. Bump `version` in `package.json`
-2. Add a `## <version>` section at the top of [CHANGELOG.md](CHANGELOG.md)
+2. Add a `## <version>` section at the top of [CHANGELOG.md](https://github.com/juju35/ha-nas-card/blob/main/CHANGELOG.md)
 3. Push to `main`: the **Release** workflow builds the card, creates the tag and the GitHub release with the changelog section as notes, and attaches `nas-card.js`
 
 ## Translations
@@ -301,7 +301,7 @@ UGREEN and its logo are trademarks of UGREEN Group; Synology, DSM and the Synolo
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/juju35/ha-nas-card/blob/main/LICENSE)
 
 ## Support
 
