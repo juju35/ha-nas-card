@@ -634,11 +634,18 @@ test("the mini card network footer opens the upload sensor when there is no down
   delete states[down];
   delete entities[down];
   const mini = new NasMiniCard();
-  mini._config = {};
+  // Without the 24 h curves, the rates stay in the footer.
+  mini._config = { show_history: false };
   mini._hass = { ...hass, states, entities };
   assert.equal(discover(mini._hass, "").scalars.lan_down, undefined);
   const html = mini._render();
   assert.match(html, new RegExp(`data-key="network" data-entity="${up.replace(/\./g, "\\.")}"`));
+  // With them, the upload tile opens the upload sensor and the download tile, without a sensor, opens nothing.
+  mini._config = {};
+  const tiles = mini._render();
+  assert.match(tiles, new RegExp(`class="tile clickable up" role="button" tabindex="0" data-entity="${up.replace(/\./g, "\\.")}"`));
+  assert.match(tiles, /class="tile down"/);
+  assert.doesNotMatch(tiles, /tabindex="0" data-key="network"/);
 });
 
 // Two NAS of the same integration whose registry order differs from the sorted order the cards use.
@@ -1191,4 +1198,23 @@ test("network tiles: 24 h sparkline from the recorder statistics, refreshed ever
   off._hass = el._hass;
   assert.doesNotMatch(off._render(), /class="spark"/);
   assert.equal(calls.length, 2);
+});
+
+test("mini card: the folded rates show as tiles with their 24 h curves", async () => {
+  const { states } = await import("../scripts/mock-states.mjs");
+  const el = new NasMiniCard();
+  el._config = {};
+  el._hass = {
+    states,
+    language: "en",
+    callWS: async (msg) => Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ mean: 1 }, { mean: 3 }]])),
+  };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  assert.match(el.html, /class="net"/);
+  await new Promise((r) => setTimeout(r, 0));
+  assert.match(el.html, /class="spark"/);
 });

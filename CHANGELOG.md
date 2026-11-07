@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.0 - 2026-11-07
+
+### Features
+- Mini card: the folded rates show as the full card's download / upload tiles with their last 24 hours, above the footer (`show_history`, now also in the mini card editor; `show_history: false` keeps the rates in the footer). On a narrow card the tiles go one per line.
+
 ## 1.15.0 - 2026-11-07
 
 ### Features

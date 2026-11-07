@@ -2180,18 +2180,6 @@ const FULL_STYLE = `
   .facts { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; margin-top: 6px; }
   .facts > span { display: inline-flex; align-items: center; gap: 4px; }
   .facts .icon { width: 14px; height: 14px; color: var(--secondary-text-color); }
-  .net { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
-          background: var(--secondary-background-color, rgba(127,127,127,.08)); position: relative; overflow: hidden; }
-  .tile > :not(.spark) { position: relative; }
-  .tile .spark { position: absolute; left: 0; bottom: 0; width: 100%; height: 55%; pointer-events: none; }
-  .spark-a { fill: color-mix(in srgb, var(--c) 12%, transparent); }
-  .spark-l { fill: none; stroke: color-mix(in srgb, var(--c) 50%, transparent); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
-  .tile .icon { color: var(--c, var(--nas-accent)); }
-  .tile .k { font-size: 11px; color: var(--secondary-text-color); }
-  .tile .v { font-size: 14px; font-weight: 500; }
-  .tile.up { --c: var(--info-color, #039be5); }
-  .tile.down { --c: var(--nas-accent); }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
@@ -2253,7 +2241,7 @@ class NasCard extends NasBase {
     if (c.show_volumes !== false) parts.push(this._volumes(nas));
     if (c.show_disks !== false) parts.push(this._disks(nas));
     if (c.show_fans !== false) parts.push(this._fans(nas));
-    return `<style>${BASE_STYLE}${FULL_STYLE}</style>
+    return `<style>${BASE_STYLE}${FULL_STYLE}${NET_STYLE}</style>
       <ha-card>
         ${this._header(nas)}
         <div class="content">${parts.filter(Boolean).join("")}</div>
@@ -2312,18 +2300,23 @@ class NasCard extends NasBase {
     const sc = nas.scalars;
     if (!sc.lan_down && !sc.lan_up) return "";
     // A tile without its sensor (e.g. QNAP without upload rate) opens no more-info: not focusable.
+    return `<div>
+      <div class="section-title">${svgIcon(ICONS.network)}${this._t("network")}</div>
+      ${this._netTiles(sc)}
+    </div>`;
+  }
+
+  // The download and upload tiles, each with its last 24 hours behind the rate (unless show_history is false).
+  _netTiles(sc) {
     const hist = this._config.show_history === false ? null : this._history([sc.lan_down, sc.lan_up].filter(Boolean));
     const tile = (id, cls, icon, k) =>
       `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${spark(hist?.[id])}${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
         toBps(this._s(id))
       )}</div></div></div>`;
-    return `<div>
-      <div class="section-title">${svgIcon(ICONS.network)}${this._t("network")}</div>
-      <div class="net">
+    return `<div class="net">
         ${tile(sc.lan_down, "down", ICONS.down, this._t("download"))}
         ${tile(sc.lan_up, "up", ICONS.up, this._t("upload"))}
-      </div>
-    </div>`;
+      </div>`;
   }
 
   // 24 h of 5-minute means from the recorder's statistics, fetched again every 5 minutes. Returns what is
@@ -2433,6 +2426,24 @@ class NasCard extends NasBase {
 // ---------------------------------------------------------------------------
 // Mini card
 // ---------------------------------------------------------------------------
+
+// Download / upload tiles with their 24 h curve: the network section of the full card, the rates row of the mini card.
+const NET_STYLE = `
+  .net { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
+          background: var(--secondary-background-color, rgba(127,127,127,.08)); position: relative; overflow: hidden; }
+  .tile > :not(.spark) { position: relative; }
+  .tile .spark { position: absolute; left: 0; bottom: 0; width: 100%; height: 55%; pointer-events: none; }
+  .spark-a { fill: color-mix(in srgb, var(--c) 12%, transparent); }
+  .spark-l { fill: none; stroke: color-mix(in srgb, var(--c) 50%, transparent); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .tile .icon { color: var(--c, var(--nas-accent)); }
+  .tile .k { font-size: 11px; color: var(--secondary-text-color); }
+  .tile .v { font-size: 14px; font-weight: 500; }
+  .tile.up { --c: var(--info-color, #039be5); }
+  .tile.down { --c: var(--nas-accent); }
+  /* A narrow card (a mini card on 6 columns of a phone): one tile per line, so that each rate keeps its whole text. */
+  @container (max-width: 260px) { .net { grid-template-columns: minmax(0, 1fr); } }
+`;
 
 const MINI_STYLE = `
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
@@ -2576,7 +2587,9 @@ class NasMiniCard extends NasCard {
         `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
       );
     }
-    if (c.show_network !== false && (sc.lan_down || sc.lan_up))
+    // With their 24 h curves, the rates get the full card's tiles above the footer; without, they stay in the footer.
+    const netTiles = c.show_network !== false && c.show_history !== false && (sc.lan_down || sc.lan_up);
+    if (c.show_network !== false && !netTiles && (sc.lan_down || sc.lan_up))
       // Each rate stays on one line; on a very narrow card, the upload rate goes under the download rate.
       foot.push(
         `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}"><span class="rate">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}</span><span class="rate">${svgIcon(
@@ -2585,11 +2598,12 @@ class NasMiniCard extends NasCard {
       );
     const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
-    return `<style>${BASE_STYLE}${MINI_STYLE}</style>
+    return `<style>${BASE_STYLE}${MINI_STYLE}${NET_STYLE}</style>
       <ha-card>
         ${this._header(nas)}
         <div class="content">
           <div class="metrics">${rows.join("")}</div>
+          ${netTiles ? this._netTiles(sc) : ""}
           ${foot.length ? `<div class="foot">${foot.join("")}</div>` : ""}
         </div>
       </ha-card>`;
@@ -2724,7 +2738,7 @@ class NasCardEditor extends NasEditorBase {
 
 class NasMiniCardEditor extends NasEditorBase {
   static get toggles() {
-    return ["show_storage", "show_network", "zoom"];
+    return ["show_storage", "show_network", "show_history", "zoom"];
   }
 }
 
