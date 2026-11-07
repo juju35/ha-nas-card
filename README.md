@@ -1,6 +1,6 @@
 # ha-nas-card
 
-[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![Marketplace](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/)
 [![HACS Validation](https://github.com/juju35/ha-nas-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/hacs.yml)
 [![Validate](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/validate.yml)
 [![Lint](https://github.com/juju35/ha-nas-card/actions/workflows/lint.yml/badge.svg)](https://github.com/juju35/ha-nas-card/actions/workflows/lint.yml)
@@ -18,7 +18,7 @@ Lovelace cards for Home Assistant to monitor NAS devices — [UGREEN](https://na
 
 The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), and of the [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) and [QNAP](https://www.home-assistant.io/integrations/qnap/) integrations included in Home Assistant: entities are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
+[![Open your Home Assistant instance and open a repository inside the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
 | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="" width="20"> UGREEN | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="20"> Synology | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="20"> QNAP |
 |---|---|---|
@@ -45,13 +45,13 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Light and dark mode, English, French, German, Spanish, Serbian (Cyrillic and Latin), Italian, Dutch, European Portuguese, Polish, Romanian, Danish, Swedish, Bulgarian, Russian, Ukrainian, Hungarian, Slovak, Czech, Slovenian, Latvian and Greek
 - Single file, no external dependency: the NAS pictures are embedded
 
-> **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to HACS as a custom repository, remove it and add `https://github.com/juju35/ha-nas-card` instead.
+> **Moved**: this repository was `juju35/ha-ugreen-nas-card`. GitHub redirects the old address, but if you added it to the Marketplace from a link, remove it and add `https://github.com/juju35/ha-nas-card` instead.
 
 ## Supported integrations
 
 | Integration | NAS | What the cards show |
 |---|---|---|
-| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (HACS) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, link to UGOS |
+| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, link to UGOS |
 | [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks, security status, DSM version, link to DSM; no fans |
 | [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
 
@@ -61,25 +61,25 @@ Several NAS are supported, and brands can be mixed. Some sensors of the Synology
 
 Home Assistant 2024.8 or later, and at least one of:
 
-- the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (available in HACS)
+- the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (available in the Marketplace)
 - the [Synology DSM integration](https://www.home-assistant.io/integrations/synology_dsm/) (included in Home Assistant)
 - the [QNAP integration](https://www.home-assistant.io/integrations/qnap/) (included in Home Assistant)
 
 ## Installation
 
-### Via HACS (recommended)
+### Via the Marketplace (recommended)
 
 Click the button below to add the repository directly:
 
-[![Add to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
+[![Add to the Marketplace](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
-Then click **Download**, and reload your browser when HACS asks you to.
+Then click **Install**, and reload your browser when the Marketplace asks you to.
 
 Or manually:
 
-1. Open HACS → **⋮** (top right) → **Custom repositories**
+1. Open **Settings → Marketplace → Add from link** (top right; this needs a GitHub account connected)
 2. Add `https://github.com/juju35/ha-nas-card` — Type: **Dashboard**
-3. Search for **NAS Card** and click **Download**
+3. Open **NAS Card** and click **Install**
 4. Clear your browser cache and refresh
 
 ### Manual
@@ -256,7 +256,7 @@ node scripts/models-svg.mjs  # renders the drawn model galleries of the README i
 npm run screenshots        # renders the cards with mock data (scripts/mock-states.mjs) into screenshots/ (and fans.gif / fans-dark.gif, needs ffmpeg)
 ```
 
-`dist/` is not committed: `npm run build` creates it locally, CI builds it on every push, and the release workflow attaches the built file to the release, which is where HACS downloads it from.
+`dist/` is not committed: `npm run build` creates it locally, CI builds it on every push, and the release workflow attaches the built file to the release, which is where the Marketplace installs it from.
 
 ### Releasing
 
