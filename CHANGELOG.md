@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.18.0 - 2026-11-07
+
+### Features
+- Synology: an « Update available » chip shows the new DSM version when the NAS has an update (full card and mini card footer).
+- Synology: a reboot button at the end of the system facts presses the NAS's Reboot button after a confirmation popup at the top of the card.
+
+### Fixes
+- Synology: a disk turns red when its SMART status is not normal or its bad sector or remaining life threshold is exceeded, not only on its status.
+- A volume or disk without any status entity no longer shows a green dot.
+- Sizes and rates use the decimal separator of the card's language (for example 1,5 TB in French).
+
 ## 1.17.0 - 2026-11-07
 
 ### Features

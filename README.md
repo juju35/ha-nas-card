@@ -32,7 +32,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - CPU, RAM and temperature gauges, uptime and CPU model
 - Network download / upload rates, with their last 24 hours drawn behind each tile, on the full card and the mini card (recorder statistics)
 - Volumes with RAID level, filesystem, status and used space
-- Disks with model, status, temperature, size and power-on hours
+- Disks with model, status, temperature, size and power-on hours; the status dot turns red on any disk problem (on Synology also the SMART status and the bad sector / remaining life thresholds); a volume or disk without status entity has no dot
+- Synology: an « Update available » chip when DSM has an update (click for its more-info dialog), and a reboot button at the end of the system facts, with a confirmation popup at the top of the card
 - Fans speed (CPU fan and case fans, UGREEN)
 - Status pill: the server status (UGREEN, QNAP) or the security status (Synology)
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
@@ -52,7 +53,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 | Integration | NAS | What the cards show |
 |---|---|---|
 | [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, link to UGOS |
-| [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks, security status, DSM version, link to DSM; no fans |
+| [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks (status, SMART, bad sectors, remaining life), security status, DSM version and update, reboot, link to DSM; no fans |
 | [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
 
 Several NAS are supported, and brands can be mixed. Some sensors of the Synology DSM and QNAP integrations are disabled by default, see [How it works](#how-it-works).
@@ -225,7 +226,7 @@ Every entity created by the integration carries a `UGNAS_device_id` attribute. T
 
 The cards read the Home Assistant entity and device registries instead of entity ids: every entity of these integrations is matched by its `translation_key` (`cpu_total_load`, `memory_real_usage`, `volume_percentage_used`, `disk_temp`, `drive_temp`…) and by the device it belongs to. Entity ids can therefore be in any language or renamed without breaking the cards.
 
-- **Synology DSM**: volumes and disks are child devices of the NAS; their labels and the disk models come from there. The security status binary sensor feeds the status pill (« Normal » / « Warning »), and the uptime comes from the **Last boot** sensor. The DSM version is shown under the model.
+- **Synology DSM**: volumes and disks are child devices of the NAS; their labels and the disk models come from there. The security status binary sensor feeds the status pill (« Normal » / « Warning »), and the uptime comes from the **Last boot** sensor. The DSM version is shown under the model. A disk is shown in red when its status or SMART status is not normal, or when its **Exceeded max bad sectors** or **Below min remaining life** binary sensor is on. The DSM **update** entity of the NAS shows an « Update available » chip with the new version while it is on, and the **Reboot** button (found by its `restart` device class, the shutdown button is never used) adds a reboot button at the end of the system facts: it asks for a confirmation at the top of the card before pressing it.
 - **QNAP**: everything sits on one device; volumes and drives are told apart by the identifier the integration inserts in the entity names (for example `DataVol1` or `0:1`). The first network interface feeds the network tiles, and the firmware is shown as QTS or QuTS hero.
 - Some useful sensors are disabled by default by these integrations — on QNAP, drive temperatures, SMART statuses, memory sizes, network rates and volume used space; on Synology, total volume sizes. Enable them in **Settings → Devices & services → Entities** to fill the matching sections of the card (missing sizes are completed from the used percentage when possible).
 - Fans are not reported by these integrations: the fans section only shows on UGREEN NAS.

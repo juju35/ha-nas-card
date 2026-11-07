@@ -23,6 +23,9 @@ const ICONS = {
   // mdi:arrow-expand and mdi:arrow-collapse, the mini card's zoom button.
   expand: "M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z",
   collapse: "M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z",
+  // mdi:arrow-up-circle (update chip) and mdi:restart (reboot button).
+  update: "M12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22M12,7L7,12H10V16H14V12H17L12,7Z",
+  restart: "M12,4C14.1,4 16.1,4.8 17.6,6.3C20.7,9.4 20.7,14.5 17.6,17.6C15.8,19.5 13.3,20.2 10.9,19.9L11.4,17.9C13.1,18.1 14.9,17.5 16.2,16.2C18.5,13.9 18.5,10.1 16.2,7.7C15.1,6.6 13.5,6 12,6V10.6L7,5.6L12,0.6V4M6.3,17.6C3.7,15 3.3,11 5.1,7.9L6.6,9.4C5.5,11.6 5.9,14.4 7.8,16.2C8.3,16.7 8.9,17.1 9.6,17.4L9,19.4C8,19 7.1,18.4 6.3,17.6Z",
   network: "M13,19H14A1,1 0 0,1 15,20H22V22H15A1,1 0 0,1 14,23H10A1,1 0 0,1 9,22H2V20H9A1,1 0 0,1 10,19H11V17H4A1,1 0 0,1 3,16V12A1,1 0 0,1 4,11H20A1,1 0 0,1 21,12V16A1,1 0 0,1 20,17H13V19M4,3H20A1,1 0 0,1 21,4V8A1,1 0 0,1 20,9H4A1,1 0 0,1 3,8V4A1,1 0 0,1 4,3M9,7H10V5H9V7M9,15H10V13H9V15M5,5V7H7V5H5M5,13V15H7V13H5Z",
 };
 
@@ -54,6 +57,11 @@ const STRINGS = {
     device_fan: "Fan",
     zoom_in: "Show the full card",
     zoom_out: "Back to the compact view",
+    update_available: "Update available",
+    reboot: "Restart the NAS",
+    reboot_confirm: "Restart the NAS now? Its shares, apps and services will be unavailable for a few minutes.",
+    reboot_btn: "Restart",
+    cancel: "Cancel",
     // Editor
     nas: "NAS (UGREEN, Synology DSM or QNAP device)",
     title: "Title (optional, defaults to the NAS name)",
@@ -109,6 +117,11 @@ const STRINGS = {
     device_fan: "Ventilateur",
     zoom_in: "Afficher la carte complète",
     zoom_out: "Revenir à la vue compacte",
+    update_available: "Mise à jour disponible",
+    reboot: "Redémarrer le NAS",
+    reboot_confirm: "Redémarrer le NAS maintenant ? Ses partages, applications et services seront indisponibles pendant quelques minutes.",
+    reboot_btn: "Redémarrer",
+    cancel: "Annuler",
     nas: "NAS (appareil UGREEN, Synology DSM ou QNAP)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
@@ -163,6 +176,11 @@ const STRINGS = {
     device_fan: "Lüfter",
     zoom_in: "Vollständige Karte anzeigen",
     zoom_out: "Zurück zur kompakten Ansicht",
+    update_available: "Update verfügbar",
+    reboot: "NAS neu starten",
+    reboot_confirm: "NAS jetzt neu starten? Freigaben, Apps und Dienste sind für einige Minuten nicht erreichbar.",
+    reboot_btn: "Neu starten",
+    cancel: "Abbrechen",
     nas: "NAS (UGREEN-, Synology-DSM- oder QNAP-Gerät)",
     title: "Titel (optional, standardmäßig der NAS-Name)",
     show_image: "NAS-Bild anzeigen",
@@ -217,6 +235,11 @@ const STRINGS = {
     device_fan: "Ventilador",
     zoom_in: "Mostrar la tarjeta completa",
     zoom_out: "Volver a la vista compacta",
+    update_available: "Actualización disponible",
+    reboot: "Reiniciar el NAS",
+    reboot_confirm: "¿Reiniciar el NAS ahora? Sus carpetas compartidas, aplicaciones y servicios no estarán disponibles durante unos minutos.",
+    reboot_btn: "Reiniciar",
+    cancel: "Cancelar",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
     title: "Título (opcional, por defecto el nombre del NAS)",
     show_image: "Mostrar la imagen del NAS",
@@ -271,6 +294,11 @@ const STRINGS = {
     device_fan: "Вентилатор",
     zoom_in: "Прикажи целу картицу",
     zoom_out: "Назад на компактни приказ",
+    update_available: "Доступно ажурирање",
+    reboot: "Поново покрени NAS",
+    reboot_confirm: "Поново покренути NAS сада? Дељене фасцикле, апликације и услуге неће бити доступне неколико минута.",
+    reboot_btn: "Поново покрени",
+    cancel: "Откажи",
     nas: "NAS (UGREEN, Synology DSM или QNAP уређај)",
     title: "Наслов (опционо, подразумевано је назив NAS-а)",
     show_image: "Прикажи слику NAS-а",
@@ -325,6 +353,11 @@ const STRINGS = {
     device_fan: "Ventilator",
     zoom_in: "Prikaži celu karticu",
     zoom_out: "Nazad na kompaktni prikaz",
+    update_available: "Dostupno ažuriranje",
+    reboot: "Ponovo pokreni NAS",
+    reboot_confirm: "Ponovo pokrenuti NAS sada? Deljene fascikle, aplikacije i usluge neće biti dostupne nekoliko minuta.",
+    reboot_btn: "Ponovo pokreni",
+    cancel: "Otkaži",
     nas: "NAS (UGREEN, Synology DSM ili QNAP uređaj)",
     title: "Naslov (opciono, podrazumevano je naziv NAS-a)",
     show_image: "Prikaži sliku NAS-a",
@@ -379,6 +412,11 @@ const STRINGS = {
     device_fan: "Ventola",
     zoom_in: "Mostra la scheda completa",
     zoom_out: "Torna alla vista compatta",
+    update_available: "Aggiornamento disponibile",
+    reboot: "Riavvia il NAS",
+    reboot_confirm: "Riavviare il NAS adesso? Cartelle condivise, app e servizi non saranno disponibili per qualche minuto.",
+    reboot_btn: "Riavvia",
+    cancel: "Annulla",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
     title: "Titolo (facoltativo, per impostazione predefinita il nome del NAS)",
     show_image: "Mostra l'immagine del NAS",
@@ -433,6 +471,11 @@ const STRINGS = {
     device_fan: "Ventilator",
     zoom_in: "Volledige kaart weergeven",
     zoom_out: "Terug naar de compacte weergave",
+    update_available: "Update beschikbaar",
+    reboot: "NAS herstarten",
+    reboot_confirm: "NAS nu herstarten? De gedeelde mappen, apps en diensten zijn een paar minuten niet beschikbaar.",
+    reboot_btn: "Herstarten",
+    cancel: "Annuleren",
     nas: "NAS (UGREEN-, Synology DSM- of QNAP-apparaat)",
     title: "Titel (optioneel, standaard de naam van de NAS)",
     show_image: "Afbeelding van de NAS weergeven",
@@ -487,6 +530,11 @@ const STRINGS = {
     device_fan: "Ventoinha",
     zoom_in: "Mostrar o cartão completo",
     zoom_out: "Voltar à vista compacta",
+    update_available: "Atualização disponível",
+    reboot: "Reiniciar o NAS",
+    reboot_confirm: "Reiniciar o NAS agora? As pastas partilhadas, aplicações e serviços ficarão indisponíveis durante alguns minutos.",
+    reboot_btn: "Reiniciar",
+    cancel: "Cancelar",
     nas: "NAS (dispositivo UGREEN, Synology DSM ou QNAP)",
     title: "Título (opcional, por predefinição o nome do NAS)",
     show_image: "Mostrar a imagem do NAS",
@@ -541,6 +589,11 @@ const STRINGS = {
     device_fan: "Wentylator",
     zoom_in: "Pokaż pełną kartę",
     zoom_out: "Wróć do widoku kompaktowego",
+    update_available: "Dostępna aktualizacja",
+    reboot: "Uruchom ponownie NAS",
+    reboot_confirm: "Uruchomić teraz ponownie NAS? Udziały, aplikacje i usługi będą niedostępne przez kilka minut.",
+    reboot_btn: "Uruchom ponownie",
+    cancel: "Anuluj",
     nas: "NAS (urządzenie UGREEN, Synology DSM lub QNAP)",
     title: "Tytuł (opcjonalny, domyślnie nazwa NAS)",
     show_image: "Pokaż obraz NAS",
@@ -595,6 +648,11 @@ const STRINGS = {
     device_fan: "Ventilator",
     zoom_in: "Afișează cardul complet",
     zoom_out: "Înapoi la vizualizarea compactă",
+    update_available: "Actualizare disponibilă",
+    reboot: "Repornește NAS-ul",
+    reboot_confirm: "Reporniți NAS-ul acum? Partajările, aplicațiile și serviciile vor fi indisponibile câteva minute.",
+    reboot_btn: "Repornește",
+    cancel: "Anulează",
     nas: "NAS (dispozitiv UGREEN, Synology DSM sau QNAP)",
     title: "Titlu (opțional, implicit numele NAS-ului)",
     show_image: "Afișează imaginea NAS-ului",
@@ -649,6 +707,11 @@ const STRINGS = {
     device_fan: "Blæser",
     zoom_in: "Vis hele kortet",
     zoom_out: "Tilbage til kompakt visning",
+    update_available: "Opdatering tilgængelig",
+    reboot: "Genstart NAS'en",
+    reboot_confirm: "Vil du genstarte NAS'en nu? Delte mapper, apps og tjenester er utilgængelige i et par minutter.",
+    reboot_btn: "Genstart",
+    cancel: "Annuller",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhed)",
     title: "Titel (valgfri, som standard NAS'ens navn)",
     show_image: "Vis billede af NAS'en",
@@ -703,6 +766,11 @@ const STRINGS = {
     device_fan: "Fläkt",
     zoom_in: "Visa hela kortet",
     zoom_out: "Tillbaka till kompakt vy",
+    update_available: "Uppdatering tillgänglig",
+    reboot: "Starta om NAS:en",
+    reboot_confirm: "Vill du starta om NAS:en nu? Delade mappar, appar och tjänster är otillgängliga i några minuter.",
+    reboot_btn: "Starta om",
+    cancel: "Avbryt",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhet)",
     title: "Titel (valfri, NAS-enhetens namn som standard)",
     show_image: "Visa bild av NAS-enheten",
@@ -757,6 +825,11 @@ const STRINGS = {
     device_fan: "Вентилатор",
     zoom_in: "Покажи пълната карта",
     zoom_out: "Обратно към компактния изглед",
+    update_available: "Налична актуализация",
+    reboot: "Рестартиране на NAS",
+    reboot_confirm: "Да се рестартира ли NAS сега? Споделените папки, приложенията и услугите няма да са достъпни няколко минути.",
+    reboot_btn: "Рестартиране",
+    cancel: "Отказ",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
     title: "Заглавие (по избор, по подразбиране името на NAS)",
     show_image: "Показване на изображение на NAS",
@@ -811,6 +884,11 @@ const STRINGS = {
     device_fan: "Вентилятор",
     zoom_in: "Показать полную карточку",
     zoom_out: "Вернуться к компактному виду",
+    update_available: "Доступно обновление",
+    reboot: "Перезагрузить NAS",
+    reboot_confirm: "Перезагрузить NAS сейчас? Общие папки, приложения и службы будут недоступны несколько минут.",
+    reboot_btn: "Перезагрузить",
+    cancel: "Отмена",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
     title: "Заголовок (необязательно, по умолчанию имя NAS)",
     show_image: "Показывать изображение NAS",
@@ -865,6 +943,11 @@ const STRINGS = {
     device_fan: "Вентилятор",
     zoom_in: "Показати повну картку",
     zoom_out: "Повернутися до компактного вигляду",
+    update_available: "Доступне оновлення",
+    reboot: "Перезапустити NAS",
+    reboot_confirm: "Перезапустити NAS зараз? Спільні папки, застосунки й служби будуть недоступні кілька хвилин.",
+    reboot_btn: "Перезапуск",
+    cancel: "Скасувати",
     nas: "NAS (пристрій UGREEN, Synology DSM або QNAP)",
     title: "Заголовок (необов'язково, за замовчуванням назва NAS)",
     show_image: "Показувати зображення NAS",
@@ -919,6 +1002,11 @@ const STRINGS = {
     device_fan: "Ventilátor",
     zoom_in: "Teljes kártya megjelenítése",
     zoom_out: "Vissza a kompakt nézethez",
+    update_available: "Frissítés érhető el",
+    reboot: "NAS újraindítása",
+    reboot_confirm: "Újraindítja most a NAS-t? A megosztások, alkalmazások és szolgáltatások néhány percig nem lesznek elérhetők.",
+    reboot_btn: "Újraindítás",
+    cancel: "Mégse",
     nas: "NAS (UGREEN, Synology DSM vagy QNAP eszköz)",
     title: "Cím (nem kötelező, alapértelmezés szerint a NAS neve)",
     show_image: "NAS képének megjelenítése",
@@ -973,6 +1061,11 @@ const STRINGS = {
     device_fan: "Ventilátor",
     zoom_in: "Zobraziť celú kartu",
     zoom_out: "Späť na kompaktné zobrazenie",
+    update_available: "Dostupná aktualizácia",
+    reboot: "Reštartovať NAS",
+    reboot_confirm: "Reštartovať NAS teraz? Zdieľané priečinky, aplikácie a služby budú na niekoľko minút nedostupné.",
+    reboot_btn: "Reštartovať",
+    cancel: "Zrušiť",
     nas: "NAS (zariadenie UGREEN, Synology DSM alebo QNAP)",
     title: "Názov (voliteľný, predvolene názov NAS)",
     show_image: "Zobraziť obrázok NAS",
@@ -1027,6 +1120,11 @@ const STRINGS = {
     device_fan: "Ventilátor",
     zoom_in: "Zobrazit celou kartu",
     zoom_out: "Zpět na kompaktní zobrazení",
+    update_available: "Dostupná aktualizace",
+    reboot: "Restartovat NAS",
+    reboot_confirm: "Restartovat NAS nyní? Sdílené složky, aplikace a služby budou na několik minut nedostupné.",
+    reboot_btn: "Restartovat",
+    cancel: "Zrušit",
     nas: "NAS (zařízení UGREEN, Synology DSM nebo QNAP)",
     title: "Název (volitelný, výchozí je název NAS)",
     show_image: "Zobrazit obrázek NAS",
@@ -1081,6 +1179,11 @@ const STRINGS = {
     device_fan: "Ventilator",
     zoom_in: "Prikaži celotno kartico",
     zoom_out: "Nazaj na strnjeni pogled",
+    update_available: "Na voljo je posodobitev",
+    reboot: "Znova zaženi NAS",
+    reboot_confirm: "Želite zdaj znova zagnati NAS? Skupne mape, aplikacije in storitve bodo za nekaj minut nedosegljive.",
+    reboot_btn: "Znova zaženi",
+    cancel: "Prekliči",
     nas: "NAS (naprava UGREEN, Synology DSM ali QNAP)",
     title: "Naslov (neobvezno, privzeto ime NAS)",
     show_image: "Prikaži sliko NAS",
@@ -1135,6 +1238,11 @@ const STRINGS = {
     device_fan: "Ventilators",
     zoom_in: "Rādīt pilno karti",
     zoom_out: "Atpakaļ uz kompakto skatu",
+    update_available: "Pieejams atjauninājums",
+    reboot: "Restartēt NAS",
+    reboot_confirm: "Restartēt NAS tagad? Koplietotās mapes, lietotnes un pakalpojumi dažas minūtes nebūs pieejami.",
+    reboot_btn: "Restartēt",
+    cancel: "Atcelt",
     nas: "NAS (UGREEN, Synology DSM vai QNAP ierīce)",
     title: "Nosaukums (neobligāts, pēc noklusējuma NAS nosaukums)",
     show_image: "Rādīt NAS attēlu",
@@ -1189,6 +1297,11 @@ const STRINGS = {
     device_fan: "Ανεμιστήρας",
     zoom_in: "Εμφάνιση της πλήρους κάρτας",
     zoom_out: "Επιστροφή στη συμπαγή προβολή",
+    update_available: "Διαθέσιμη ενημέρωση",
+    reboot: "Επανεκκίνηση του NAS",
+    reboot_confirm: "Επανεκκίνηση του NAS τώρα; Οι κοινόχρηστοι φάκελοι, οι εφαρμογές και οι υπηρεσίες δεν θα είναι διαθέσιμα για λίγα λεπτά.",
+    reboot_btn: "Επανεκκίνηση",
+    cancel: "Ακύρωση",
     nas: "NAS (συσκευή UGREEN, Synology DSM ή QNAP)",
     title: "Τίτλος (προαιρετικός, από προεπιλογή το όνομα του NAS)",
     show_image: "Εμφάνιση εικόνας του NAS",
@@ -1263,7 +1376,11 @@ const toBytes = (s) => {
   return v * (UNIT_FACTORS[unit] ?? 1);
 };
 
-const fmtBytes = (b) => {
+// Number with `min` to `max` decimals in the card's locale (fmtLang), e.g. "1,5" in French.
+const fmtNum = (v, loc, max, min = 0) =>
+  new Intl.NumberFormat(loc || "en", { minimumFractionDigits: min, maximumFractionDigits: max }).format(v);
+
+const fmtBytes = (b, loc) => {
   if (b === null || b === undefined) return "—";
   const units = ["B", "kB", "MB", "GB", "TB", "PB"];
   let i = 0;
@@ -1271,15 +1388,14 @@ const fmtBytes = (b) => {
     b /= 1000;
     i++;
   }
-  const v = b >= 100 || i === 0 ? b.toFixed(0) : b.toFixed(b >= 10 ? 1 : 2);
-  return `${v.includes(".") ? v.replace(/\.?0+$/, "") : v} ${units[i]}`;
+  return `${fmtNum(b, loc, b >= 100 || i === 0 ? 0 : b >= 10 ? 1 : 2)} ${units[i]}`;
 };
 
 // "used / total" for the RAM gauge: the used figure drops its unit only when both share it
 // ("1.5 / 2 GB", but "800 MB / 2 GB").
-const ramPair = (used, total) => {
-  const u = fmtBytes(used);
-  const tot = fmtBytes(total);
+const ramPair = (used, total, loc) => {
+  const u = fmtBytes(used, loc);
+  const tot = fmtBytes(total, loc);
   const [uv, uu] = u.split(" ");
   return uu === tot.split(" ")[1] ? `${uv} / ${tot}` : `${u} / ${tot}`;
 };
@@ -1298,7 +1414,7 @@ const toBps = (s) => {
   return v * (RATE_FACTORS[unit] ?? 1);
 };
 
-const fmtRate = (bps) => {
+const fmtRate = (bps, loc) => {
   if (bps === null || bps === undefined) return "—";
   const units = ["B/s", "kB/s", "MB/s", "GB/s"];
   let i = 0;
@@ -1306,7 +1422,8 @@ const fmtRate = (bps) => {
     bps /= 1000;
     i++;
   }
-  return `${bps >= 100 || i === 0 ? bps.toFixed(0) : bps.toFixed(1)} ${units[i]}`;
+  const d = bps >= 100 || i === 0 ? 0 : 1;
+  return `${fmtNum(bps, loc, d, d)} ${units[i]}`;
 };
 
 const fmtUptime = (sec, hass, config) => {
@@ -1329,7 +1446,7 @@ const bootAge = (s) => {
 // spells out DSM, and QNAP firmware starts with "h" on QuTS hero.
 const osVersion = (v, brand) => (!v ? null : brand === "qnap" ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}` : v);
 
-const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.state));
+const isOk = (s) => !s || /^(normal|ok|good|healthy|safe|passed|on|false)$/i.test(String(s.state));
 
 // Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found).
 // An entity without value (NAS offline) is never "ok", whatever the brand.
@@ -1364,6 +1481,23 @@ const temperature = (s, hass) => {
 
 // Class of a status dot: no value (unavailable / unknown) is neither healthy nor a problem.
 const dotClass = (s) => (s && NO_VALUE.has(s.state) ? "na" : isOk(s) ? "ok" : "crit");
+
+// Health of a disk: its status and SMART status words, plus the Synology bad sector and remaining life threshold
+// binary sensors (on = problem). Any problem turns it red, titled with what is wrong; without any of these
+// entities there is no health at all (null: no dot), and without any value it is neutral.
+const diskHealth = (hass, d) => {
+  const st = (k) => (d[k] ? hass.states[d[k]] : undefined);
+  const words = [st("status"), st("smart")].filter(Boolean);
+  const flags = [st("bad_sectors"), st("low_life")].filter(Boolean);
+  if (!words.length && !flags.length) return null;
+  const problems = [
+    ...words.filter((s) => !NO_VALUE.has(s.state) && !isOk(s)).map((s) => s.state),
+    ...flags.filter((s) => s.state === "on").map((s) => s.attributes?.friendly_name || s.entity_id),
+  ];
+  if (problems.length) return { cls: "crit", title: problems.join(" · ") };
+  const known = [...words, ...flags].find((s) => !NO_VALUE.has(s.state));
+  return known ? { cls: "ok", title: (words.find((s) => !NO_VALUE.has(s.state)) || known).state } : { cls: "na", state: words[0] || flags[0] };
+};
 
 const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24"><path d="${path}"/></svg>`;
 
@@ -1731,7 +1865,15 @@ const VOLUME_KEYS = {
   volume_size_free: "available_size",
   volume_status: "status",
 };
-const DISK_KEYS = { disk_temp: "temperature", disk_status: "status", drive_temp: "temperature", drive_smart_status: "status" };
+const DISK_KEYS = {
+  disk_temp: "temperature",
+  disk_status: "status",
+  disk_smart_status: "smart",
+  disk_exceed_bad_sector_thr: "bad_sectors",
+  disk_below_remain_life_thr: "low_life",
+  drive_temp: "temperature",
+  drive_smart_status: "status",
+};
 
 // Registry lookups are cached on the registry objects, which Home Assistant replaces whenever an
 // entity or a device changes (the states are read again on every discovery through the mapped ids).
@@ -1826,6 +1968,14 @@ const discoverRegistry = (hass, brand, nasId) => {
       set(nas.scalars, "server_status", id); // Security status: a safety binary sensor, on = issue found.
     } else if (tk in SCALARS_BY_KEY) {
       set(nas.scalars, SCALARS_BY_KEY[tk], id);
+    } else if (e.device_id === rootId && id.startsWith("update.")) {
+      set(nas.scalars, "update", id); // Synology DSM update.
+    } else if (
+      e.device_id === rootId &&
+      id.startsWith("button.") &&
+      (tk === "reboot" || hass.states[id]?.attributes?.device_class === "restart")
+    ) {
+      set(nas.scalars, "reboot", id); // Synology "Reboot" (restart device class; "Shutdown" has none).
     } else if (brand === "qnap" && (tk in VOLUME_KEYS || tk in DISK_KEYS || tk === "network_rx" || tk === "network_tx")) {
       (groups[tk] ??= []).push(id);
     } else if (!tk && id.startsWith("sensor.") && hass.states[id]?.attributes?.device_class === "timestamp") {
@@ -1968,7 +2118,7 @@ const BASE_STYLE = `
   :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437);
           --nas-na: var(--disabled-text-color, #9e9e9e); }
   /* The card is the container of the width queries below (narrow header, volume rows, mini card footer). */
-  ha-card { overflow: hidden; container-type: inline-size; }
+  ha-card { overflow: hidden; position: relative; container-type: inline-size; }
   /* A size container has no width of its own content: in a parent that sizes to its content (inline-block,
      grid auto column: button-card, layout-card) the card would fall to a few pixels. This empty, zero-height
      grid gives the card a natural (max-content) width of 400 px without any minimum (its min-content width
@@ -2025,6 +2175,36 @@ const BASE_STYLE = `
   .zoom .icon { width: 16px; height: 16px; }
   .zoom:hover { background: color-mix(in srgb, var(--secondary-text-color) 16%, transparent); color: var(--primary-text-color); }
   .zoom:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 1px; }
+  /* Reboot button, at the end of the system facts: round, tinted on hover, never filled. */
+  .action { all: unset; flex: none; cursor: pointer; width: 24px; height: 24px; margin: -4px 0 -4px auto; border-radius: 50%;
+            display: grid; place-items: center; color: var(--secondary-text-color); }
+  .action .icon { width: 16px; height: 16px; }
+  .action:hover { background: color-mix(in srgb, var(--nas-crit) 16%, transparent); color: var(--primary-text-color); }
+  .action:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 1px; }
+  .action:disabled { cursor: default; opacity: .4; }
+  .action:disabled:hover { background: none; color: var(--secondary-text-color); }
+  /* Update available: a chip in the accent color. */
+  .upd { --c: var(--nas-accent); }
+  .chip.upd .icon { width: 14px; height: 14px; color: inherit; }
+`;
+
+// In-card confirmation popup, at the top of the card so it stays in view when the card is long.
+const DIALOG_STYLE = `
+  .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center;
+              padding-top: 12px; box-sizing: border-box; z-index: 9; border-radius: inherit; }
+  .modal { background: var(--card-background-color, #1c1c1c); color: var(--primary-text-color); width: min(92%, 340px); max-height: calc(100% - 24px);
+           overflow: auto; box-sizing: border-box; border-radius: 14px; padding: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.4);
+           display: flex; flex-direction: column; gap: 10px; }
+  .modal h3 { margin: 0; font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .modal h3 .icon { width: 20px; height: 20px; color: var(--nas-crit); }
+  .modal .hint { font-size: 13px; color: var(--secondary-text-color); line-height: 1.4; }
+  .modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 2px; }
+  .modal button.act { border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .modal button.cancel { background: var(--secondary-background-color, rgba(127,127,127,.12)); color: var(--primary-text-color); }
+  .modal button.danger { background: color-mix(in srgb, var(--nas-crit) 16%, transparent); color: var(--primary-text-color); }
+  .modal button.cancel:hover { background: color-mix(in srgb, var(--secondary-text-color) 16%, var(--secondary-background-color, transparent)); }
+  .modal button.danger:hover { background: color-mix(in srgb, var(--nas-crit) 26%, transparent); }
+  .modal button.act:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
 `;
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
@@ -2067,8 +2247,24 @@ class NasBase extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this._html = "";
+    this._dialog = null;
     this.shadowRoot.addEventListener("click", (ev) => {
-      const el = ev.composedPath().find((n) => n.dataset?.entity);
+      const path = ev.composedPath();
+      const action = path.find((n) => n.dataset?.action);
+      // While the confirmation popup is open, only its own buttons and the backdrop act.
+      if (this._dialog) {
+        if (action?.dataset.action === "dialog-ok") {
+          const run = this._dialog.onOk;
+          this._closeDialog(true);
+          run?.();
+        } else if (action?.dataset.action === "dialog-cancel" || path[0] === action) {
+          this._closeDialog(true);
+        }
+        return;
+      }
+      // The reboot button opens a confirmation popup before pressing the NAS's reboot button.
+      if (action?.dataset.action === "reboot") return this._confirmReboot();
+      const el = path.find((n) => n.dataset?.entity);
       if (el) fireMoreInfo(this, el.dataset.entity);
     });
     // Keyboard access: Enter or Space on a focusable non-button element acts as a click.
@@ -2077,7 +2273,97 @@ class NasBase extends HTMLElement {
         ev.preventDefault();
         ev.target.click();
       }
+      if (!this._dialog) return;
+      // Escape closes the confirmation popup; Tab stays on its two buttons.
+      if (ev.key === "Escape") {
+        ev.stopPropagation();
+        this._closeDialog(true);
+      } else if (ev.key === "Tab") {
+        const btns = [...this.shadowRoot.querySelectorAll(".modal button")];
+        const i = btns.indexOf(this.shadowRoot.activeElement);
+        ev.preventDefault();
+        btns[(i + (ev.shiftKey ? btns.length - 1 : 1)) % btns.length]?.focus();
+      }
     });
+    // A click elsewhere on the page closes the confirmation popup (and only that: the mini card stays zoomed).
+    this._onDialogOutside = (ev) => {
+      if (this._dialog && !ev.composedPath().includes(this) && !inDialog(ev)) {
+        this._dialogClosedBy = ev;
+        this._closeDialog(false);
+      }
+    };
+  }
+
+  connectedCallback() {
+    document.addEventListener("click", this._onDialogOutside, true);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("click", this._onDialogOutside, true);
+    this._dialog = null;
+  }
+
+  // Presses a Home Assistant button entity. A failed call is logged (Home Assistant already shows a toast).
+  _press(entityId) {
+    Promise.resolve()
+      .then(() => this._hass?.callService("button", "press", { entity_id: entityId }))
+      .catch((err) => console.error("nas-card: button.press failed", err));
+  }
+
+  // Opens the reboot confirmation popup; on confirmation, presses the NAS's reboot button.
+  _confirmReboot() {
+    const reboot = discover(this._hass, this._config.nas).scalars.reboot;
+    if (!reboot || this._s(reboot)?.state === "unavailable") return;
+    this._dialog = {
+      title: this._t("reboot"),
+      body: this._t("reboot_confirm"),
+      ok: this._t("reboot_btn"),
+      onOk: () => this._press(reboot),
+    };
+    this._update();
+    // After the re-render: the focus on the confirm button, without scrolling the page towards the card.
+    this.shadowRoot.querySelector?.(".modal .danger")?.focus({ preventScroll: true });
+  }
+
+  // Closes the popup; `refocus` gives the focus back to the reboot button (not after a click elsewhere on the page).
+  _closeDialog(refocus) {
+    if (!this._dialog) return;
+    this._dialog = null;
+    this._update();
+    if (refocus) this.shadowRoot.querySelector?.('[data-action="reboot"]')?.focus({ preventScroll: true });
+  }
+
+  _dialogHtml() {
+    const d = this._dialog;
+    if (!d) return "";
+    return `<style>${DIALOG_STYLE}</style><div class="backdrop" data-action="dialog-backdrop">
+      <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-body">
+        <h3 id="dlg-title">${svgIcon(ICONS.restart)}${esc(d.title)}</h3>
+        <div class="hint" id="dlg-body">${esc(d.body)}</div>
+        <div class="modal-actions">
+          <button class="act cancel" data-action="dialog-cancel">${esc(this._t("cancel"))}</button>
+          <button class="act danger" data-action="dialog-ok">${esc(d.ok)}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Round reboot button at the end of the system facts (full card, zoomed mini card): only when the NAS exposes a
+  // reboot button (Synology DSM). Disabled while it is unavailable (a button never pressed is "unknown": its normal state).
+  _rebootBtn(nas) {
+    const id = nas.scalars.reboot;
+    if (!id) return "";
+    const label = esc(this._t("reboot"));
+    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
+    return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.restart)}</button>`;
+  }
+
+  // Update available (Synology DSM update entity on): the version it brings, for the update chip.
+  _updateInfo(nas) {
+    const u = this._s(nas.scalars.update);
+    if (u?.state !== "on") return null;
+    const latest = u.attributes?.latest_version;
+    return { id: u.entity_id, text: this._t("update_available"), version: latest ? String(latest) : "" };
   }
 
   set hass(hass) {
@@ -2122,6 +2408,11 @@ class NasBase extends HTMLElement {
 
   _t(key) {
     return t(this._hass, this._config, key);
+  }
+
+  // Locale of the numbers (decimal separator of the card's language).
+  _loc() {
+    return fmtLang(this._hass, this._config);
   }
 
   // Class of a reading against its thresholds (configured or default): ok, warn or crit.
@@ -2228,7 +2519,7 @@ class NasBase extends HTMLElement {
             : ""
         }
         ${this._zoomButton()}
-      </div>`;
+      </div>${this._dialogHtml()}`;
   }
 
   // Content wrapped in a link opening in a new tab, or left as is without an address.
@@ -2289,6 +2580,7 @@ const FULL_STYLE = `
   .facts { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; margin-top: 6px; }
   .facts > span { display: inline-flex; align-items: center; gap: 4px; }
   .facts .icon { width: 14px; height: 14px; color: var(--secondary-text-color); }
+  .facts > .action { display: grid; }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
@@ -2375,7 +2667,7 @@ class NasCard extends NasBase {
     const ramUsed =
       toBytes(this._s(sc.ram_used)) ??
       (ramTotal !== null && ramAvail !== null ? ramTotal - ramAvail : ramTotal !== null && ram !== null ? (ramTotal * ram) / 100 : null);
-    const ramLabel = ramUsed !== null && ramTotal !== null ? `${this._t("ram")} · ${ramPair(ramUsed, ramTotal)}` : this._t("ram");
+    const ramLabel = ramUsed !== null && ramTotal !== null ? `${this._t("ram")} · ${ramPair(ramUsed, ramTotal, this._loc())}` : this._t("ram");
     const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const facts = [];
     if (runtime !== null)
@@ -2388,6 +2680,15 @@ class NasCard extends NasBase {
       );
     const cpuModel = this._text(sc.cpu_model);
     if (cpuModel) facts.push(`<span>${svgIcon(ICONS.cpu)}${esc(cpuModel.replace(/\(R\)|\(TM\)/g, ""))}</span>`);
+    const upd = this._updateInfo(nas);
+    if (upd)
+      facts.push(
+        `<span class="chip upd clickable" role="button" tabindex="0" data-entity="${upd.id}">${svgIcon(ICONS.update)}${esc(upd.text)}${
+          upd.version ? ` · ${esc(upd.version)}` : ""
+        }</span>`
+      );
+    const reboot = this._rebootBtn(nas);
+    if (reboot) facts.push(reboot);
     return `<div>
       <div class="gauges">
         ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu))}
@@ -2420,7 +2721,8 @@ class NasCard extends NasBase {
     const hist = this._config.show_history === false ? null : this._history([sc.lan_down, sc.lan_up].filter(Boolean));
     const tile = (id, cls, icon, k) =>
       `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${spark(hist?.[id])}${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
-        toBps(this._s(id))
+        toBps(this._s(id)),
+        this._loc()
       )}</div></div></div>`;
     return `<div class="net">
         ${tile(sc.lan_down, "down", ICONS.down, this._t("download"))}
@@ -2470,14 +2772,14 @@ class NasCard extends NasBase {
         const cls = this._level("volume", u.pct);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
-            <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span>
+            ${status ? `<span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span>` : ""}
             <span class="grow">${esc(label)}</span>
             ${raid ? `<span class="tag">${esc(raid)}</span>` : ""}
             ${fs ? `<span class="tag">${esc(fs)}</span>` : ""}
           </div>
           <div class="bar"><div style="width:${u.pct ?? 0}%"></div></div>
           <div class="detail">
-            <span>${fmtBytes(u.used)} ${this._t("used")} ${this._t("of")} ${fmtBytes(u.total)}</span>
+            <span>${fmtBytes(u.used, this._loc())} ${this._t("used")} ${this._t("of")} ${fmtBytes(u.total, this._loc())}</span>
             <span>${u.pct === null ? "" : `${u.pct.toFixed(0)}%`}</span>
           </div>
         </div>`);
@@ -2491,18 +2793,18 @@ class NasCard extends NasBase {
     const items = [];
     for (const [pn, pool] of Object.entries(nas.pools)) {
       for (const [dn, d] of Object.entries(pool.disks)) {
-        const status = this._s(d.status);
+        const health = diskHealth(this._hass, d);
         const temp = temperature(this._s(d.temperature), this._hass);
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || `Disk ${dn}`)}</span>
-            <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span></div>
+            ${health ? `<span class="dot ${health.cls}" title="${esc(health.title ?? this._dotTitle(health.state))}"></span>` : ""}</div>
           <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
             <span class="temp ${this._level("disk_temperature", temp.c)}">${temp.text}</span>
-            <span class="muted">${size !== null ? fmtBytes(size) : ""}${
-              hours !== null ? ` · ${Math.round(hours).toLocaleString(fmtLang(this._hass, this._config))} ${this._t("hours")}` : ""
+            <span class="muted">${size !== null ? fmtBytes(size, this._loc()) : ""}${
+              hours !== null ? ` · ${Math.round(hours).toLocaleString(this._loc())} ${this._t("hours")}` : ""
             }</span>
           </div>
         </div>`);
@@ -2576,6 +2878,7 @@ const MINI_STYLE = `
   .foot > [data-key="network"] { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; column-gap: 8px; }
   .foot .txt { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .foot .icon { width: 14px; height: 14px; }
+  .foot > .upd { flex: 0 1 auto; min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--c) 40%, var(--primary-text-color, #212121)); font-weight: 500; }
   /* Narrow mini card: the uptime goes first, then the picture. */
   @container (max-width: 340px) { .foot [data-key="uptime"] { display: none; } }
   @container (max-width: 220px) { .nas-link { display: none; } .header > .nas { display: none; } }
@@ -2601,15 +2904,19 @@ class NasMiniCard extends NasCard {
     this.shadowRoot.addEventListener("click", (ev) => this._zoomClick(ev));
     // A click outside the card, and not in a dialog opened from it, brings it back to the compact view.
     this._onOutside = (ev) => {
+      // The click that closed the reboot confirmation popup only closes the popup.
+      if (this._dialogClosedBy === ev) return;
       if (this._zoomed && !ev.composedPath().includes(this) && !inDialog(ev)) this._setZoom(false);
     };
   }
 
   connectedCallback() {
+    super.connectedCallback();
     document.addEventListener("click", this._onOutside, true);
   }
 
   disconnectedCallback() {
+    super.disconnectedCallback();
     document.removeEventListener("click", this._onOutside, true);
   }
 
@@ -2623,6 +2930,7 @@ class NasMiniCard extends NasCard {
 
   _setZoom(zoomed) {
     this._zoomed = zoomed;
+    if (!zoomed) this._dialog = null; // The reboot button is only on the zoomed view.
     this._update(this._sig);
   }
 
@@ -2701,11 +3009,20 @@ class NasMiniCard extends NasCard {
     if (c.show_network !== false && !netTiles && (sc.lan_down || sc.lan_up))
       // Each rate stays on one line; on a very narrow card, the upload rate goes under the download rate.
       foot.push(
-        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}"><span class="rate">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)))}</span><span class="rate">${svgIcon(
+        `<span class="clickable" role="button" tabindex="0" data-key="network" data-entity="${sc.lan_down || sc.lan_up}"><span class="rate">${svgIcon(ICONS.down)}${fmtRate(toBps(this._s(sc.lan_down)), this._loc())}</span><span class="rate">${svgIcon(
           ICONS.up
-        )}${fmtRate(toBps(this._s(sc.lan_up)))}</span></span>`
+        )}${fmtRate(toBps(this._s(sc.lan_up)), this._loc())}</span></span>`
       );
     const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
+    const upd = this._updateInfo(nas);
+    if (upd) {
+      const text = esc(`${upd.text}${upd.version ? ` · ${upd.version}` : ""}`);
+      foot.push(
+        `<span class="clickable upd" role="button" tabindex="0" data-key="update" data-entity="${upd.id}" title="${text}" aria-label="${text}">${svgIcon(ICONS.update)}<span class="txt">${esc(
+          upd.version || upd.text
+        )}</span></span>`
+      );
+    }
     if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
     return `<style>${BASE_STYLE}${MINI_STYLE}${NET_STYLE}</style>
       <ha-card>

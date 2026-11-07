@@ -1305,3 +1305,116 @@ test("editor: thresholds prefilled with the defaults, only changed values kept i
   all.ram.warning = "";
   assert.deepEqual(JSON.parse(JSON.stringify(pruneThresholds(all))), { cpu: { warning: 60 }, disk_temperature: { critical: 65 } });
 });
+
+test("Synology disk health: SMART status, bad sectors and remaining life thresholds turn the dot red", async () => {
+  const hass = await registryHass("synology");
+  const d1 = discover(hass, "").pools[1].disks.syno_d1;
+  assert.equal(d1.smart, "sensor.diskstation_drive_1_status_smart");
+  assert.equal(d1.bad_sectors, "binary_sensor.diskstation_drive_1_exceeded_max_bad_sectors");
+  assert.equal(d1.low_life, "binary_sensor.diskstation_drive_1_below_min_remaining_life");
+  const render = (patch) => {
+    const states = { ...hass.states };
+    for (const [id, state] of Object.entries(patch)) states[id] = { ...states[id], state };
+    const el = new NasCard();
+    el._config = {};
+    el._hass = { ...hass, states };
+    return el._render().match(/data-key="1-syno_d1"[\s\S]*?<span class="dot ([a-z]+)" title="([^"]*)">/).slice(1);
+  };
+  assert.deepEqual(render({}), ["ok", "normal"]);
+  assert.deepEqual(render({ "sensor.diskstation_drive_1_status_smart": "abnormal" }), ["crit", "abnormal"]);
+  assert.deepEqual(render({ "binary_sensor.diskstation_drive_1_exceeded_max_bad_sectors": "on" }), ["crit", "diskstation (Drive 1) Exceeded max bad sectors"]);
+  assert.deepEqual(render({ "binary_sensor.diskstation_drive_1_below_min_remaining_life": "on" }), ["crit", "diskstation (Drive 1) Below min remaining life"]);
+  // The status sensor unavailable: the other health entities still tell.
+  assert.deepEqual(render({ "sensor.diskstation_drive_1_status": "unavailable" }), ["ok", "normal"]);
+});
+
+test("a volume or disk without any status entity shows no dot, not a green one", () => {
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states: {}, language: "en" };
+  const nas = { pools: { 1: { volumes: { 1: {} }, disks: { 1: {} } } } };
+  assert.doesNotMatch(el._volumes(nas), /class="dot/);
+  assert.doesNotMatch(el._disks(nas), /class="dot/);
+});
+
+test("sizes and rates use the decimal separator of the card's language", async () => {
+  assert.equal(fmtBytes(1.5e9, "fr"), "1,5 GB");
+  assert.equal(fmtBytes(1.25e12, "de"), "1,25 TB");
+  assert.equal(fmtBytes(1e12, "fr"), "1 TB");
+  assert.equal(fmtRate(1.5e6, "de"), "1,5 MB/s");
+  assert.equal(fmtRate(2e6, "fr"), "2,0 MB/s");
+  assert.equal(fmtRate(1.5e6), "1.5 MB/s");
+  const el = new NasCard();
+  el._config = { language: "fr" };
+  el._hass = { ...(await registryHass("synology")), language: "en" };
+  const html = el._render();
+  assert.match(html, /24,5 MB\/s/);
+  assert.match(html, /6,62 TB utilisé/);
+});
+
+test("Synology: update chip when DSM has an update, reboot button with a confirmation at the top of the card", async () => {
+  const hass = await registryHass("synology");
+  const nas = discover(hass, "");
+  assert.equal(nas.scalars.update, "update.diskstation_dsm_update");
+  assert.equal(nas.scalars.reboot, "button.diskstation_reboot"); // not the shutdown button
+  const calls = [];
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { ...hass, callService: (...a) => calls.push(a) };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  assert.match(el.html, /class="chip upd clickable" role="button" tabindex="0" data-entity="update.diskstation_dsm_update">[\s\S]*Update available · DSM 7.2.2-72806 Update 4/);
+  assert.match(el.html, /<button class="action" data-action="reboot" title="Restart the NAS" aria-label="Restart the NAS">/);
+  assert.doesNotMatch(el.html, /class="backdrop"/);
+  // The button opens the popup, at the top of the card (right after the header); cancel closes it.
+  el._confirmReboot();
+  assert.match(el.html, /<\/div><style>[\s\S]*?<div class="backdrop"[\s\S]*role="alertdialog" aria-modal="true"/);
+  assert.ok(el.html.indexOf('class="backdrop"') < el.html.indexOf('class="content"'));
+  el._closeDialog(true);
+  assert.doesNotMatch(el.html, /class="backdrop"/);
+  assert.equal(calls.length, 0);
+  // OK presses the reboot button.
+  el._confirmReboot();
+  el._dialog.onOk();
+  await Promise.resolve();
+  assert.deepEqual(calls[0].slice(0, 2), ["button", "press"]);
+  assert.deepEqual({ ...calls[0][2] }, { entity_id: "button.diskstation_reboot" });
+  // No update: no chip; reboot button unavailable: disabled, and the popup does not open.
+  const states = { ...hass.states };
+  states["update.diskstation_dsm_update"] = { ...states["update.diskstation_dsm_update"], state: "off" };
+  states["button.diskstation_reboot"] = { ...states["button.diskstation_reboot"], state: "unavailable" };
+  el._hass = { ...hass, states };
+  el._dialog = null;
+  el._update();
+  assert.doesNotMatch(el.html, /class="chip upd/);
+  assert.match(el.html, /data-action="reboot"[^>]*disabled>/);
+  el._confirmReboot();
+  assert.equal(el._dialog, null);
+});
+
+test("mini card: update in the footer; a click outside closes the reboot popup without folding the card", async () => {
+  const hass = await registryHass("synology");
+  const el = new NasMiniCard();
+  el._config = {};
+  el._hass = hass;
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  assert.match(el.html, /data-key="update" data-entity="update.diskstation_dsm_update" title="Update available · DSM 7.2.2-72806 Update 4"/);
+  assert.doesNotMatch(el.html, /data-action="reboot"/); // compact view: no reboot button
+  el._zoomClick(zoomButton());
+  assert.match(el.html, /data-action="reboot"/);
+  el._confirmReboot();
+  const ev = click([node("div"), node("body")]);
+  el._onDialogOutside(ev);
+  el._onOutside(ev);
+  assert.equal(el._dialog, null);
+  assert.equal(el._zoomed, true);
+  el._onOutside(click([node("div"), node("body")]));
+  assert.equal(el._zoomed, false);
+});
