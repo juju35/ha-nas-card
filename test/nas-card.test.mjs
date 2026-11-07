@@ -1156,3 +1156,39 @@ test("header icon: the brand logo as an embedded badge, for every brand", async 
   assert.match(badge(mocks.ugreen), /^<svg/);
   for (const brand of ["synology", "qnap"]) assert.match(badge(mocks[brand]), /^<img/, brand);
 });
+
+test("network tiles: 24 h sparkline from the recorder statistics, refreshed every 5 minutes, off with show_history: false", async () => {
+  const { states } = await import("../scripts/mock-states.mjs");
+  const calls = [];
+  const el = new NasCard();
+  el._config = {};
+  el._hass = {
+    states,
+    language: "en",
+    callWS: async (msg) => {
+      calls.push(msg);
+      return Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ mean: 10 }, { mean: 40 }, { mean: 20 }]]));
+    },
+  };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el._update();
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].type, "recorder/statistics_during_period");
+  assert.equal(calls[0].period, "5minute");
+  assert.doesNotMatch(el.html, /class="spark"/);
+  await new Promise((r) => setTimeout(r, 0));
+  assert.match(el.html, /class="spark"/);
+  el._update();
+  assert.equal(calls.length, 1, "no new query within 5 minutes");
+  el._histAt -= 5 * 60000 + 1;
+  el._update();
+  assert.equal(calls.length, 2);
+
+  const off = new NasCard();
+  off._config = { show_history: false };
+  off._hass = el._hass;
+  assert.doesNotMatch(off._render(), /class="spark"/);
+  assert.equal(calls.length, 2);
+});

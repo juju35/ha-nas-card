@@ -66,6 +66,7 @@ const STRINGS = {
     show_volumes: "Show volumes",
     show_disks: "Show disks",
     show_fans: "Show fans",
+    show_history: "Show 24 h rate history",
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -116,6 +117,7 @@ const STRINGS = {
     show_volumes: "Afficher les volumes",
     show_disks: "Afficher les disques",
     show_fans: "Afficher les ventilateurs",
+    show_history: "Afficher l’historique 24 h des débits",
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
@@ -166,6 +168,7 @@ const STRINGS = {
     show_volumes: "Volumes anzeigen",
     show_disks: "Laufwerke anzeigen",
     show_fans: "Lüfter anzeigen",
+    show_history: "24-h-Verlauf der Raten anzeigen",
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
@@ -216,6 +219,7 @@ const STRINGS = {
     show_volumes: "Mostrar los volúmenes",
     show_disks: "Mostrar los discos",
     show_fans: "Mostrar los ventiladores",
+    show_history: "Mostrar el historial de 24 h de las velocidades",
     show_storage: "Mostrar el almacenamiento",
     zoom: "Botón de zoom",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
@@ -266,6 +270,7 @@ const STRINGS = {
     show_volumes: "Прикажи волумене",
     show_disks: "Прикажи дискове",
     show_fans: "Прикажи вентилаторе",
+    show_history: "Прикажи историју протока за 24 ч",
     show_storage: "Прикажи складиште",
     zoom: "Дугме за увећање",
     zoom_helper: "Пребацује мини картицу на пун приказ и назад",
@@ -316,6 +321,7 @@ const STRINGS = {
     show_volumes: "Prikaži volumene",
     show_disks: "Prikaži diskove",
     show_fans: "Prikaži ventilatore",
+    show_history: "Prikaži istoriju protoka za 24 č",
     show_storage: "Prikaži skladište",
     zoom: "Dugme za uvećanje",
     zoom_helper: "Prebacuje mini karticu na pun prikaz i nazad",
@@ -366,6 +372,7 @@ const STRINGS = {
     show_volumes: "Mostra i volumi",
     show_disks: "Mostra i dischi",
     show_fans: "Mostra le ventole",
+    show_history: "Mostra lo storico 24 h delle velocità",
     show_storage: "Mostra l'archiviazione",
     zoom: "Pulsante zoom",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
@@ -416,6 +423,7 @@ const STRINGS = {
     show_volumes: "Volumes weergeven",
     show_disks: "Schijven weergeven",
     show_fans: "Ventilatoren weergeven",
+    show_history: "24-uursgeschiedenis van de snelheden weergeven",
     show_storage: "Opslag weergeven",
     zoom: "Zoomknop",
     zoom_helper: "Schakelt de minikaart over naar de volledige kaart en terug",
@@ -466,6 +474,7 @@ const STRINGS = {
     show_volumes: "Mostrar os volumes",
     show_disks: "Mostrar os discos",
     show_fans: "Mostrar as ventoinhas",
+    show_history: "Mostrar o histórico de 24 h dos débitos",
     show_storage: "Mostrar o armazenamento",
     zoom: "Botão de zoom",
     zoom_helper: "Alterna o minicartão para o cartão completo e vice-versa",
@@ -516,6 +525,7 @@ const STRINGS = {
     show_volumes: "Pokaż woluminy",
     show_disks: "Pokaż dyski",
     show_fans: "Pokaż wentylatory",
+    show_history: "Pokaż historię przepustowości z 24 h",
     show_storage: "Pokaż pamięć masową",
     zoom: "Przycisk powiększenia",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
@@ -566,6 +576,7 @@ const STRINGS = {
     show_volumes: "Afișează volumele",
     show_disks: "Afișează discurile",
     show_fans: "Afișează ventilatoarele",
+    show_history: "Afișează istoricul vitezelor pe 24 h",
     show_storage: "Afișează stocarea",
     zoom: "Buton de zoom",
     zoom_helper: "Comută minicardul la cardul complet și înapoi",
@@ -616,6 +627,7 @@ const STRINGS = {
     show_volumes: "Vis volumener",
     show_disks: "Vis diske",
     show_fans: "Vis blæsere",
+    show_history: "Vis 24-timers historik for hastigheder",
     show_storage: "Vis lager",
     zoom: "Zoomknap",
     zoom_helper: "Skifter fra minikortet til det fulde kort og tilbage",
@@ -666,6 +678,7 @@ const STRINGS = {
     show_volumes: "Visa volymer",
     show_disks: "Visa diskar",
     show_fans: "Visa fläktar",
+    show_history: "Visa 24 h-historik för hastigheter",
     show_storage: "Visa lagring",
     zoom: "Zoomknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
@@ -716,6 +729,7 @@ const STRINGS = {
     show_volumes: "Показване на томовете",
     show_disks: "Показване на дисковете",
     show_fans: "Показване на вентилаторите",
+    show_history: "Показване на 24-часовата история на скоростите",
     show_storage: "Показване на хранилището",
     zoom: "Бутон за мащабиране",
     zoom_helper: "Превключва от мини картата към пълната карта и обратно",
@@ -766,6 +780,7 @@ const STRINGS = {
     show_volumes: "Показывать тома",
     show_disks: "Показывать диски",
     show_fans: "Показывать вентиляторы",
+    show_history: "Показать историю скоростей за 24 ч",
     show_storage: "Показывать хранилище",
     zoom: "Кнопка масштаба",
     zoom_helper: "Переключает мини-карточку на полную и обратно",
@@ -816,6 +831,7 @@ const STRINGS = {
     show_volumes: "Показувати томи",
     show_disks: "Показувати диски",
     show_fans: "Показувати вентилятори",
+    show_history: "Показати історію швидкостей за 24 год",
     show_storage: "Показувати сховище",
     zoom: "Кнопка масштабу",
     zoom_helper: "Перемикає міні-картку на повну картку й назад",
@@ -866,6 +882,7 @@ const STRINGS = {
     show_volumes: "Kötetek megjelenítése",
     show_disks: "Lemezek megjelenítése",
     show_fans: "Ventilátorok megjelenítése",
+    show_history: "Sebességek 24 órás előzményeinek megjelenítése",
     show_storage: "Tárhely megjelenítése",
     zoom: "Nagyítás gomb",
     zoom_helper: "A mini kártyáról a teljes kártyára vált és vissza",
@@ -916,6 +933,7 @@ const STRINGS = {
     show_volumes: "Zobraziť zväzky",
     show_disks: "Zobraziť disky",
     show_fans: "Zobraziť ventilátory",
+    show_history: "Zobraziť 24 h históriu rýchlostí",
     show_storage: "Zobraziť úložisko",
     zoom: "Tlačidlo priblíženia",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
@@ -966,6 +984,7 @@ const STRINGS = {
     show_volumes: "Zobrazit svazky",
     show_disks: "Zobrazit disky",
     show_fans: "Zobrazit ventilátory",
+    show_history: "Zobrazit 24h historii rychlostí",
     show_storage: "Zobrazit úložiště",
     zoom: "Tlačítko přiblížení",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
@@ -1016,6 +1035,7 @@ const STRINGS = {
     show_volumes: "Prikaži nosilce",
     show_disks: "Prikaži diske",
     show_fans: "Prikaži ventilatorje",
+    show_history: "Prikaži 24-urno zgodovino hitrosti",
     show_storage: "Prikaži shrambo",
     zoom: "Gumb za povečavo",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
@@ -1066,6 +1086,7 @@ const STRINGS = {
     show_volumes: "Rādīt sējumus",
     show_disks: "Rādīt diskus",
     show_fans: "Rādīt ventilatorus",
+    show_history: "Rādīt ātrumu 24 h vēsturi",
     show_storage: "Rādīt krātuvi",
     zoom: "Tālummaiņas poga",
     zoom_helper: "Pārslēdz mini karti uz pilno karti un atpakaļ",
@@ -1116,6 +1137,7 @@ const STRINGS = {
     show_volumes: "Εμφάνιση τόμων",
     show_disks: "Εμφάνιση δίσκων",
     show_fans: "Εμφάνιση ανεμιστήρων",
+    show_history: "Εμφάνιση ιστορικού ταχυτήτων 24 ωρών",
     show_storage: "Εμφάνιση χώρου αποθήκευσης",
     zoom: "Κουμπί μεγέθυνσης",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και αντίστροφα",
@@ -1927,6 +1949,15 @@ const BASE_STYLE = `
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
+// Sparkline of a series (24 h of rates), scaled from 0 to its peak; nothing under two points.
+const HIST_REFRESH = 5 * 60000;
+function spark(values) {
+  if (!values || values.length < 2) return "";
+  const peak = Math.max(...values) || 1;
+  const pts = values.map((v, i) => `${((i / (values.length - 1)) * 100).toFixed(2)},${(30 - (Math.max(0, v) / peak) * 28).toFixed(2)}`).join("L");
+  return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path class="spark-a" d="M0,30L${pts}L100,30Z"/><path class="spark-l" d="M${pts}"/></svg>`;
+}
+
 class NasBase extends HTMLElement {
   constructor() {
     super();
@@ -2151,7 +2182,11 @@ const FULL_STYLE = `
   .facts .icon { width: 14px; height: 14px; color: var(--secondary-text-color); }
   .net { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
   .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
-          background: var(--secondary-background-color, rgba(127,127,127,.08)); }
+          background: var(--secondary-background-color, rgba(127,127,127,.08)); position: relative; overflow: hidden; }
+  .tile > :not(.spark) { position: relative; }
+  .tile .spark { position: absolute; left: 0; bottom: 0; width: 100%; height: 55%; pointer-events: none; }
+  .spark-a { fill: color-mix(in srgb, var(--c) 12%, transparent); }
+  .spark-l { fill: none; stroke: color-mix(in srgb, var(--c) 50%, transparent); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
   .tile .icon { color: var(--c, var(--nas-accent)); }
   .tile .k { font-size: 11px; color: var(--secondary-text-color); }
   .tile .v { font-size: 14px; font-weight: 500; }
@@ -2277,8 +2312,9 @@ class NasCard extends NasBase {
     const sc = nas.scalars;
     if (!sc.lan_down && !sc.lan_up) return "";
     // A tile without its sensor (e.g. QNAP without upload rate) opens no more-info: not focusable.
+    const hist = this._config.show_history === false ? null : this._history([sc.lan_down, sc.lan_up].filter(Boolean));
     const tile = (id, cls, icon, k) =>
-      `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
+      `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${spark(hist?.[id])}${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
         toBps(this._s(id))
       )}</div></div></div>`;
     return `<div>
@@ -2288,6 +2324,34 @@ class NasCard extends NasBase {
         ${tile(sc.lan_up, "up", ICONS.up, this._t("upload"))}
       </div>
     </div>`;
+  }
+
+  // 24 h of 5-minute means from the recorder's statistics, fetched again every 5 minutes. Returns what is
+  // already there (nothing at first): the card renders again when the answer comes.
+  _history(ids) {
+    const key = ids.join(",");
+    if (key && this._hass.callWS && (this._histKey !== key || Date.now() - this._histAt > HIST_REFRESH)) {
+      this._histKey = key;
+      this._histAt = Date.now();
+      this._hass
+        .callWS({
+          type: "recorder/statistics_during_period",
+          start_time: new Date(Date.now() - 864e5).toISOString(),
+          statistic_ids: ids,
+          period: "5minute",
+          types: ["mean"],
+        })
+        .then((r) => {
+          if (this._histKey !== key) return;
+          this._hist = Object.fromEntries(ids.map((id) => [id, (r?.[id] || []).map((p) => p.mean).filter(Number.isFinite)]));
+          this._update();
+        })
+        // No statistics (sensor without state_class, recorder off): try again in a minute, no sparkline meanwhile.
+        .catch(() => {
+          this._histAt = Date.now() - HIST_REFRESH + 60000;
+        });
+    }
+    return this._histKey === key ? this._hist : null;
   }
 
   _volumes(nas) {
@@ -2654,7 +2718,7 @@ class NasEditorBase extends HTMLElement {
 
 class NasCardEditor extends NasEditorBase {
   static get toggles() {
-    return ["show_system", "show_network", "show_volumes", "show_disks", "show_fans"];
+    return ["show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans"];
   }
 }
 

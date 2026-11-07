@@ -30,7 +30,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Two cards: a full **NAS Card** and a compact **NAS Mini Card**, of type `custom:nas-card` and `custom:nas-mini-card` (the former types `custom:ugreen-nas-card` and `custom:ugreen-nas-mini-card` keep working)
 - Three integrations: **UGREEN NAS**, **Synology DSM** and **QNAP** — automatic discovery, several NAS supported, brands can be mixed
 - CPU, RAM and temperature gauges, uptime and CPU model
-- Network download / upload rates
+- Network download / upload rates, with their last 24 hours drawn behind each tile (recorder statistics)
 - Volumes with RAID level, filesystem, status and used space
 - Disks with model, status, temperature, size and power-on hours
 - Fans speed (CPU fan and case fans, UGREEN)
@@ -149,6 +149,7 @@ language: fr
 | `brand_url` | both | Brand website | Website opened by a click on the header icon: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com) or [qnap.com](https://www.qnap.com) by default |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
+| `show_history` | full | `true` | 24 h curve behind the download / upload tiles, from the recorder's 5-minute statistics (needs rate sensors with a `state_class`, the case for the three integrations) |
 | `show_volumes` | full | `true` | Volumes and used space |
 | `show_disks` | full | `true` | Disks details |
 | `show_fans` | full | `true` | Fans speed |

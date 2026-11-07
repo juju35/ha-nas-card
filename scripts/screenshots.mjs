@@ -59,7 +59,17 @@ async function openCard(browser, s) {
     ({ type, config, mock, dark, zoom }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
-      el.hass = { ...mock, language: "en", locale: { language: "en" }, themes: { darkMode: dark } };
+      // Recorder statistics: a plausible 24 h rate curve for each network sensor (busy evening, quiet night).
+      const callWS = async (msg) =>
+        Object.fromEntries(
+          (msg.statistic_ids || []).map((id, k) => [
+            id,
+            Array.from({ length: 288 }, (_, i) => ({
+              mean: 20 + 80 * Math.exp(-((i - 230 + k * 20) ** 2) / 900) + 35 * Math.exp(-((i - 110) ** 2) / 400) + 8 * Math.sin(i * 0.12 + k) ** 2,
+            })),
+          ])
+        );
+      el.hass = { ...mock, language: "en", locale: { language: "en" }, themes: { darkMode: dark }, callWS };
       document.getElementById("root").appendChild(el);
       // A mouse click (detail 1) on the zoom button: the zoomed-in view, without a keyboard focus ring.
       if (zoom)
