@@ -70,6 +70,9 @@ const STRINGS = {
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
+    thresholds: "Alert thresholds (orange / red)",
+    threshold_warning: "orange from",
+    threshold_critical: "red from",
     url: "NAS interface URL (click on the NAS picture)",
     url_helper: "Automatic from Home Assistant when empty (UGREEN, Synology); set it for QNAP, e.g. http://192.168.1.10:8080",
     brand_url: "Brand website URL (click on the logo)",
@@ -121,6 +124,9 @@ const STRINGS = {
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
+    thresholds: "Seuils d’alerte (orange / rouge)",
+    threshold_warning: "orange dès",
+    threshold_critical: "rouge dès",
     url: "URL de l'interface du NAS (clic sur l'illustration)",
     url_helper: "Automatique depuis Home Assistant si vide (UGREEN, Synology) ; à renseigner pour QNAP, ex. http://192.168.1.10:8080",
     brand_url: "URL du site de la marque (clic sur le logo)",
@@ -172,6 +178,9 @@ const STRINGS = {
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
+    thresholds: "Warnschwellen (orange / rot)",
+    threshold_warning: "orange ab",
+    threshold_critical: "rot ab",
     url: "URL der NAS-Oberfläche (Klick auf das NAS-Bild)",
     url_helper: "Wenn leer, automatisch aus Home Assistant (UGREEN, Synology); für QNAP angeben, z. B. http://192.168.1.10:8080",
     brand_url: "URL der Hersteller-Website (Klick auf das Logo)",
@@ -223,6 +232,9 @@ const STRINGS = {
     show_storage: "Mostrar el almacenamiento",
     zoom: "Botón de zoom",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
+    thresholds: "Umbrales de alerta (naranja / rojo)",
+    threshold_warning: "naranja desde",
+    threshold_critical: "rojo desde",
     url: "URL de la interfaz del NAS (clic en la imagen del NAS)",
     url_helper: "Automática desde Home Assistant si está vacía (UGREEN, Synology); indícala para QNAP, p. ej. http://192.168.1.10:8080",
     brand_url: "URL del sitio web de la marca (clic en el logotipo)",
@@ -274,6 +286,9 @@ const STRINGS = {
     show_storage: "Прикажи складиште",
     zoom: "Дугме за увећање",
     zoom_helper: "Пребацује мини картицу на пун приказ и назад",
+    thresholds: "Прагови упозорења (наранџасто / црвено)",
+    threshold_warning: "наранџасто од",
+    threshold_critical: "црвено од",
     url: "URL интерфејса NAS-а (клик на слику NAS-а)",
     url_helper: "Ако је празно, аутоматски из Home Assistant-а (UGREEN, Synology); за QNAP га унесите, нпр. http://192.168.1.10:8080",
     brand_url: "URL веб-сајта бренда (клик на лого)",
@@ -325,6 +340,9 @@ const STRINGS = {
     show_storage: "Prikaži skladište",
     zoom: "Dugme za uvećanje",
     zoom_helper: "Prebacuje mini karticu na pun prikaz i nazad",
+    thresholds: "Pragovi upozorenja (narandžasto / crveno)",
+    threshold_warning: "narandžasto od",
+    threshold_critical: "crveno od",
     url: "URL interfejsa NAS-a (klik na sliku NAS-a)",
     url_helper: "Ako je prazno, automatski iz Home Assistant-a (UGREEN, Synology); za QNAP ga unesite, npr. http://192.168.1.10:8080",
     brand_url: "URL veb-sajta brenda (klik na logo)",
@@ -376,6 +394,9 @@ const STRINGS = {
     show_storage: "Mostra l'archiviazione",
     zoom: "Pulsante zoom",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
+    thresholds: "Soglie di allerta (arancione / rosso)",
+    threshold_warning: "arancione da",
+    threshold_critical: "rosso da",
     url: "URL dell'interfaccia del NAS (clic sull'immagine del NAS)",
     url_helper: "Automatico da Home Assistant se vuoto (UGREEN, Synology); da indicare per QNAP, ad es. http://192.168.1.10:8080",
     brand_url: "URL del sito del marchio (clic sul logo)",
@@ -427,6 +448,9 @@ const STRINGS = {
     show_storage: "Opslag weergeven",
     zoom: "Zoomknop",
     zoom_helper: "Schakelt de minikaart over naar de volledige kaart en terug",
+    thresholds: "Waarschuwingsdrempels (oranje / rood)",
+    threshold_warning: "oranje vanaf",
+    threshold_critical: "rood vanaf",
     url: "URL van de NAS-interface (klik op de afbeelding van de NAS)",
     url_helper: "Indien leeg automatisch vanuit Home Assistant (UGREEN, Synology); vul in voor QNAP, bijv. http://192.168.1.10:8080",
     brand_url: "URL van de website van het merk (klik op het logo)",
@@ -478,6 +502,9 @@ const STRINGS = {
     show_storage: "Mostrar o armazenamento",
     zoom: "Botão de zoom",
     zoom_helper: "Alterna o minicartão para o cartão completo e vice-versa",
+    thresholds: "Limiares de alerta (laranja / vermelho)",
+    threshold_warning: "laranja a partir de",
+    threshold_critical: "vermelho a partir de",
     url: "URL da interface do NAS (clique na imagem do NAS)",
     url_helper: "Automático a partir do Home Assistant se vazio (UGREEN, Synology); indique-o para QNAP, p. ex. http://192.168.1.10:8080",
     brand_url: "URL do site da marca (clique no logótipo)",
@@ -529,6 +556,9 @@ const STRINGS = {
     show_storage: "Pokaż pamięć masową",
     zoom: "Przycisk powiększenia",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
+    thresholds: "Progi alertów (pomarańczowy / czerwony)",
+    threshold_warning: "pomarańczowy od",
+    threshold_critical: "czerwony od",
     url: "URL interfejsu NAS (kliknięcie obrazu NAS)",
     url_helper: "Jeśli puste, automatycznie z Home Assistant (UGREEN, Synology); dla QNAP wpisz go, np. http://192.168.1.10:8080",
     brand_url: "URL strony marki (kliknięcie logo)",
@@ -580,6 +610,9 @@ const STRINGS = {
     show_storage: "Afișează stocarea",
     zoom: "Buton de zoom",
     zoom_helper: "Comută minicardul la cardul complet și înapoi",
+    thresholds: "Praguri de alertă (portocaliu / roșu)",
+    threshold_warning: "portocaliu de la",
+    threshold_critical: "roșu de la",
     url: "URL-ul interfeței NAS (clic pe imaginea NAS-ului)",
     url_helper: "Dacă este gol, automat din Home Assistant (UGREEN, Synology); completați-l pentru QNAP, de ex. http://192.168.1.10:8080",
     brand_url: "URL-ul site-ului mărcii (clic pe logo)",
@@ -631,6 +664,9 @@ const STRINGS = {
     show_storage: "Vis lager",
     zoom: "Zoomknap",
     zoom_helper: "Skifter fra minikortet til det fulde kort og tilbage",
+    thresholds: "Advarselsgrænser (orange / rød)",
+    threshold_warning: "orange fra",
+    threshold_critical: "rød fra",
     url: "URL til NAS-brugerfladen (klik på billedet af NAS'en)",
     url_helper: "Automatisk fra Home Assistant, hvis tom (UGREEN, Synology); angiv den for QNAP, f.eks. http://192.168.1.10:8080",
     brand_url: "URL til mærkets websted (klik på logoet)",
@@ -682,6 +718,9 @@ const STRINGS = {
     show_storage: "Visa lagring",
     zoom: "Zoomknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
+    thresholds: "Varningsgränser (orange / röd)",
+    threshold_warning: "orange från",
+    threshold_critical: "röd från",
     url: "URL till NAS-gränssnittet (klick på bilden av NAS-enheten)",
     url_helper: "Automatiskt från Home Assistant om tom (UGREEN, Synology); ange den för QNAP, t.ex. http://192.168.1.10:8080",
     brand_url: "URL till märkets webbplats (klick på logotypen)",
@@ -733,6 +772,9 @@ const STRINGS = {
     show_storage: "Показване на хранилището",
     zoom: "Бутон за мащабиране",
     zoom_helper: "Превключва от мини картата към пълната карта и обратно",
+    thresholds: "Прагове за предупреждение (оранжево / червено)",
+    threshold_warning: "оранжево от",
+    threshold_critical: "червено от",
     url: "URL на интерфейса на NAS (щракване върху изображението на NAS)",
     url_helper: "Ако е празно, автоматично от Home Assistant (UGREEN, Synology); за QNAP го въведете, напр. http://192.168.1.10:8080",
     brand_url: "URL на уебсайта на марката (щракване върху логото)",
@@ -784,6 +826,9 @@ const STRINGS = {
     show_storage: "Показывать хранилище",
     zoom: "Кнопка масштаба",
     zoom_helper: "Переключает мини-карточку на полную и обратно",
+    thresholds: "Пороги предупреждений (оранжевый / красный)",
+    threshold_warning: "оранжевый от",
+    threshold_critical: "красный от",
     url: "URL интерфейса NAS (нажатие на изображение NAS)",
     url_helper: "Если пусто, автоматически из Home Assistant (UGREEN, Synology); для QNAP укажите его, например http://192.168.1.10:8080",
     brand_url: "URL сайта производителя (нажатие на логотип)",
@@ -835,6 +880,9 @@ const STRINGS = {
     show_storage: "Показувати сховище",
     zoom: "Кнопка масштабу",
     zoom_helper: "Перемикає міні-картку на повну картку й назад",
+    thresholds: "Пороги попереджень (помаранчевий / червоний)",
+    threshold_warning: "помаранчевий від",
+    threshold_critical: "червоний від",
     url: "URL інтерфейсу NAS (натискання на зображення NAS)",
     url_helper: "Якщо порожньо, автоматично з Home Assistant (UGREEN, Synology); для QNAP вкажіть його, наприклад http://192.168.1.10:8080",
     brand_url: "URL сайту виробника (натискання на логотип)",
@@ -886,6 +934,9 @@ const STRINGS = {
     show_storage: "Tárhely megjelenítése",
     zoom: "Nagyítás gomb",
     zoom_helper: "A mini kártyáról a teljes kártyára vált és vissza",
+    thresholds: "Riasztási küszöbök (narancs / piros)",
+    threshold_warning: "narancs ettől",
+    threshold_critical: "piros ettől",
     url: "A NAS felületének URL-je (kattintás a NAS képére)",
     url_helper: "Ha üres, automatikusan a Home Assistantből (UGREEN, Synology); QNAP esetén adja meg, pl. http://192.168.1.10:8080",
     brand_url: "A márka webhelyének URL-je (kattintás a logóra)",
@@ -937,6 +988,9 @@ const STRINGS = {
     show_storage: "Zobraziť úložisko",
     zoom: "Tlačidlo priblíženia",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
+    thresholds: "Prahy upozornení (oranžová / červená)",
+    threshold_warning: "oranžová od",
+    threshold_critical: "červená od",
     url: "URL rozhrania NAS (kliknutie na obrázok NAS)",
     url_helper: "Ak je prázdne, automaticky z Home Assistant (UGREEN, Synology); pre QNAP ho zadajte, napr. http://192.168.1.10:8080",
     brand_url: "URL webovej stránky značky (kliknutie na logo)",
@@ -988,6 +1042,9 @@ const STRINGS = {
     show_storage: "Zobrazit úložiště",
     zoom: "Tlačítko přiblížení",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
+    thresholds: "Prahy upozornění (oranžová / červená)",
+    threshold_warning: "oranžová od",
+    threshold_critical: "červená od",
     url: "URL rozhraní NAS (kliknutí na obrázek NAS)",
     url_helper: "Pokud je prázdné, automaticky z Home Assistant (UGREEN, Synology); pro QNAP ho zadejte, např. http://192.168.1.10:8080",
     brand_url: "URL webu značky (kliknutí na logo)",
@@ -1039,6 +1096,9 @@ const STRINGS = {
     show_storage: "Prikaži shrambo",
     zoom: "Gumb za povečavo",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
+    thresholds: "Pragovi opozoril (oranžna / rdeča)",
+    threshold_warning: "oranžna od",
+    threshold_critical: "rdeča od",
     url: "URL vmesnika NAS (klik na sliko NAS)",
     url_helper: "Če je prazno, samodejno iz Home Assistanta (UGREEN, Synology); za QNAP ga vnesite, npr. http://192.168.1.10:8080",
     brand_url: "URL spletnega mesta znamke (klik na logotip)",
@@ -1090,6 +1150,9 @@ const STRINGS = {
     show_storage: "Rādīt krātuvi",
     zoom: "Tālummaiņas poga",
     zoom_helper: "Pārslēdz mini karti uz pilno karti un atpakaļ",
+    thresholds: "Brīdinājumu sliekšņi (oranžs / sarkans)",
+    threshold_warning: "oranžs no",
+    threshold_critical: "sarkans no",
     url: "NAS saskarnes URL (klikšķis uz NAS attēla)",
     url_helper: "Ja tukšs, automātiski no Home Assistant (UGREEN, Synology); QNAP gadījumā norādiet to, piem., http://192.168.1.10:8080",
     brand_url: "Zīmola tīmekļa vietnes URL (klikšķis uz logotipa)",
@@ -1141,6 +1204,9 @@ const STRINGS = {
     show_storage: "Εμφάνιση χώρου αποθήκευσης",
     zoom: "Κουμπί μεγέθυνσης",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και αντίστροφα",
+    thresholds: "Όρια ειδοποίησης (πορτοκαλί / κόκκινο)",
+    threshold_warning: "πορτοκαλί από",
+    threshold_critical: "κόκκινο από",
     url: "URL της διεπαφής του NAS (κλικ στην εικόνα του NAS)",
     url_helper: "Αν είναι κενό, αυτόματα από το Home Assistant (UGREEN, Synology)· για το QNAP συμπληρώστε το, π.χ. http://192.168.1.10:8080",
     brand_url: "URL του ιστότοπου της μάρκας (κλικ στο λογότυπο)",
@@ -1270,6 +1336,20 @@ const isOk = (s) => !s || /^(normal|ok|good|healthy|on|false)$/i.test(String(s.s
 const statusOk = (nas, s) => (s && NO_VALUE.has(s.state) ? false : nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
 
 const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
+
+// Default orange (warning) and red (critical) thresholds, in % or °C; `thresholds: { cpu: { warning, critical } }` overrides them.
+const THRESHOLDS = {
+  cpu: [70, 90],
+  ram: [80, 95],
+  temperature: [75, 90],
+  disk_temperature: [60, 70],
+  volume: [80, 90],
+};
+const thresholds = (config, metric) => {
+  const set = config?.thresholds?.[metric] || {};
+  const pick = (x, d) => (x === "" || x === null || x === undefined || !Number.isFinite(Number(x)) ? d : Number(x));
+  return [pick(set.warning, THRESHOLDS[metric][0]), pick(set.critical, THRESHOLDS[metric][1])];
+};
 
 // Temperature of a sensor: Home Assistant converts temperature sensors to the unit of its unit system (or the
 // one picked for the sensor), so the value is shown in its own unit (`unit_of_measurement`, else Home
@@ -1949,14 +2029,38 @@ const BASE_STYLE = `
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
-// Sparkline of a series (24 h of rates), scaled from 0 to its peak; nothing under two points.
+// Sparkline of a series (24 h of rates): points placed by their time over the last 24 hours, scaled from 0 to
+// the peak; the line breaks where points are more than two periods apart (recorder off, NAS down). Nothing
+// under two points.
 const HIST_REFRESH = 5 * 60000;
-function spark(values) {
-  if (!values || values.length < 2) return "";
-  const peak = Math.max(...values) || 1;
-  const pts = values.map((v, i) => `${((i / (values.length - 1)) * 100).toFixed(2)},${(30 - (Math.max(0, v) / peak) * 28).toFixed(2)}`).join("L");
-  return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path class="spark-a" d="M0,30L${pts}L100,30Z"/><path class="spark-l" d="M${pts}"/></svg>`;
+const HIST_PERIOD = 5 * 60000;
+const HIST_WINDOW = 864e5;
+function spark(points, now = Date.now()) {
+  if (!points || points.length < 2) return "";
+  const peak = Math.max(...points.map((p) => p.v)) || 1;
+  const from = now - HIST_WINDOW;
+  const x = (t) => Math.max(0, Math.min(100, ((t - from) / HIST_WINDOW) * 100)).toFixed(2);
+  const y = (v) => (30 - (Math.max(0, v) / peak) * 28).toFixed(2);
+  const runs = [[points[0]]];
+  for (let i = 1; i < points.length; i++) {
+    if (points[i].t - points[i - 1].t > 2 * HIST_PERIOD) runs.push([]);
+    runs.at(-1).push(points[i]);
+  }
+  const segs = runs.filter((r) => r.length > 1);
+  if (!segs.length) return "";
+  const line = (r) => r.map((p) => `${x(p.t)},${y(p.v)}`).join("L");
+  const area = segs.map((r) => `M${x(r[0].t)},30L${line(r)}L${x(r.at(-1).t)},30Z`).join("");
+  return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path class="spark-a" d="${area}"/><path class="spark-l" d="${segs
+    .map((r) => `M${line(r)}`)
+    .join("")}"/></svg>`;
 }
+
+// Points of a recorder statistics series: { t, v }, t at the end of the 5-minute period (start in ms, or an ISO
+// string on older Home Assistant versions), without the periods that have no mean.
+const histPoints = (rows) =>
+  (rows || [])
+    .map((p) => ({ t: (typeof p.start === "number" ? p.start : Date.parse(p.start)) + HIST_PERIOD, v: p.mean }))
+    .filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v));
 
 class NasBase extends HTMLElement {
   constructor() {
@@ -2018,6 +2122,11 @@ class NasBase extends HTMLElement {
 
   _t(key) {
     return t(this._hass, this._config, key);
+  }
+
+  // Class of a reading against its thresholds (configured or default): ok, warn or crit.
+  _level(metric, v) {
+    return level(v, ...thresholds(this._config, metric));
   }
 
   // The three gauge readings, shared by the full card and the mini card: CPU temperature when the
@@ -2281,15 +2390,15 @@ class NasCard extends NasBase {
     if (cpuModel) facts.push(`<span>${svgIcon(ICONS.cpu)}${esc(cpuModel.replace(/\(R\)|\(TM\)/g, ""))}</span>`);
     return `<div>
       <div class="gauges">
-        ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, level(cpu, 70, 90))}
-        ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95))}
+        ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu))}
+        ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram))}
         ${this._gauge(
           tempId,
           sc.cpu_temp ? `${this._t("temperature")} ${this._t("cpu")}` : this._t("temperature"),
           ICONS.temp,
           temp,
           tempText,
-          level(temp, 75, 90)
+          this._level("temperature", temp)
         )}
       </div>
       ${facts.length ? `<div class="facts">${facts.join("")}</div>` : ""}
@@ -2329,14 +2438,14 @@ class NasCard extends NasBase {
       this._hass
         .callWS({
           type: "recorder/statistics_during_period",
-          start_time: new Date(Date.now() - 864e5).toISOString(),
+          start_time: new Date(Date.now() - HIST_WINDOW).toISOString(),
           statistic_ids: ids,
           period: "5minute",
           types: ["mean"],
         })
         .then((r) => {
           if (this._histKey !== key) return;
-          this._hist = Object.fromEntries(ids.map((id) => [id, (r?.[id] || []).map((p) => p.mean).filter(Number.isFinite)]));
+          this._hist = Object.fromEntries(ids.map((id) => [id, histPoints(r?.[id])]));
           this._update();
         })
         // No statistics (sensor without state_class, recorder off): try again in a minute, no sparkline meanwhile.
@@ -2358,7 +2467,7 @@ class NasCard extends NasBase {
         const status = this._s(vol.status) || this._s(vol.health);
         const label = this._text(vol.label) || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
         const fs = this._text(vol.filesystem);
-        const cls = level(u.pct, 80, 90);
+        const cls = this._level("volume", u.pct);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
           <div class="row">
             <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span>
@@ -2391,7 +2500,7 @@ class NasCard extends NasBase {
             <span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span></div>
           <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
-            <span class="temp ${level(temp.c, 60, 70)}">${temp.text}</span>
+            <span class="temp ${this._level("disk_temperature", temp.c)}">${temp.text}</span>
             <span class="muted">${size !== null ? fmtBytes(size) : ""}${
               hours !== null ? ` · ${Math.round(hours).toLocaleString(fmtLang(this._hass, this._config))} ${this._t("hours")}` : ""
             }</span>
@@ -2556,10 +2665,10 @@ class NasMiniCard extends NasCard {
     const status = this._s(sc.server_status);
     const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
     const rows = [];
-    rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, level(cpu, 70, 90)));
-    rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, level(ram, 80, 95)));
+    rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu)));
+    rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram)));
     rows.push(
-      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, level(temp, 75, 90))
+      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, this._level("temperature", temp))
     );
     if (c.show_storage !== false) {
       let used = 0;
@@ -2577,7 +2686,7 @@ class NasMiniCard extends NasCard {
       // Sizes when they are known; the mean of the percentages when only those are (QNAP).
       const pct = total ? (used / total) * 100 : pcts.length ? pcts.reduce((a, b) => a + b, 0) / pcts.length : null;
       if (pct !== null)
-        rows.push(this._metric("", ICONS.database, this._t("storage"), pct, `${pct.toFixed(0)}%`, level(pct, 80, 90)));
+        rows.push(this._metric("", ICONS.database, this._t("storage"), pct, `${pct.toFixed(0)}%`, this._level("volume", pct)));
     }
     const foot = [];
     if (status) {
@@ -2613,6 +2722,17 @@ class NasMiniCard extends NasCard {
 // ---------------------------------------------------------------------------
 // Visual editors (ha-form)
 // ---------------------------------------------------------------------------
+
+// The thresholds the YAML needs: values left empty or at their default are dropped (undefined when none is left).
+const pruneThresholds = (set) => {
+  const out = {};
+  for (const [m, [w, c]] of Object.entries(THRESHOLDS)) {
+    const [warning, critical] = thresholds({ thresholds: set }, m);
+    const kept = { ...(warning !== w && { warning }), ...(critical !== c && { critical }) };
+    if (Object.keys(kept).length) out[m] = kept;
+  }
+  return Object.keys(out).length ? out : undefined;
+};
 
 class NasEditorBase extends HTMLElement {
   static get toggles() {
@@ -2666,6 +2786,7 @@ class NasEditorBase extends HTMLElement {
           ...this.constructor.toggles.map((name) => ({ name, selector: { boolean: {} } })),
         ],
       },
+      this._thresholdsSchema(),
       {
         name: "language",
         selector: {
@@ -2702,11 +2823,37 @@ class NasEditorBase extends HTMLElement {
     ];
   }
 
+  // Alert thresholds, folded: an orange and a red value per reading (% or °C), prefilled with the defaults.
+  _thresholdsSchema() {
+    const tr = (k) => t(this._hass, this._config, k);
+    const names = {
+      cpu: tr("cpu"),
+      ram: tr("ram"),
+      temperature: tr("temperature"),
+      disk_temperature: `${tr("disks")} · ${tr("temperature")}`,
+      volume: tr("volumes"),
+    };
+    return {
+      type: "expandable",
+      name: "thresholds",
+      title: tr("thresholds"),
+      schema: Object.keys(THRESHOLDS).map((m) => {
+        const unit = m.includes("temperature") ? "°C" : "%";
+        const field = (name) => ({
+          name,
+          label: `${names[m]} · ${tr(`threshold_${name}`)}`,
+          selector: { number: { min: 0, max: unit === "%" ? 100 : 150, step: 1, mode: "box", unit_of_measurement: unit } },
+        });
+        return { type: "grid", name: m, schema: [field("warning"), field("critical")] };
+      }),
+    };
+  }
+
   _render() {
     if (!this._hass || !this._config) return;
     if (!this._form) {
       this._form = document.createElement("ha-form");
-      this._form.computeLabel = (s) => t(this._hass, this._config, s.name);
+      this._form.computeLabel = (s) => s.label ?? t(this._hass, this._config, s.name);
       this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`];
       this._form.addEventListener("value-changed", (ev) => {
         ev.stopPropagation();
@@ -2715,6 +2862,9 @@ class NasEditorBase extends HTMLElement {
           // Keep the YAML minimal: drop empty values and toggles left at their default (true).
           if (v === "" || v === undefined || v === null || (this._toggles().includes(k) && v === true)) delete config[k];
         }
+        const th = pruneThresholds(config.thresholds);
+        if (th) config.thresholds = th;
+        else delete config.thresholds;
         this._config = config;
         this.dispatchEvent(new CustomEvent("config-changed", { detail: { config }, bubbles: true, composed: true }));
       });
@@ -2722,6 +2872,12 @@ class NasEditorBase extends HTMLElement {
     }
     const data = { ...this._config };
     for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
+    data.thresholds = Object.fromEntries(
+      Object.keys(THRESHOLDS).map((m) => {
+        const [warning, critical] = thresholds(this._config, m);
+        return [m, { warning, critical }];
+      })
+    );
     // Without nas (hand-written YAML), show the NAS the card shows: saving the form then keeps it.
     if (!data.nas && this._hass) data.nas = discover(this._hass, "").nasId || undefined;
     this._form.hass = this._hass;

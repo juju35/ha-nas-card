@@ -2,16 +2,20 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, NasCard, NasMiniCard, toBps, fmtRate, toBytes, fmtBytes, STRINGS } = load("nas-card.js", [
+const { volumeUsage, discover, NasCard, NasMiniCard, NasCardEditor, toBps, fmtRate, toBytes, fmtBytes, STRINGS, spark, histPoints, pruneThresholds } = load("nas-card.js", [
   "volumeUsage",
   "discover",
   "NasCard",
   "NasMiniCard",
+  "NasCardEditor",
   "toBps",
   "fmtRate",
   "toBytes",
   "fmtBytes",
   "STRINGS",
+  "spark",
+  "histPoints",
+  "pruneThresholds",
 ]);
 
 const A = (unit) => ({ UGNAS_device_id: "nas", ...(unit ? { unit_of_measurement: unit } : {}) });
@@ -1174,7 +1178,8 @@ test("network tiles: 24 h sparkline from the recorder statistics, refreshed ever
     language: "en",
     callWS: async (msg) => {
       calls.push(msg);
-      return Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ mean: 10 }, { mean: 40 }, { mean: 20 }]]));
+      const at = (k) => Date.now() - k * 300000;
+      return Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ start: at(3), mean: 10 }, { start: at(2), mean: 40 }, { start: at(1), mean: 20 }]]));
     },
   };
   el._update = () => {
@@ -1207,7 +1212,8 @@ test("mini card: the folded rates show as tiles with their 24 h curves", async (
   el._hass = {
     states,
     language: "en",
-    callWS: async (msg) => Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ mean: 1 }, { mean: 3 }]])),
+    callWS: async (msg) =>
+      Object.fromEntries(msg.statistic_ids.map((id) => [id, [{ start: Date.now() - 600000, mean: 1 }, { start: Date.now() - 300000, mean: 3 }]])),
   };
   el._update = () => {
     el.html = el._render();
@@ -1217,4 +1223,85 @@ test("mini card: the folded rates show as tiles with their 24 h curves", async (
   assert.match(el.html, /class="net"/);
   await new Promise((r) => setTimeout(r, 0));
   assert.match(el.html, /class="spark"/);
+});
+
+test("sparkline: points on a real 24 h time axis, the line breaks over missing data", () => {
+  const now = Date.UTC(2026, 10, 7, 12);
+  const H = 3600000;
+  const pt = (h, v) => ({ t: now - h * H, v });
+  // Every 5 minutes from 18 h to 12 h ago and from 6 h ago to now: two runs, nothing from 12 h to 6 h ago.
+  const run = (from, to) => Array.from({ length: (from - to) * 12 + 1 }, (_, i) => pt(from - i / 12, 10 + (i % 7)));
+  const svg = spark([...run(18, 12), ...run(6, 0)], now);
+  const line = svg.match(/class="spark-l" d="([^"]+)"/)[1];
+  // Each point at its time: 18 h ago is a quarter of the width, now is the right edge.
+  assert.equal(line.split("M").filter(Boolean).length, 2);
+  assert.match(line, /^M25\.00,/);
+  assert.match(line, /L100\.00,[\d.]+$/);
+  assert.match(line, /L50\.00,[\d.]+M75\.00,/);
+  // The area closes each run on the baseline instead of bridging the gap.
+  const area = svg.match(/class="spark-a" d="([^"]+)"/)[1];
+  assert.equal(area.match(/Z/g).length, 2);
+  assert.match(area, /^M25\.00,30L/);
+  // Data from the last hours only: the curve starts at its time, not at the left edge.
+  assert.match(spark([pt(6, 1), pt(5.9, 2), pt(5.8, 3)], now), /class="spark-l" d="M75\.00,/);
+  // Isolated points draw nothing; fewer than two points, no sparkline.
+  assert.equal(spark([pt(10, 1), pt(5, 2)], now), "");
+  assert.equal(spark([pt(1, 1)], now), "");
+});
+
+test("sparkline: statistics rows become timed points (ms or ISO start), without empty means", () => {
+  const start = Date.UTC(2026, 10, 7, 11, 55);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(histPoints([{ start, mean: 4 }, { start: new Date(start + 300000).toISOString(), mean: 5 }, { start, mean: null }]))),
+    [
+      { t: start + 300000, v: 4 },
+      { t: start + 600000, v: 5 },
+    ]
+  );
+  assert.deepEqual(JSON.parse(JSON.stringify(histPoints(undefined))), []);
+});
+
+test("thresholds: configurable per reading, the former values by default", async () => {
+  const { states } = await import("../scripts/mock-states.mjs");
+  const el = new NasCard();
+  el._hass = { states, language: "en" };
+  el._config = {};
+  assert.deepEqual([el._level("cpu", 69), el._level("cpu", 70), el._level("cpu", 90)], ["ok", "warn", "crit"]);
+  assert.deepEqual([el._level("ram", 80), el._level("ram", 95)], ["warn", "crit"]);
+  assert.deepEqual([el._level("temperature", 75), el._level("disk_temperature", 60), el._level("volume", 90)], ["warn", "warn", "crit"]);
+  assert.equal(el._level("cpu", null), "");
+  el._config = { thresholds: { cpu: { warning: 20, critical: "50" }, volume: { critical: 95 }, ram: { warning: "" } } };
+  assert.deepEqual([el._level("cpu", 19), el._level("cpu", 20), el._level("cpu", 50)], ["ok", "warn", "crit"]);
+  assert.deepEqual([el._level("volume", 80), el._level("volume", 94), el._level("volume", 95)], ["warn", "warn", "crit"]);
+  assert.equal(el._level("ram", 80), "warn", "an empty value keeps the default");
+  // The mini card rows and the full card's volumes follow them.
+  el._config = { thresholds: { volume: { warning: 10, critical: 20 } } };
+  assert.match(el._render(), /<div class="vol clickable crit"/);
+  const mini = new NasMiniCard();
+  mini._hass = el._hass;
+  mini._config = { thresholds: { cpu: { warning: 0, critical: 0 } } };
+  assert.match(mini._render(), /<div class="metric clickable crit"[^>]*data-entity="sensor\.ugreen_nas_cpu_usage"/);
+});
+
+test("editor: thresholds prefilled with the defaults, only changed values kept in the YAML", () => {
+  const ed = new NasCardEditor();
+  ed._hass = { states: {}, language: "en" };
+  ed._config = { type: "custom:nas-card", thresholds: { cpu: { warning: 60 } } };
+  ed._form = {};
+  ed._render();
+  assert.deepEqual(JSON.parse(JSON.stringify(ed._form.data.thresholds.cpu)), { warning: 60, critical: 90 });
+  assert.deepEqual(JSON.parse(JSON.stringify(ed._form.data.thresholds.volume)), { warning: 80, critical: 90 });
+  const th = ed._form.schema.find((s) => s.name === "thresholds");
+  assert.equal(th.type, "expandable");
+  assert.equal(th.schema.map((g) => g.name).join(), "cpu,ram,temperature,disk_temperature,volume");
+  assert.equal(th.schema[0].schema[0].label, "CPU · orange from");
+  assert.equal(th.schema[2].schema[1].selector.number.unit_of_measurement, "°C");
+  // Saving: the defaults and empty values are dropped, nothing left means no thresholds key.
+  const all = JSON.parse(JSON.stringify(ed._form.data.thresholds));
+  all.cpu.warning = 70;
+  assert.equal(pruneThresholds(all), undefined);
+  all.cpu.warning = 60;
+  all.disk_temperature.critical = 65;
+  all.ram.warning = "";
+  assert.deepEqual(JSON.parse(JSON.stringify(pruneThresholds(all))), { cpu: { warning: 60 }, disk_temperature: { critical: 65 } });
 });

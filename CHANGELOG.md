@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.17.0 - 2026-11-07
+
+### Features
+- Alert thresholds: the orange and red levels of CPU, RAM, temperatures, disk temperatures and volume usage can be set with `thresholds` (also in a folded section of the visual editor); the former values stay the defaults.
+- 24 h curves: the download / upload curves place each point at its time over the last 24 hours and break where data is missing (NAS or recorder down), instead of spacing the points evenly and bridging the gap.
+
 ## 1.16.0 - 2026-11-07
 
 ### Features

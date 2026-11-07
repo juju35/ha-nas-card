@@ -122,6 +122,12 @@ show_network: true
 show_volumes: true
 show_disks: true
 show_fans: true
+thresholds:
+  cpu:
+    warning: 60
+    critical: 85
+  volume:
+    critical: 95
 language: fr
 ```
 
@@ -149,12 +155,13 @@ language: fr
 | `brand_url` | both | Brand website | Website opened by a click on the header icon: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com) or [qnap.com](https://www.qnap.com) by default |
 | `show_system` | full | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
-| `show_history` | both | `true` | 24 h curve behind the download / upload tiles (on the mini card, the rates then show as tiles above the footer instead of in it), from the recorder's 5-minute statistics (needs rate sensors with a `state_class`, the case for the three integrations) |
+| `show_history` | both | `true` | 24 h curve behind the download / upload tiles (on the mini card, the rates then show as tiles above the footer instead of in it), from the recorder's 5-minute statistics (needs rate sensors with a `state_class`, the case for the three integrations). Points sit at their time over the last 24 hours, and the curve breaks where data is missing |
 | `show_volumes` | full | `true` | Volumes and used space |
 | `show_disks` | full | `true` | Disks details |
 | `show_fans` | full | `true` | Fans speed |
 | `show_storage` | mini | `true` | Overall storage usage bar |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
+| `thresholds` | both | See [Thresholds](#thresholds) | Orange (`warning`) and red (`critical`) levels per reading: `cpu`, `ram`, `temperature` (CPU / system), `disk_temperature` and `volume` (volumes, and the mini card storage bar); set only the values to change |
 | `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |
 
 ## Screenshots
@@ -233,13 +240,24 @@ Sizes and rates follow Home Assistant's units: `kB`, `MB`, `GB` and `TB` (and `k
 
 ### Thresholds
 
-| Value | Orange | Red |
-|---|---|---|
-| CPU usage | 70 % | 90 % |
-| RAM usage | 80 % | 95 % |
-| CPU / system temperature | 75 °C | 90 °C |
-| Disk temperature | 60 °C | 70 °C |
-| Volume usage | 80 % | 90 % |
+Default levels, changed with the `thresholds` option (or the **Alert thresholds** section of the visual editor):
+
+| Value | Key | Orange (`warning`) | Red (`critical`) |
+|---|---|---|---|
+| CPU usage | `cpu` | 70 % | 90 % |
+| RAM usage | `ram` | 80 % | 95 % |
+| CPU / system temperature | `temperature` | 75 °C | 90 °C |
+| Disk temperature | `disk_temperature` | 60 °C | 70 °C |
+| Volume usage | `volume` | 80 % | 90 % |
+
+```yaml
+thresholds:
+  temperature:
+    warning: 70
+  disk_temperature:
+    warning: 50
+    critical: 60
+```
 
 Temperatures are shown in the unit of their sensor, which follows your Home Assistant unit system (°C, °F or K); the temperature thresholds are in °C and apply to the converted value, so 124 °F (51 °C) stays green.
 
