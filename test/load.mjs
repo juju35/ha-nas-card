@@ -7,7 +7,14 @@ export const load = (file, names) => {
   const src = readFileSync(new URL(`../src/${file}`, import.meta.url), "utf8");
   class HTMLElement {
     attachShadow() {
-      this.shadowRoot = { addEventListener() {}, innerHTML: "" };
+      // Listeners kept by type, so tests can dispatch events to them.
+      this.shadowRoot = {
+        listeners: {},
+        addEventListener(type, fn) {
+          (this.listeners[type] ??= []).push(fn);
+        },
+        innerHTML: "",
+      };
       return this.shadowRoot;
     }
     dispatchEvent() {}
@@ -17,7 +24,15 @@ export const load = (file, names) => {
   const context = {
     HTMLElement,
     customElements: { get: (n) => registry.get(n), define: (n, c) => registry.set(n, c) },
-    window: {},
+    // The last window listener of each type is kept as on_<type>, so tests can call it.
+    window: {
+      addEventListener(type, fn) {
+        this[`on_${type}`] = fn;
+      },
+      removeEventListener(type, fn) {
+        if (this[`on_${type}`] === fn) delete this[`on_${type}`];
+      },
+    },
     document: { addEventListener() {}, removeEventListener() {}, createElement: (tag) => ({ tag, addEventListener() {} }) },
     console: { info() {}, error() {}, log() {} },
     CustomEvent: class {},

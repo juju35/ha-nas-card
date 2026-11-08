@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { load } from "./load.mjs";
 
-const { volumeUsage, discover, NasCard, NasMiniCard, NasCardEditor, toBps, fmtRate, toBytes, fmtBytes, STRINGS, spark, histPoints, pruneThresholds } = load("nas-card.js", [
+const { volumeUsage, discover, NasCard, NasMiniCard, NasCardEditor, toBps, fmtRate, toBytes, fmtBytes, STRINGS, spark, histPoints, pruneThresholds, window } = load("nas-card.js", [
   "volumeUsage",
   "discover",
   "NasCard",
@@ -16,6 +16,7 @@ const { volumeUsage, discover, NasCard, NasMiniCard, NasCardEditor, toBps, fmtRa
   "spark",
   "histPoints",
   "pruneThresholds",
+  "window",
 ]);
 
 const A = (unit) => ({ UGNAS_device_id: "nas", ...(unit ? { unit_of_measurement: unit } : {}) });
@@ -1417,4 +1418,79 @@ test("mini card: update in the footer; a click outside closes the reboot popup w
   assert.equal(el._zoomed, true);
   el._onOutside(click([node("div"), node("body")]));
   assert.equal(el._zoomed, false);
+});
+
+test("reboot popup: Escape and Tab handled on the window, a double click on its button does not reopen it", async () => {
+  const hass = await registryHass("synology");
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { ...hass, callService: () => {} };
+  el._update = () => {
+    el.html = el._render();
+  };
+  const focused = [];
+  const btn = (name) => ({ name, focus: (opts) => focused.push([name, { ...opts }]) });
+  const cancel = btn("cancel");
+  const ok = btn("ok");
+  const reboot = btn("reboot");
+  el.shadowRoot.querySelectorAll = (sel) => (sel === ".modal button" && el._dialog ? [cancel, ok] : []);
+  el.shadowRoot.querySelector = (sel) => (sel === ".modal .danger" ? ok : sel === '[data-action="reboot"]' ? reboot : null);
+  el._update();
+  assert.equal(window.on_keydown, undefined);
+  el._confirmReboot();
+  // The keyboard listener is on the window while the popup is open; the focus moves without scrolling the page.
+  assert.equal(window.on_keydown, el._onKey);
+  assert.deepEqual(focused.pop(), ["ok", { preventScroll: true }]);
+  el.shadowRoot.activeElement = ok;
+  let prevented = 0;
+  const key = (k, shiftKey = false) => ({ key: k, shiftKey, preventDefault: () => prevented++, stopPropagation() {} });
+  window.on_keydown(key("Tab"));
+  assert.deepEqual(focused.pop(), ["cancel", { preventScroll: true }]);
+  el.shadowRoot.activeElement = cancel;
+  window.on_keydown(key("Tab", true));
+  assert.deepEqual(focused.pop(), ["ok", { preventScroll: true }]);
+  assert.equal(prevented, 2);
+  window.on_keydown(key("Escape"));
+  assert.equal(el._dialog, null);
+  assert.equal(window.on_keydown, undefined);
+  assert.deepEqual(focused.pop(), ["reboot", { preventScroll: true }]);
+  // OK through a click, then the second click of the double click lands on the reboot button: ignored.
+  const [onClick] = el.shadowRoot.listeners.click;
+  const tap = (action) => {
+    const n = { dataset: { action } };
+    let stopped = false;
+    onClick({ composedPath: () => [n], stopImmediatePropagation: () => (stopped = true) });
+    return stopped;
+  };
+  // Closed by Escape just now: a click within the guard delay is ignored too.
+  assert.equal(tap("reboot"), true);
+  el._dialogClosedAt -= 1000;
+  tap("reboot");
+  assert.ok(el._dialog);
+  assert.equal(tap("dialog-ok"), false);
+  assert.equal(el._dialog, null);
+  assert.equal(tap("reboot"), true);
+  assert.equal(el._dialog, null);
+  // After the guard delay, the button opens the popup again.
+  el._dialogClosedAt -= 1000;
+  tap("reboot");
+  assert.ok(el._dialog);
+});
+
+test("volume and disk fallback names and fan speed unit follow the card's language", async () => {
+  const el = new NasCard();
+  el._config = { language: "fr" };
+  el._hass = { states: {}, language: "en" };
+  const nas = {
+    pools: { 1: { volumes: { 2: {} }, disks: { 3: {} } } },
+    fans: { 1: "sensor.fan1" },
+    scalars: {},
+  };
+  el._hass.states["sensor.fan1"] = { entity_id: "sensor.fan1", state: "1250", attributes: {} };
+  assert.match(el._volumes(nas), /<span class="grow">Volume 2<\/span>/);
+  assert.match(el._disks(nas), /<span>Disque 3<\/span>/);
+  assert.match(el._fans(nas), /1\u202f250 tr\/min|1\u00a0250 tr\/min/);
+  el._config = { language: "de" };
+  assert.match(el._disks(nas), /<span>Laufwerk 3<\/span>/);
+  assert.match(el._fans(nas), /1\.250 U\/min/);
 });

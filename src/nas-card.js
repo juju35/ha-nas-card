@@ -62,6 +62,9 @@ const STRINGS = {
     reboot_confirm: "Restart the NAS now? Its shares, apps and services will be unavailable for a few minutes.",
     reboot_btn: "Restart",
     cancel: "Cancel",
+    volume_n: "Volume {n}",
+    disk_n: "Disk {n}",
+    rpm: "rpm",
     // Editor
     nas: "NAS (UGREEN, Synology DSM or QNAP device)",
     title: "Title (optional, defaults to the NAS name)",
@@ -122,6 +125,9 @@ const STRINGS = {
     reboot_confirm: "Redémarrer le NAS maintenant ? Ses partages, applications et services seront indisponibles pendant quelques minutes.",
     reboot_btn: "Redémarrer",
     cancel: "Annuler",
+    volume_n: "Volume {n}",
+    disk_n: "Disque {n}",
+    rpm: "tr/min",
     nas: "NAS (appareil UGREEN, Synology DSM ou QNAP)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
@@ -181,6 +187,9 @@ const STRINGS = {
     reboot_confirm: "NAS jetzt neu starten? Freigaben, Apps und Dienste sind für einige Minuten nicht erreichbar.",
     reboot_btn: "Neu starten",
     cancel: "Abbrechen",
+    volume_n: "Volume {n}",
+    disk_n: "Laufwerk {n}",
+    rpm: "U/min",
     nas: "NAS (UGREEN-, Synology-DSM- oder QNAP-Gerät)",
     title: "Titel (optional, standardmäßig der NAS-Name)",
     show_image: "NAS-Bild anzeigen",
@@ -240,6 +249,9 @@ const STRINGS = {
     reboot_confirm: "¿Reiniciar el NAS ahora? Sus carpetas compartidas, aplicaciones y servicios no estarán disponibles durante unos minutos.",
     reboot_btn: "Reiniciar",
     cancel: "Cancelar",
+    volume_n: "Volumen {n}",
+    disk_n: "Disco {n}",
+    rpm: "rpm",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
     title: "Título (opcional, por defecto el nombre del NAS)",
     show_image: "Mostrar la imagen del NAS",
@@ -299,6 +311,9 @@ const STRINGS = {
     reboot_confirm: "Поново покренути NAS сада? Дељене фасцикле, апликације и услуге неће бити доступне неколико минута.",
     reboot_btn: "Поново покрени",
     cancel: "Откажи",
+    volume_n: "Волумен {n}",
+    disk_n: "Диск {n}",
+    rpm: "о/мин",
     nas: "NAS (UGREEN, Synology DSM или QNAP уређај)",
     title: "Наслов (опционо, подразумевано је назив NAS-а)",
     show_image: "Прикажи слику NAS-а",
@@ -358,6 +373,9 @@ const STRINGS = {
     reboot_confirm: "Ponovo pokrenuti NAS sada? Deljene fascikle, aplikacije i usluge neće biti dostupne nekoliko minuta.",
     reboot_btn: "Ponovo pokreni",
     cancel: "Otkaži",
+    volume_n: "Volumen {n}",
+    disk_n: "Disk {n}",
+    rpm: "o/min",
     nas: "NAS (UGREEN, Synology DSM ili QNAP uređaj)",
     title: "Naslov (opciono, podrazumevano je naziv NAS-a)",
     show_image: "Prikaži sliku NAS-a",
@@ -417,6 +435,9 @@ const STRINGS = {
     reboot_confirm: "Riavviare il NAS adesso? Cartelle condivise, app e servizi non saranno disponibili per qualche minuto.",
     reboot_btn: "Riavvia",
     cancel: "Annulla",
+    volume_n: "Volume {n}",
+    disk_n: "Disco {n}",
+    rpm: "giri/min",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
     title: "Titolo (facoltativo, per impostazione predefinita il nome del NAS)",
     show_image: "Mostra l'immagine del NAS",
@@ -476,6 +497,9 @@ const STRINGS = {
     reboot_confirm: "NAS nu herstarten? De gedeelde mappen, apps en diensten zijn een paar minuten niet beschikbaar.",
     reboot_btn: "Herstarten",
     cancel: "Annuleren",
+    volume_n: "Volume {n}",
+    disk_n: "Schijf {n}",
+    rpm: "tpm",
     nas: "NAS (UGREEN-, Synology DSM- of QNAP-apparaat)",
     title: "Titel (optioneel, standaard de naam van de NAS)",
     show_image: "Afbeelding van de NAS weergeven",
@@ -535,6 +559,9 @@ const STRINGS = {
     reboot_confirm: "Reiniciar o NAS agora? As pastas partilhadas, aplicações e serviços ficarão indisponíveis durante alguns minutos.",
     reboot_btn: "Reiniciar",
     cancel: "Cancelar",
+    volume_n: "Volume {n}",
+    disk_n: "Disco {n}",
+    rpm: "rpm",
     nas: "NAS (dispositivo UGREEN, Synology DSM ou QNAP)",
     title: "Título (opcional, por predefinição o nome do NAS)",
     show_image: "Mostrar a imagem do NAS",
@@ -594,6 +621,9 @@ const STRINGS = {
     reboot_confirm: "Uruchomić teraz ponownie NAS? Udziały, aplikacje i usługi będą niedostępne przez kilka minut.",
     reboot_btn: "Uruchom ponownie",
     cancel: "Anuluj",
+    volume_n: "Wolumin {n}",
+    disk_n: "Dysk {n}",
+    rpm: "obr./min",
     nas: "NAS (urządzenie UGREEN, Synology DSM lub QNAP)",
     title: "Tytuł (opcjonalny, domyślnie nazwa NAS)",
     show_image: "Pokaż obraz NAS",
@@ -653,6 +683,9 @@ const STRINGS = {
     reboot_confirm: "Reporniți NAS-ul acum? Partajările, aplicațiile și serviciile vor fi indisponibile câteva minute.",
     reboot_btn: "Repornește",
     cancel: "Anulează",
+    volume_n: "Volum {n}",
+    disk_n: "Disc {n}",
+    rpm: "rot/min",
     nas: "NAS (dispozitiv UGREEN, Synology DSM sau QNAP)",
     title: "Titlu (opțional, implicit numele NAS-ului)",
     show_image: "Afișează imaginea NAS-ului",
@@ -712,6 +745,9 @@ const STRINGS = {
     reboot_confirm: "Vil du genstarte NAS'en nu? Delte mapper, apps og tjenester er utilgængelige i et par minutter.",
     reboot_btn: "Genstart",
     cancel: "Annuller",
+    volume_n: "Volume {n}",
+    disk_n: "Disk {n}",
+    rpm: "o/min",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhed)",
     title: "Titel (valgfri, som standard NAS'ens navn)",
     show_image: "Vis billede af NAS'en",
@@ -771,6 +807,9 @@ const STRINGS = {
     reboot_confirm: "Vill du starta om NAS:en nu? Delade mappar, appar och tjänster är otillgängliga i några minuter.",
     reboot_btn: "Starta om",
     cancel: "Avbryt",
+    volume_n: "Volym {n}",
+    disk_n: "Disk {n}",
+    rpm: "v/min",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhet)",
     title: "Titel (valfri, NAS-enhetens namn som standard)",
     show_image: "Visa bild av NAS-enheten",
@@ -830,6 +869,9 @@ const STRINGS = {
     reboot_confirm: "Да се рестартира ли NAS сега? Споделените папки, приложенията и услугите няма да са достъпни няколко минути.",
     reboot_btn: "Рестартиране",
     cancel: "Отказ",
+    volume_n: "Том {n}",
+    disk_n: "Диск {n}",
+    rpm: "об/мин",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
     title: "Заглавие (по избор, по подразбиране името на NAS)",
     show_image: "Показване на изображение на NAS",
@@ -889,6 +931,9 @@ const STRINGS = {
     reboot_confirm: "Перезагрузить NAS сейчас? Общие папки, приложения и службы будут недоступны несколько минут.",
     reboot_btn: "Перезагрузить",
     cancel: "Отмена",
+    volume_n: "Том {n}",
+    disk_n: "Диск {n}",
+    rpm: "об/мин",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
     title: "Заголовок (необязательно, по умолчанию имя NAS)",
     show_image: "Показывать изображение NAS",
@@ -948,6 +993,9 @@ const STRINGS = {
     reboot_confirm: "Перезапустити NAS зараз? Спільні папки, застосунки й служби будуть недоступні кілька хвилин.",
     reboot_btn: "Перезапуск",
     cancel: "Скасувати",
+    volume_n: "Том {n}",
+    disk_n: "Диск {n}",
+    rpm: "об/хв",
     nas: "NAS (пристрій UGREEN, Synology DSM або QNAP)",
     title: "Заголовок (необов'язково, за замовчуванням назва NAS)",
     show_image: "Показувати зображення NAS",
@@ -1007,6 +1055,9 @@ const STRINGS = {
     reboot_confirm: "Újraindítja most a NAS-t? A megosztások, alkalmazások és szolgáltatások néhány percig nem lesznek elérhetők.",
     reboot_btn: "Újraindítás",
     cancel: "Mégse",
+    volume_n: "Kötet {n}",
+    disk_n: "Lemez {n}",
+    rpm: "f/perc",
     nas: "NAS (UGREEN, Synology DSM vagy QNAP eszköz)",
     title: "Cím (nem kötelező, alapértelmezés szerint a NAS neve)",
     show_image: "NAS képének megjelenítése",
@@ -1066,6 +1117,9 @@ const STRINGS = {
     reboot_confirm: "Reštartovať NAS teraz? Zdieľané priečinky, aplikácie a služby budú na niekoľko minút nedostupné.",
     reboot_btn: "Reštartovať",
     cancel: "Zrušiť",
+    volume_n: "Zväzok {n}",
+    disk_n: "Disk {n}",
+    rpm: "ot./min",
     nas: "NAS (zariadenie UGREEN, Synology DSM alebo QNAP)",
     title: "Názov (voliteľný, predvolene názov NAS)",
     show_image: "Zobraziť obrázok NAS",
@@ -1125,6 +1179,9 @@ const STRINGS = {
     reboot_confirm: "Restartovat NAS nyní? Sdílené složky, aplikace a služby budou na několik minut nedostupné.",
     reboot_btn: "Restartovat",
     cancel: "Zrušit",
+    volume_n: "Svazek {n}",
+    disk_n: "Disk {n}",
+    rpm: "ot./min",
     nas: "NAS (zařízení UGREEN, Synology DSM nebo QNAP)",
     title: "Název (volitelný, výchozí je název NAS)",
     show_image: "Zobrazit obrázek NAS",
@@ -1184,6 +1241,9 @@ const STRINGS = {
     reboot_confirm: "Želite zdaj znova zagnati NAS? Skupne mape, aplikacije in storitve bodo za nekaj minut nedosegljive.",
     reboot_btn: "Znova zaženi",
     cancel: "Prekliči",
+    volume_n: "Nosilec {n}",
+    disk_n: "Disk {n}",
+    rpm: "obr./min",
     nas: "NAS (naprava UGREEN, Synology DSM ali QNAP)",
     title: "Naslov (neobvezno, privzeto ime NAS)",
     show_image: "Prikaži sliko NAS",
@@ -1243,6 +1303,9 @@ const STRINGS = {
     reboot_confirm: "Restartēt NAS tagad? Koplietotās mapes, lietotnes un pakalpojumi dažas minūtes nebūs pieejami.",
     reboot_btn: "Restartēt",
     cancel: "Atcelt",
+    volume_n: "Sējums {n}",
+    disk_n: "Disks {n}",
+    rpm: "apgr./min",
     nas: "NAS (UGREEN, Synology DSM vai QNAP ierīce)",
     title: "Nosaukums (neobligāts, pēc noklusējuma NAS nosaukums)",
     show_image: "Rādīt NAS attēlu",
@@ -1302,6 +1365,9 @@ const STRINGS = {
     reboot_confirm: "Επανεκκίνηση του NAS τώρα; Οι κοινόχρηστοι φάκελοι, οι εφαρμογές και οι υπηρεσίες δεν θα είναι διαθέσιμα για λίγα λεπτά.",
     reboot_btn: "Επανεκκίνηση",
     cancel: "Ακύρωση",
+    volume_n: "Τόμος {n}",
+    disk_n: "Δίσκος {n}",
+    rpm: "σ.α.λ.",
     nas: "NAS (συσκευή UGREEN, Synology DSM ή QNAP)",
     title: "Τίτλος (προαιρετικός, από προεπιλογή το όνομα του NAS)",
     show_image: "Εμφάνιση εικόνας του NAS",
@@ -2207,6 +2273,10 @@ const DIALOG_STYLE = `
   .modal button.act:focus-visible { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: 2px; }
 `;
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
+// After the confirmation popup closes, clicks on the card are ignored for this long: the second click of a double
+// click on its button would otherwise land on what lies under it (the reboot button, which would open it again).
+const CONFIRM_GUARD_MS = 400;
+
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
 // Sparkline of a series (24 h of rates): points placed by their time over the last 24 hours, scaled from 0 to
@@ -2249,6 +2319,11 @@ class NasBase extends HTMLElement {
     this._html = "";
     this._dialog = null;
     this.shadowRoot.addEventListener("click", (ev) => {
+      // Just closed: the rest of a double click on the popup's button does nothing (nor folds the mini card).
+      if (!this._dialog && Date.now() - (this._dialogClosedAt ?? 0) < CONFIRM_GUARD_MS) {
+        ev.stopImmediatePropagation();
+        return;
+      }
       const path = ev.composedPath();
       const action = path.find((n) => n.dataset?.action);
       // While the confirmation popup is open, only its own buttons and the backdrop act.
@@ -2273,18 +2348,22 @@ class NasBase extends HTMLElement {
         ev.preventDefault();
         ev.target.click();
       }
+    });
+    // Escape closes the confirmation popup (as Cancel); Tab and Shift+Tab stay on its two buttons. Listened on the
+    // window while the popup is open: a re-render or a click on its text can take the focus out of the card.
+    this._onKey = (ev) => {
       if (!this._dialog) return;
-      // Escape closes the confirmation popup; Tab stays on its two buttons.
-      if (ev.key === "Escape") {
+      if (ev.key === "Tab") {
+        const btns = [...this.shadowRoot.querySelectorAll(".modal button")];
+        if (!btns.length) return;
+        ev.preventDefault();
+        const i = btns.indexOf(this.shadowRoot.activeElement);
+        btns[(i + (ev.shiftKey ? -1 : 1) + btns.length) % btns.length].focus({ preventScroll: true });
+      } else if (ev.key === "Escape") {
         ev.stopPropagation();
         this._closeDialog(true);
-      } else if (ev.key === "Tab") {
-        const btns = [...this.shadowRoot.querySelectorAll(".modal button")];
-        const i = btns.indexOf(this.shadowRoot.activeElement);
-        ev.preventDefault();
-        btns[(i + (ev.shiftKey ? btns.length - 1 : 1)) % btns.length]?.focus();
       }
-    });
+    };
     // A click elsewhere on the page closes the confirmation popup (and only that: the mini card stays zoomed).
     this._onDialogOutside = (ev) => {
       if (this._dialog && !ev.composedPath().includes(this) && !inDialog(ev)) {
@@ -2300,6 +2379,7 @@ class NasBase extends HTMLElement {
 
   disconnectedCallback() {
     document.removeEventListener("click", this._onDialogOutside, true);
+    window.removeEventListener("keydown", this._onKey);
     this._dialog = null;
   }
 
@@ -2320,6 +2400,7 @@ class NasBase extends HTMLElement {
       ok: this._t("reboot_btn"),
       onOk: () => this._press(reboot),
     };
+    window.addEventListener("keydown", this._onKey);
     this._update();
     // After the re-render: the focus on the confirm button, without scrolling the page towards the card.
     this.shadowRoot.querySelector?.(".modal .danger")?.focus({ preventScroll: true });
@@ -2329,6 +2410,8 @@ class NasBase extends HTMLElement {
   _closeDialog(refocus) {
     if (!this._dialog) return;
     this._dialog = null;
+    this._dialogClosedAt = Date.now();
+    window.removeEventListener("keydown", this._onKey);
     this._update();
     if (refocus) this.shadowRoot.querySelector?.('[data-action="reboot"]')?.focus({ preventScroll: true });
   }
@@ -2341,8 +2424,8 @@ class NasBase extends HTMLElement {
         <h3 id="dlg-title">${svgIcon(ICONS.restart)}${esc(d.title)}</h3>
         <div class="hint" id="dlg-body">${esc(d.body)}</div>
         <div class="modal-actions">
-          <button class="act cancel" data-action="dialog-cancel">${esc(this._t("cancel"))}</button>
-          <button class="act danger" data-action="dialog-ok">${esc(d.ok)}</button>
+          <button type="button" class="act cancel" data-action="dialog-cancel">${esc(this._t("cancel"))}</button>
+          <button type="button" class="act danger" data-action="dialog-ok">${esc(d.ok)}</button>
         </div>
       </div>
     </div>`;
@@ -2767,7 +2850,7 @@ class NasCard extends NasBase {
       for (const [vn, vol] of Object.entries(pool.volumes)) {
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
-        const label = this._text(vol.label) || vol.labelText || `Volume ${multi ? `${pn}-${vn}` : vn}`;
+        const label = this._text(vol.label) || vol.labelText || this._t("volume_n").replace("{n}", multi ? `${pn}-${vn}` : vn);
         const fs = this._text(vol.filesystem);
         const cls = this._level("volume", u.pct);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
@@ -2798,7 +2881,7 @@ class NasCard extends NasBase {
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
-          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || `Disk ${dn}`)}</span>
+          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || this._t("disk_n").replace("{n}", dn))}</span>
             ${health ? `<span class="dot ${health.cls}" title="${esc(health.title ?? this._dotTitle(health.state))}"></span>` : ""}</div>
           <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
@@ -2826,7 +2909,7 @@ class NasCard extends NasBase {
       const rpm = num(this._s(id));
       return `<div class="tile clickable" role="button" tabindex="0" data-key="${id}" data-entity="${id}">${svgIcon(ICONS.fan, rpm ? "spin" : "")}<div><div class="k">${esc(
         label
-      )}</div><div class="v">${rpm === null ? "—" : `${Math.round(rpm)} rpm`}</div></div></div>`;
+      )}</div><div class="v">${rpm === null ? "—" : `${Math.round(rpm).toLocaleString(this._loc())} ${this._t("rpm")}`}</div></div></div>`;
     });
     return `<div><div class="section-title">${svgIcon(ICONS.fan)}${this._t("fans")}</div><div class="fans">${tiles.join(
       ""
@@ -2930,7 +3013,11 @@ class NasMiniCard extends NasCard {
 
   _setZoom(zoomed) {
     this._zoomed = zoomed;
-    if (!zoomed) this._dialog = null; // The reboot button is only on the zoomed view.
+    // The reboot button is only on the zoomed view: folding drops its popup.
+    if (!zoomed && this._dialog) {
+      this._dialog = null;
+      window.removeEventListener("keydown", this._onKey);
+    }
     this._update(this._sig);
   }
 

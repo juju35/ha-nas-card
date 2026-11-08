@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.1 - 2026-11-08
+
+### Fixes
+- Reboot popup: the second click of a double click on its button no longer reopens it, and Escape and Tab keep working even when the focus has left the card.
+- The fallback names « Volume N » and « Disk N » and the fan speed unit are translated, and fan speeds use the card's number format.
+
 ## 1.18.0 - 2026-11-07
 
 ### Features
