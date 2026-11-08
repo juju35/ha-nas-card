@@ -59,16 +59,21 @@ async function openCard(browser, s) {
     ({ type, config, mock, dark, zoom }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
-      // Recorder statistics: a plausible 24 h rate curve for each network sensor (busy evening, quiet night),
-      // one 5-minute period after the other up to now.
+      // Recorder statistics, one 5-minute period after the other up to now: a plausible 24 h rate curve for each
+      // network sensor (busy evening, quiet night), and CPU / RAM percentages (CPU busy in the evening and during the
+      // nightly backup, RAM steadier).
+      const pct = (id) => (/cpu/.test(id) ? "cpu" : /ram|memory/.test(id) ? "ram" : null);
+      const mean = (kind, i, k) =>
+        kind === "cpu"
+          ? 10 + 40 * Math.exp(-((i - 235) ** 2) / 400) + 25 * Math.exp(-((i - 40) ** 2) / 150) + 6 * Math.sin(i * 0.09) ** 2
+          : kind === "ram"
+            ? 34 + 10 * Math.exp(-((i - 230) ** 2) / 1500) + 3 * Math.sin(i * 0.08) ** 2
+            : 20 + 80 * Math.exp(-((i - 230 + k * 20) ** 2) / 900) + 35 * Math.exp(-((i - 110) ** 2) / 400) + 8 * Math.sin(i * 0.12 + k) ** 2;
       const callWS = async (msg) =>
         Object.fromEntries(
           (msg.statistic_ids || []).map((id, k) => [
             id,
-            Array.from({ length: 288 }, (_, i) => ({
-              start: Date.now() - (288 - i) * 300000,
-              mean: 20 + 80 * Math.exp(-((i - 230 + k * 20) ** 2) / 900) + 35 * Math.exp(-((i - 110) ** 2) / 400) + 8 * Math.sin(i * 0.12 + k) ** 2,
-            })),
+            Array.from({ length: 288 }, (_, i) => ({ start: Date.now() - (288 - i) * 300000, mean: mean(pct(id), i, k) })),
           ])
         );
       el.hass = { ...mock, language: "en", locale: { language: "en" }, themes: { darkMode: dark }, callWS };

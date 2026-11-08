@@ -77,7 +77,7 @@ const STRINGS = {
     show_volumes: "Show volumes",
     show_disks: "Show disks",
     show_fans: "Show fans",
-    show_history: "Show 24 h rate history",
+    show_history: "Show 24 h history",
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -139,7 +139,7 @@ const STRINGS = {
     show_volumes: "Afficher les volumes",
     show_disks: "Afficher les disques",
     show_fans: "Afficher les ventilateurs",
-    show_history: "Afficher l’historique 24 h des débits",
+    show_history: "Afficher l’historique 24 h",
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
@@ -201,7 +201,7 @@ const STRINGS = {
     show_volumes: "Volumes anzeigen",
     show_disks: "Laufwerke anzeigen",
     show_fans: "Lüfter anzeigen",
-    show_history: "24-h-Verlauf der Raten anzeigen",
+    show_history: "24-h-Verlauf anzeigen",
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
@@ -263,7 +263,7 @@ const STRINGS = {
     show_volumes: "Mostrar los volúmenes",
     show_disks: "Mostrar los discos",
     show_fans: "Mostrar los ventiladores",
-    show_history: "Mostrar el historial de 24 h de las velocidades",
+    show_history: "Mostrar el historial de 24 h",
     show_storage: "Mostrar el almacenamiento",
     zoom: "Botón de zoom",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
@@ -325,7 +325,7 @@ const STRINGS = {
     show_volumes: "Прикажи волумене",
     show_disks: "Прикажи дискове",
     show_fans: "Прикажи вентилаторе",
-    show_history: "Прикажи историју протока за 24 ч",
+    show_history: "Прикажи историју за 24 ч",
     show_storage: "Прикажи складиште",
     zoom: "Дугме за увећање",
     zoom_helper: "Пребацује мини картицу на пун приказ и назад",
@@ -387,7 +387,7 @@ const STRINGS = {
     show_volumes: "Prikaži volumene",
     show_disks: "Prikaži diskove",
     show_fans: "Prikaži ventilatore",
-    show_history: "Prikaži istoriju protoka za 24 č",
+    show_history: "Prikaži istoriju za 24 č",
     show_storage: "Prikaži skladište",
     zoom: "Dugme za uvećanje",
     zoom_helper: "Prebacuje mini karticu na pun prikaz i nazad",
@@ -449,7 +449,7 @@ const STRINGS = {
     show_volumes: "Mostra i volumi",
     show_disks: "Mostra i dischi",
     show_fans: "Mostra le ventole",
-    show_history: "Mostra lo storico 24 h delle velocità",
+    show_history: "Mostra lo storico 24 h",
     show_storage: "Mostra l'archiviazione",
     zoom: "Pulsante zoom",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
@@ -511,7 +511,7 @@ const STRINGS = {
     show_volumes: "Volumes weergeven",
     show_disks: "Schijven weergeven",
     show_fans: "Ventilatoren weergeven",
-    show_history: "24-uursgeschiedenis van de snelheden weergeven",
+    show_history: "24-uursgeschiedenis weergeven",
     show_storage: "Opslag weergeven",
     zoom: "Zoomknop",
     zoom_helper: "Schakelt de minikaart over naar de volledige kaart en terug",
@@ -573,7 +573,7 @@ const STRINGS = {
     show_volumes: "Mostrar os volumes",
     show_disks: "Mostrar os discos",
     show_fans: "Mostrar as ventoinhas",
-    show_history: "Mostrar o histórico de 24 h dos débitos",
+    show_history: "Mostrar o histórico de 24 h",
     show_storage: "Mostrar o armazenamento",
     zoom: "Botão de zoom",
     zoom_helper: "Alterna o minicartão para o cartão completo e vice-versa",
@@ -635,7 +635,7 @@ const STRINGS = {
     show_volumes: "Pokaż woluminy",
     show_disks: "Pokaż dyski",
     show_fans: "Pokaż wentylatory",
-    show_history: "Pokaż historię przepustowości z 24 h",
+    show_history: "Pokaż historię z 24 h",
     show_storage: "Pokaż pamięć masową",
     zoom: "Przycisk powiększenia",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
@@ -697,7 +697,7 @@ const STRINGS = {
     show_volumes: "Afișează volumele",
     show_disks: "Afișează discurile",
     show_fans: "Afișează ventilatoarele",
-    show_history: "Afișează istoricul vitezelor pe 24 h",
+    show_history: "Afișează istoricul pe 24 h",
     show_storage: "Afișează stocarea",
     zoom: "Buton de zoom",
     zoom_helper: "Comută minicardul la cardul complet și înapoi",
@@ -759,7 +759,7 @@ const STRINGS = {
     show_volumes: "Vis volumener",
     show_disks: "Vis diske",
     show_fans: "Vis blæsere",
-    show_history: "Vis 24-timers historik for hastigheder",
+    show_history: "Vis 24-timers historik",
     show_storage: "Vis lager",
     zoom: "Zoomknap",
     zoom_helper: "Skifter fra minikortet til det fulde kort og tilbage",
@@ -821,7 +821,7 @@ const STRINGS = {
     show_volumes: "Visa volymer",
     show_disks: "Visa diskar",
     show_fans: "Visa fläktar",
-    show_history: "Visa 24 h-historik för hastigheter",
+    show_history: "Visa 24 h-historik",
     show_storage: "Visa lagring",
     zoom: "Zoomknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
@@ -883,7 +883,7 @@ const STRINGS = {
     show_volumes: "Показване на томовете",
     show_disks: "Показване на дисковете",
     show_fans: "Показване на вентилаторите",
-    show_history: "Показване на 24-часовата история на скоростите",
+    show_history: "Показване на 24-часовата история",
     show_storage: "Показване на хранилището",
     zoom: "Бутон за мащабиране",
     zoom_helper: "Превключва от мини картата към пълната карта и обратно",
@@ -945,7 +945,7 @@ const STRINGS = {
     show_volumes: "Показывать тома",
     show_disks: "Показывать диски",
     show_fans: "Показывать вентиляторы",
-    show_history: "Показать историю скоростей за 24 ч",
+    show_history: "Показать историю за 24 ч",
     show_storage: "Показывать хранилище",
     zoom: "Кнопка масштаба",
     zoom_helper: "Переключает мини-карточку на полную и обратно",
@@ -1007,7 +1007,7 @@ const STRINGS = {
     show_volumes: "Показувати томи",
     show_disks: "Показувати диски",
     show_fans: "Показувати вентилятори",
-    show_history: "Показати історію швидкостей за 24 год",
+    show_history: "Показати історію за 24 год",
     show_storage: "Показувати сховище",
     zoom: "Кнопка масштабу",
     zoom_helper: "Перемикає міні-картку на повну картку й назад",
@@ -1069,7 +1069,7 @@ const STRINGS = {
     show_volumes: "Kötetek megjelenítése",
     show_disks: "Lemezek megjelenítése",
     show_fans: "Ventilátorok megjelenítése",
-    show_history: "Sebességek 24 órás előzményeinek megjelenítése",
+    show_history: "24 órás előzmények megjelenítése",
     show_storage: "Tárhely megjelenítése",
     zoom: "Nagyítás gomb",
     zoom_helper: "A mini kártyáról a teljes kártyára vált és vissza",
@@ -1131,7 +1131,7 @@ const STRINGS = {
     show_volumes: "Zobraziť zväzky",
     show_disks: "Zobraziť disky",
     show_fans: "Zobraziť ventilátory",
-    show_history: "Zobraziť 24 h históriu rýchlostí",
+    show_history: "Zobraziť 24 h históriu",
     show_storage: "Zobraziť úložisko",
     zoom: "Tlačidlo priblíženia",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
@@ -1193,7 +1193,7 @@ const STRINGS = {
     show_volumes: "Zobrazit svazky",
     show_disks: "Zobrazit disky",
     show_fans: "Zobrazit ventilátory",
-    show_history: "Zobrazit 24h historii rychlostí",
+    show_history: "Zobrazit 24h historii",
     show_storage: "Zobrazit úložiště",
     zoom: "Tlačítko přiblížení",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
@@ -1255,7 +1255,7 @@ const STRINGS = {
     show_volumes: "Prikaži nosilce",
     show_disks: "Prikaži diske",
     show_fans: "Prikaži ventilatorje",
-    show_history: "Prikaži 24-urno zgodovino hitrosti",
+    show_history: "Prikaži 24-urno zgodovino",
     show_storage: "Prikaži shrambo",
     zoom: "Gumb za povečavo",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
@@ -1317,7 +1317,7 @@ const STRINGS = {
     show_volumes: "Rādīt sējumus",
     show_disks: "Rādīt diskus",
     show_fans: "Rādīt ventilatorus",
-    show_history: "Rādīt ātrumu 24 h vēsturi",
+    show_history: "Rādīt 24 h vēsturi",
     show_storage: "Rādīt krātuvi",
     zoom: "Tālummaiņas poga",
     zoom_helper: "Pārslēdz mini karti uz pilno karti un atpakaļ",
@@ -1379,7 +1379,7 @@ const STRINGS = {
     show_volumes: "Εμφάνιση τόμων",
     show_disks: "Εμφάνιση δίσκων",
     show_fans: "Εμφάνιση ανεμιστήρων",
-    show_history: "Εμφάνιση ιστορικού ταχυτήτων 24 ωρών",
+    show_history: "Εμφάνιση ιστορικού 24 ωρών",
     show_storage: "Εμφάνιση χώρου αποθήκευσης",
     zoom: "Κουμπί μεγέθυνσης",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και αντίστροφα",
@@ -2279,18 +2279,18 @@ const CONFIRM_GUARD_MS = 400;
 
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
 
-// Sparkline of a series (24 h of rates): points placed by their time over the last 24 hours, scaled from 0 to
-// the peak; the line breaks where points are more than two periods apart (recorder off, NAS down). Nothing
+// Sparkline of a series (24 h of rates, CPU or RAM): points placed by their time over the last 24 hours, scaled from
+// 0 to `max` (100 for a percentage, values above it clamped), else to the series' peak; the line breaks where points are more than two periods apart (recorder off, NAS down). Nothing
 // under two points.
 const HIST_REFRESH = 5 * 60000;
 const HIST_PERIOD = 5 * 60000;
 const HIST_WINDOW = 864e5;
-function spark(points, now = Date.now()) {
+function spark(points, now = Date.now(), max = 0) {
   if (!points || points.length < 2) return "";
-  const peak = Math.max(...points.map((p) => p.v)) || 1;
+  const peak = max || Math.max(...points.map((p) => p.v)) || 1;
   const from = now - HIST_WINDOW;
   const x = (t) => Math.max(0, Math.min(100, ((t - from) / HIST_WINDOW) * 100)).toFixed(2);
-  const y = (v) => (30 - (Math.max(0, v) / peak) * 28).toFixed(2);
+  const y = (v) => (30 - (Math.min(Math.max(0, v), peak) / peak) * 28).toFixed(2);
   const runs = [[points[0]]];
   for (let i = 1; i < points.length; i++) {
     if (points[i].t - points[i - 1].t > 2 * HIST_PERIOD) runs.push([]);
@@ -2651,7 +2651,9 @@ const FULL_STYLE = `
                    letter-spacing: .04em; color: var(--secondary-text-color); margin-bottom: 6px; }
   .section-title .icon { width: 16px; height: 16px; }
   .gauges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .gauge { display: flex; flex-direction: column; align-items: center; position: relative; }
+  .gauge { display: flex; flex-direction: column; align-items: center; position: relative; isolation: isolate; border-radius: 10px; overflow: hidden; }
+  /* 24 h curve of the CPU and RAM gauges, behind the whole gauge (0 % at its bottom, 100 % at its top). */
+  .gauge .spark { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
   .ring { width: 60px; height: 60px; transform: rotate(-90deg); }
   .ring circle { fill: none; stroke-width: 6; }
   .ring .track { stroke: var(--divider-color, rgba(127,127,127,.25)); }
@@ -2720,8 +2722,11 @@ class NasCard extends NasBase {
     if (!nas.nasId) return this._noNas();
     const c = this._config;
     const parts = [];
-    if (c.show_system !== false) parts.push(this._system(nas));
-    if (c.show_network !== false) parts.push(this._network(nas));
+    const sys = c.show_system !== false;
+    const net = c.show_network !== false;
+    const hist = this._histFor(nas.scalars, sys, net);
+    if (sys) parts.push(this._system(nas, hist));
+    if (net) parts.push(this._network(nas, hist));
     if (c.show_volumes !== false) parts.push(this._volumes(nas));
     if (c.show_disks !== false) parts.push(this._disks(nas));
     if (c.show_fans !== false) parts.push(this._fans(nas));
@@ -2732,17 +2737,18 @@ class NasCard extends NasBase {
       </ha-card>`;
   }
 
-  _gauge(id, label, icon, value, display, cls) {
+  _gauge(id, label, icon, value, display, cls, hist = null) {
     // Without an entity there is no more-info to open: no button role, no tab stop.
     const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
-    return `<div class="gauge ${id ? "clickable " : ""}${cls}"${act}>
+    // The CPU and RAM gauges draw their last 24 hours behind them, on a 0–100 % scale.
+    return `<div class="gauge ${id ? "clickable " : ""}${cls}"${act}>${id ? spark(hist?.[id], Date.now(), 100) : ""}
       ${ring(value, cls)}
       <div class="val">${svgIcon(icon)}<b>${display}</b></div>
       <div class="lbl">${label}</div>
     </div>`;
   }
 
-  _system(nas) {
+  _system(nas, hist = null) {
     const sc = nas.scalars;
     const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
     const ramTotal = toBytes(this._s(sc.ram_total));
@@ -2774,8 +2780,8 @@ class NasCard extends NasBase {
     if (reboot) facts.push(reboot);
     return `<div>
       <div class="gauges">
-        ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu))}
-        ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram))}
+        ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu), hist)}
+        ${this._gauge(sc.ram_usage, ramLabel, ICONS.ram, ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram), hist)}
         ${this._gauge(
           tempId,
           sc.cpu_temp ? `${this._t("temperature")} ${this._t("cpu")}` : this._t("temperature"),
@@ -2789,19 +2795,18 @@ class NasCard extends NasBase {
     </div>`;
   }
 
-  _network(nas) {
+  _network(nas, hist = null) {
     const sc = nas.scalars;
     if (!sc.lan_down && !sc.lan_up) return "";
     // A tile without its sensor (e.g. QNAP without upload rate) opens no more-info: not focusable.
     return `<div>
       <div class="section-title">${svgIcon(ICONS.network)}${this._t("network")}</div>
-      ${this._netTiles(sc)}
+      ${this._netTiles(sc, hist)}
     </div>`;
   }
 
-  // The download and upload tiles, each with its last 24 hours behind the rate (unless show_history is false).
-  _netTiles(sc) {
-    const hist = this._config.show_history === false ? null : this._history([sc.lan_down, sc.lan_up].filter(Boolean));
+  // The download and upload tiles, each with its last 24 hours behind the rate (`hist`, from `_histFor`).
+  _netTiles(sc, hist) {
     const tile = (id, cls, icon, k) =>
       `<div class="tile ${id ? `clickable ${cls}" role="button" tabindex="0" data-entity="${id}"` : `${cls}"`}>${spark(hist?.[id])}${svgIcon(icon)}<div><div class="k">${k}</div><div class="v">${fmtRate(
         toBps(this._s(id)),
@@ -2811,6 +2816,14 @@ class NasCard extends NasBase {
         ${tile(sc.lan_down, "down", ICONS.down, this._t("download"))}
         ${tile(sc.lan_up, "up", ICONS.up, this._t("upload"))}
       </div>`;
+  }
+
+  // The 24 h history of what the card draws, in one statistics query: the CPU and RAM percentages (`system`) and the
+  // download / upload rates (`rates`). Null with show_history: false or when nothing is drawn.
+  _histFor(sc, system, rates) {
+    if (this._config.show_history === false) return null;
+    const ids = [...(system ? [sc.cpu_usage, sc.ram_usage] : []), ...(rates ? [sc.lan_down, sc.lan_up] : [])].filter(Boolean);
+    return ids.length ? this._history(ids) : null;
   }
 
   // 24 h of 5-minute means from the recorder's statistics, fetched again every 5 minutes. Returns what is
@@ -2953,6 +2966,9 @@ const MINI_STYLE = `
   .metric > span:first-of-type { white-space: nowrap; }
   .metric .icon { color: var(--secondary-text-color); }
   .metric .v { text-align: right; font-weight: 500; }
+  /* 24 h curve of the CPU and RAM rows, behind the whole row. */
+  .metric { position: relative; isolation: isolate; }
+  .metric .spark { position: absolute; inset: -2px -4px; width: calc(100% + 8px); height: calc(100% + 4px); z-index: -1; pointer-events: none; }
   /* The items wrap rather than truncate the status when they do not fit on one line. */
   .foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
   .foot span { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
@@ -3040,11 +3056,12 @@ class NasMiniCard extends NasCard {
     return `<button class="zoom" title="${esc(this._t(z ? "zoom_out" : "zoom_in"))}">${svgIcon(z ? ICONS.collapse : ICONS.expand)}</button>`;
   }
 
-  _metric(id, icon, label, pct, display, cls) {
+  _metric(id, icon, label, pct, display, cls, hist = null) {
     // Rows without an entity (the aggregated storage row) open no more-info: not focusable.
     const act = id ? ` role="button" tabindex="0" data-entity="${id}"` : "";
     // The title gives the label back on a very narrow card, where only the icon shows.
-    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act} title="${esc(label)}">
+    // The CPU and RAM rows draw their last 24 hours behind them, on a 0–100 % scale.
+    return `<div class="metric ${id ? "clickable " : ""}${cls}"${act} title="${esc(label)}">${id ? spark(hist?.[id], Date.now(), 100) : ""}
       ${svgIcon(icon)}<span>${label}</span>
       <div class="bar"><div style="width:${pct === null ? 0 : Math.max(0, Math.min(100, pct))}%"></div></div>
       <span class="v">${display}</span>
@@ -3059,9 +3076,13 @@ class NasMiniCard extends NasCard {
     const sc = nas.scalars;
     const status = this._s(sc.server_status);
     const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
+    // With their 24 h curves, the rates get the full card's tiles above the footer; without, they stay in the footer.
+    const netTiles = c.show_network !== false && c.show_history !== false && (sc.lan_down || sc.lan_up);
+    // One statistics query: the CPU and RAM rows (always shown on the compact view) and the rates' tiles.
+    const hist = this._histFor(sc, true, netTiles);
     const rows = [];
-    rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu)));
-    rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram)));
+    rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu), hist));
+    rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram), hist));
     rows.push(
       this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, this._level("temperature", temp))
     );
@@ -3091,8 +3112,6 @@ class NasMiniCard extends NasCard {
         `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
       );
     }
-    // With their 24 h curves, the rates get the full card's tiles above the footer; without, they stay in the footer.
-    const netTiles = c.show_network !== false && c.show_history !== false && (sc.lan_down || sc.lan_up);
     if (c.show_network !== false && !netTiles && (sc.lan_down || sc.lan_up))
       // Each rate stays on one line; on a very narrow card, the upload rate goes under the download rate.
       foot.push(
@@ -3116,7 +3135,7 @@ class NasMiniCard extends NasCard {
         ${this._header(nas)}
         <div class="content">
           <div class="metrics">${rows.join("")}</div>
-          ${netTiles ? this._netTiles(sc) : ""}
+          ${netTiles ? this._netTiles(sc, hist) : ""}
           ${foot.length ? `<div class="foot">${foot.join("")}</div>` : ""}
         </div>
       </ha-card>`;

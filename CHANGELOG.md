@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.19.0 - 2026-11-08
+
+### Features
+- 24 h curves behind the CPU and RAM gauges (full card) and the CPU and RAM bars (mini card), on a 0–100 % scale, for UGREEN, Synology and QNAP.
+- They come in the same recorder statistics query as the download / upload curves, follow `show_history` (now labelled « Show 24 h history ») and are not fetched with `show_system: false`.
+
 ## 1.18.1 - 2026-11-08
 
 ### Fixes
