@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.1 - 2026-11-09
+
+### Fixes
+- Header on a phone-wide card (zoomed mini card, full card on a phone): the status pill, the model and the OS version were cut (« Nor… », « DXP48… », « UGOS … »). The model and the OS version now run under the status pill too, and the NAS picture takes at most 28 % of the width (instead of 40 %) on cards up to 420 px.
+
 ## 1.21.0 - 2026-11-09
 
 ### Features

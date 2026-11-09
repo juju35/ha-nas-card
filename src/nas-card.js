@@ -2247,11 +2247,13 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
   @media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
-  /* The status pill sits right of the title, centred on the title line; the subtitle keeps the title's width.
+  /* The status pill sits right of the title, centred on the title line; the subtitle runs under it too, so the
+     model and the OS version keep the header's whole width.
      The pill keeps its whole label as long as the title keeps a few characters (the first column's minimum):
      only then does it truncate its text, and on a very narrow card it shows its dot alone. */
   .titles { flex: 1 1 0; min-width: 0; display: grid; grid-template-columns: minmax(48px, 1fr) auto; }
-  .titles > .name, .titles > .sub { grid-column: 1; }
+  .titles > .name { grid-column: 1; }
+  .titles > .sub { grid-column: 1 / -1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
                     overflow: hidden; box-sizing: border-box; }
   @container (max-width: 200px) { .chip .txt { display: none; } }
@@ -2688,6 +2690,9 @@ const ring = (pct, cls) => {
 const FULL_STYLE = `
   .nas { height: 48px; width: auto; flex: none; max-width: 40%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.25)); }
   .nas-link { max-width: 40%; }
+  /* Phone-wide card (a zoomed mini card, a full card on a phone): a smaller picture leaves the title and the
+     status pill their room. */
+  @container (max-width: 420px) { .nas, .nas-link { max-width: 28%; } }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 12px; }
   .section-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; text-transform: uppercase;
                    letter-spacing: .04em; color: var(--secondary-text-color); margin-bottom: 6px; }
