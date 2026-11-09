@@ -85,8 +85,8 @@ Or manually:
 
 ### Manual
 
-1. Download `nas-card.js` from the [latest release](https://github.com/juju35/ha-nas-card/releases/latest)
-2. Copy it to `/config/www/nas-card.js`
+1. Download `nas-card.js` and the `nas-card.i18n.*.js` translation files from the [latest release](https://github.com/juju35/ha-nas-card/releases/latest)
+2. Copy them all to `/config/www/` (without the translation files, the cards show in English)
 3. Go to **Settings → Dashboards → ⋮ → Resources** → Add resource:
    - URL: `/local/nas-card.js`
    - Type: **JavaScript Module**
