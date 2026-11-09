@@ -357,6 +357,37 @@ test("Synology DSM discovery: scalars, security status, volumes and disks from t
   assert.equal(disks[0].temperature, "sensor.diskstation_drive_1_temperature");
 });
 
+// Synology's "temperature" and "disk_temp" sensors carry no translation_key (#58): the card tells
+// them by their temperature device class, or by their default object id while the state is missing
+// (restored at startup) or renamed by the user.
+test("Synology temperatures without translation_key: found by device class, or by id without a state", async () => {
+  const base = await registryHass("synology");
+  for (const [id, e] of Object.entries(base.entities)) assert.notEqual(e.translation_key, "disk_temp", id);
+  assert.equal(base.entities["sensor.diskstation_temperature"].translation_key, undefined);
+  const m = load("nas-card.js", ["discover"]);
+  const nas = m.discover(base, "");
+  assert.equal(nas.scalars.sys_temp, "sensor.diskstation_temperature");
+  assert.deepEqual(
+    Object.values(nas.pools[1].disks).map((d) => d.temperature),
+    [1, 2, 3, 4].map((n) => `sensor.diskstation_drive_${n}_temperature`)
+  );
+  // No state loaded yet: the default object ids still tell the sensors apart.
+  const noState = { ...base, states: {} };
+  const cold = load("nas-card.js", ["discover"]).discover(noState, "");
+  assert.equal(cold.scalars.sys_temp, "sensor.diskstation_temperature");
+  assert.equal(Object.values(cold.pools[1].disks)[0].temperature, "sensor.diskstation_drive_1_temperature");
+  // Renamed entity with a loaded state: the device class decides, and a volume device never gets a disk slot.
+  const renamed = { ...base, states: { ...base.states }, entities: { ...base.entities } };
+  renamed.states["sensor.nas_box_heat"] = { entity_id: "sensor.nas_box_heat", state: "44", attributes: { device_class: "temperature" } };
+  renamed.entities["sensor.nas_box_heat"] = { entity_id: "sensor.nas_box_heat", platform: "synology_dsm", device_id: "syno_nas" };
+  delete renamed.states["sensor.diskstation_temperature"];
+  delete renamed.entities["sensor.diskstation_temperature"];
+  const r = load("nas-card.js", ["discover"]).discover(renamed, "");
+  assert.equal(r.scalars.sys_temp, "sensor.nas_box_heat");
+  assert.equal(Object.keys(r.pools[1].volumes).length, 1);
+  assert.equal(Object.keys(r.pools[1].disks).length, 4);
+});
+
 test("QNAP discovery: one device, volumes and drives joined on the insert of their names", async () => {
   const hass = await registryHass("qnap");
   const nas = discover(hass, "");
@@ -854,7 +885,7 @@ const bigRegistryHass = async (brand, bays) => {
       const dev = `syno_big_d${n}`;
       hass.devices[dev] = { id: dev, name: `diskstation (Drive ${n})`, model: "HAT5300", via_device_id: rootId };
       add(`sensor.diskstation_drive_${n}_status`, "disk_status", "normal", `diskstation (Drive ${n}) Status`, dev);
-      add(`sensor.diskstation_drive_${n}_temperature`, "disk_temp", "38", `diskstation (Drive ${n}) Temperature`, dev);
+      add(`sensor.diskstation_drive_${n}_temperature`, undefined, "38", `diskstation (Drive ${n}) Temperature`, dev);
     } else {
       add(`sensor.qnap_nas_drive_0_${n}_temperature`, "drive_temp", "34", `qnap-nas Drive 0:${n} temperature`);
       add(`sensor.qnap_nas_drive_0_${n}_status`, "drive_smart_status", "GOOD", `qnap-nas Drive 0:${n} status`);

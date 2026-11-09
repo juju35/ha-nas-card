@@ -1940,6 +1940,9 @@ const DISK_KEYS = {
   drive_temp: "temperature",
   drive_smart_status: "status",
 };
+// Default object id of Synology's translation-key-less temperature sensors ("…_temperature", or
+// "…_temp" in older installs), de-duplicated or not.
+const TEMP_ID_RE = /_temp(?:erature)?(?:_\d+)?$/;
 
 // Registry lookups are cached on the registry objects, which Home Assistant replaces whenever an
 // entity or a device changes (the states are read again on every discovery through the mapped ids).
@@ -2024,12 +2027,18 @@ const discoverRegistry = (hass, brand, nasId) => {
   for (const id of byRoot.get(rootId)) {
     const e = hass.entities[id];
     const tk = e.translation_key;
+    // Synology's NAS and disk temperature sensors carry no translation_key (their name comes from
+    // the temperature device class): they are told by that class, or by their id when the state
+    // is not loaded yet.
+    const isTemp = brand === "synology" && !tk && id.startsWith("sensor.") && (hass.states[id]?.attributes?.device_class === "temperature" || TEMP_ID_RE.test(id));
     if (brand === "synology" && e.device_id !== rootId) {
       // Child device of the NAS: a volume or a disk, labelled and (for disks) modelled by its device.
       const d = hass.devices[e.device_id];
       if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: deviceLabel(d?.name) }), VOLUME_KEYS[tk], id);
-      else if (tk in DISK_KEYS)
-        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name), modelText: d?.model }), DISK_KEYS[tk], id);
+      else if (tk in DISK_KEYS || isTemp)
+        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name), modelText: d?.model }), isTemp ? "temperature" : DISK_KEYS[tk], id);
+    } else if (isTemp) {
+      set(nas.scalars, "sys_temp", id);
     } else if (brand === "synology" && tk === "status" && id.startsWith("binary_sensor.")) {
       set(nas.scalars, "server_status", id); // Security status: a safety binary sensor, on = issue found.
     } else if (tk in SCALARS_BY_KEY) {

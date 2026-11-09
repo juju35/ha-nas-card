@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.19.1 - 2026-11-09
+
+### Fixes
+- Synology: the NAS temperature gauge and the disk temperatures were missing (#58). The integration registers its `temperature` and `disk_temp` sensors without a translation key, so they are now found by their temperature device class (or by their default entity id while the state is not loaded yet).
+
 ## 1.19.0 - 2026-11-08
 
 ### Features
