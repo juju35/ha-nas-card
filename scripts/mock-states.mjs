@@ -23,6 +23,7 @@ const raw = {
   overall_lan_upload_raw: ["2348000", A("Status", "B/s")],
   overall_lan_download_raw: ["48475000", A("Status", "B/s")],
   cpu_fan: ["1374", A("Status", "rpm")],
+  update_available: ["False", A("Device", null, { installed_version: "1.20.0.0142", available_version: "1.20.0.0142" })],
   device_fan_1: ["1748", A("Status", "rpm")],
   device_fan_2: ["1781", A("Status", "rpm")],
 };
@@ -59,6 +60,12 @@ for (const [key, [state, attributes]] of Object.entries(raw)) {
   const id = `sensor.ugreen_nas_${key}${key.startsWith("pool_2") ? "_2" : ""}`;
   states[id] = { entity_id: id, state, attributes };
 }
+// "Power Action: Reboot" button: like every button of the integration, it carries no UGNAS_device_id.
+states["button.ugreen_nas_power_action_reboot"] = {
+  entity_id: "button.ugreen_nas_power_action_reboot",
+  state: "unknown",
+  attributes: { friendly_name: "UGREEN NAS Power Action: Reboot", icon: "mdi:restart" },
+};
 
 // ---------------------------------------------------------------------------
 // Synology DSM and QNAP mocks: entities typed by translation_key in the entity registry and

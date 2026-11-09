@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.21.0 - 2026-11-09
+
+### Features
+- UGREEN: « Update available » chip with the new UGOS version while the integration's **Update Available** sensor is `True` (UGREEN NAS integration v2026.10.1 and later), on the full card and in the mini card's footer, like the DSM update on Synology.
+- UGREEN: reboot button at the end of the system facts, with its confirmation popup, pressing the integration's **Power Action: Reboot** button (v2026.05.1 and later). With several NAS, each card uses the button of its own NAS (device registry, then entity prefix); the shutdown and wake-up buttons are never used.
+
+### Fixes
+- UGREEN: the UGOS version under the model was missing for a NAS adopted with the integration's v2026.10.1 or later, whose « NAS UGOS Version » sensor became « UGOS Version » (`<prefix>_ugos_version`) when the prefix does not end with « nas ». Both ids are read.
+
 ## 1.20.1 - 2026-11-09
 
 ### Fixes

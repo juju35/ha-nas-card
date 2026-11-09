@@ -33,7 +33,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Network download / upload rates, with their last 24 hours drawn behind each tile, on the full card and the mini card (recorder statistics)
 - Volumes with RAID level, filesystem, status and used space
 - Disks with model, status, temperature, size and power-on hours; the status dot turns red on any disk problem (on Synology also the SMART status and the bad sector / remaining life thresholds); a volume or disk without status entity has no dot
-- Synology: an « Update available » chip when DSM has an update (click for its more-info dialog), and a reboot button at the end of the system facts, with a confirmation popup at the top of the card
+- UGREEN and Synology: an « Update available » chip when UGOS or DSM has an update (click for its more-info dialog), and a reboot button at the end of the system facts, with a confirmation popup at the top of the card
 - Fans speed (CPU fan and case fans, UGREEN)
 - Status pill: the server status (UGREEN, QNAP) or the security status (Synology)
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
@@ -52,7 +52,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 | Integration | NAS | What the cards show |
 |---|---|---|
-| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, link to UGOS |
+| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, UGOS version and update, reboot, link to UGOS |
 | [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks (status, SMART, bad sectors, remaining life), security status, DSM version and update, reboot, link to DSM; no fans |
 | [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
 
@@ -221,6 +221,8 @@ Drawn QNAP models (graphite towers with the copper strip, rackmounts for the mod
 ### UGREEN NAS
 
 Every entity created by the integration carries a `UGNAS_device_id` attribute. The cards use it to gather the entities of a NAS, then recognize each sensor from the end of its entity id (`cpu_usage`, `pool_1_volume_1_used_size_raw`, `pool_2_disk_1_temperature`…). Entity ids de-duplicated by Home Assistant (for example `sensor.ugreen_nas_cpu_usage_2`) are supported, and so are renamed devices. Volume sizes are read from the `*_raw` sensors (bytes) so that the used space is exact whatever the unit chosen by the integration.
+
+The UGOS version is read from `nas_ugos_version` or, for a NAS adopted with integration v2026.10.1 or later (where the sensor became « UGOS Version »), from `ugos_version`. The **Update Available** sensor (v2026.10.1 and later) shows an « Update available » chip with the new UGOS version while it is `True`. The **Power Action: Reboot** button (`power_action_reboot`, v2026.05.1 and later) adds the reboot button at the end of the system facts, with the same confirmation popup as on Synology; buttons carry no `UGNAS_device_id`, so the cards pick the one on the NAS's device, or the one named after its entity prefix (shutdown and wake-up buttons are never used).
 
 ### Synology DSM and QNAP
 

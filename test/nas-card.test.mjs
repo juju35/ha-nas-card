@@ -149,7 +149,8 @@ const regression = async () => {
 test("discovery recovers when the first NAS entity comes back after a lookup without nas", async () => {
   const { mock, entities, lose } = await regression();
   assert.equal(discover({ states: mock, entities }, "ugreen_nas").nasId, "ugreen_nas");
-  const first = Object.keys(mock).sort()[0];
+  // The first entity carrying UGNAS_device_id (the reboot button, a button, has none).
+  const first = Object.keys(mock).filter((id) => id.startsWith("sensor.")).sort()[0];
   const down = lose(mock, first);
   assert.equal(discover({ states: down, entities }, "").nasId, "ugreen_nas");
   const el = new NasCard();
@@ -1524,4 +1525,85 @@ test("volume and disk fallback names and fan speed unit follow the card's langua
   el._config = { language: "de" };
   assert.match(el._disks(nas), /<span>Laufwerk 3<\/span>/);
   assert.match(el._fans(nas), /1\.250 U\/min/);
+});
+
+// ---------------------------------------------------------------------------
+// UGREEN NAS integration v2026.10.1+: UGOS version id, update sensor, reboot button.
+// ---------------------------------------------------------------------------
+
+const ug = (entity_id, state, nas = "nas", extra = {}) => ({ entity_id, state: String(state), attributes: { UGNAS_device_id: nas, ...extra } });
+const btn = (entity_id, state = "unknown") => ({ entity_id, state, attributes: { friendly_name: "Power Action: Reboot" } });
+const statesOf = (...list) => Object.fromEntries(list.map((x) => [x.entity_id, x]));
+
+test("UGREEN: UGOS version found under its former and its v2026.10.1 entity id", () => {
+  const old = discover({ states: statesOf(ug("sensor.ugreen_nas_nas_ugos_version", "1.20.0", "v1")) }, "");
+  assert.equal(old.scalars.version, "sensor.ugreen_nas_nas_ugos_version");
+  // A NAS adopted under a prefix that does not end with "nas" (« Basement »).
+  const renamed = discover({ states: statesOf(ug("sensor.basement_ugos_version", "1.21.0", "basement"), ug("sensor.basement_cpu_usage", 5, "basement")) }, "");
+  assert.equal(renamed.scalars.version, "sensor.basement_ugos_version");
+  assert.equal(renamed.scalars.update, undefined); // ugos_update_available is not the version
+});
+
+test("UGREEN: update chip while the Update Available sensor is True, with the available version", () => {
+  const states = statesOf(
+    ug("sensor.upd_nas_cpu_usage", 12, "upd_nas"),
+    ug("sensor.upd_nas_update_available", "True", "upd_nas", { installed_version: "1.20.0.0142", available_version: "1.21.0.0050" })
+  );
+  assert.equal(discover({ states }, "").scalars.update, "sensor.upd_nas_update_available");
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states, language: "en" };
+  assert.match(el._render(), /data-entity="sensor.upd_nas_update_available">[\s\S]*Update available · 1.21.0.0050/);
+  const mini = new NasMiniCard();
+  mini._config = {};
+  mini._hass = { states, language: "en" };
+  assert.match(mini._render(), /data-key="update" data-entity="sensor.upd_nas_update_available" title="Update available · 1.21.0.0050"/);
+  // Unknown available version: chip without version; False: no chip.
+  el._hass = { states: { ...states, "sensor.upd_nas_update_available": ug("sensor.upd_nas_update_available", "True", "upd_nas", { available_version: "Unknown" }) }, language: "en" };
+  assert.match(el._render(), /Update available<\/span>/);
+  el._hass = { states: { ...states, "sensor.upd_nas_update_available": ug("sensor.upd_nas_update_available", "False", "upd_nas") }, language: "en" };
+  assert.doesNotMatch(el._render(), /class="chip upd/);
+});
+
+test("UGREEN: reboot button of a single NAS, pressed after confirmation", async () => {
+  const states = statesOf(ug("sensor.one_nas_cpu_usage", 12, "nas"), btn("button.one_nas_power_action_reboot"), btn("button.one_nas_power_action_shutdown"));
+  const nas = discover({ states }, "");
+  assert.equal(nas.scalars.reboot, "button.one_nas_power_action_reboot");
+  const calls = [];
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states, language: "en", callService: (...a) => calls.push(a) };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  assert.match(el.html, /<button class="action" data-action="reboot" title="Restart the NAS"/);
+  el._confirmReboot();
+  el._dialog.onOk();
+  await Promise.resolve();
+  assert.deepEqual({ ...calls[0][2] }, { entity_id: "button.one_nas_power_action_reboot" });
+});
+
+test("UGREEN: with several NAS, each gets its own reboot button (entity prefix, then device registry)", () => {
+  const states = statesOf(
+    ug("sensor.office_nas_cpu_usage", 1, "office_nas"),
+    ug("sensor.basement_nas_cpu_usage", 2, "basement_nas"),
+    btn("button.office_nas_power_action_reboot"),
+    btn("button.basement_nas_power_action_reboot")
+  );
+  assert.equal(discover({ states }, "office_nas").scalars.reboot, "button.office_nas_power_action_reboot");
+  assert.equal(discover({ states }, "basement_nas").scalars.reboot, "button.basement_nas_power_action_reboot");
+  // Renamed ids: the device registry decides.
+  const s2 = statesOf(ug("sensor.a_cpu_usage", 1, "office_nas"), ug("sensor.b_cpu_usage", 2, "basement_nas"), btn("button.x_power_action_reboot"), btn("button.y_power_action_reboot"));
+  const e = (id, device_id) => ({ entity_id: id, platform: "ugreen", device_id });
+  const entities = Object.fromEntries(
+    [e("sensor.a_cpu_usage", "dA"), e("sensor.b_cpu_usage", "dB"), e("button.x_power_action_reboot", "dB"), e("button.y_power_action_reboot", "dA")].map((x) => [x.entity_id, x])
+  );
+  const devices = { dA: { id: "dA" }, dB: { id: "dB" } };
+  assert.equal(discover({ states: s2, entities, devices }, "office_nas").scalars.reboot, "button.y_power_action_reboot");
+  assert.equal(discover({ states: s2, entities, devices }, "basement_nas").scalars.reboot, "button.x_power_action_reboot");
+  // No match at all: no reboot button rather than another NAS's.
+  const s3 = statesOf(ug("sensor.c_cpu_usage", 1, "c_nas"), ug("sensor.d_cpu_usage", 2, "d_nas"), btn("button.z_power_action_reboot"));
+  assert.equal(discover({ states: s3 }, "c_nas").scalars.reboot, undefined);
 });

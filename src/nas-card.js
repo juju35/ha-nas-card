@@ -1736,7 +1736,9 @@ const SFX = "(?:_\\d+)?$";
 const SCALARS = {
   name: "nas_name",
   model: "nas_model",
-  version: "nas_ugos_version",
+  // "NAS UGOS Version" became "UGOS Version" in the integration's v2026.10.1 (same key, so existing
+  // installs keep the old id); a NAS adopted since then gets "<prefix>_ugos_version".
+  version: "(?:nas_)?ugos_version",
   server_status: "server_status",
   system_message: "system_message",
   cpu_usage: "cpu_usage",
@@ -1749,8 +1751,11 @@ const SCALARS = {
   lan_up: "overall_lan_upload_raw",
   lan_down: "overall_lan_download_raw",
   cpu_fan: "cpu_fan",
+  update: "update_available", // "Update Available" (v2026.10.1): "True" while a newer UGOS is out.
 };
 const SCALAR_RE = Object.entries(SCALARS).map(([k, key]) => [k, new RegExp(`(?:^|_)${key}${SFX}`)]);
+// "Power Action: Reboot" button (integration v2026.05.1 and later). Buttons carry no UGNAS_device_id.
+const RE_REBOOT = new RegExp(`(?:^|_)power_action_reboot${SFX}`);
 const RE_FAN = new RegExp(`(?:^|_)device_fan_(\\d+)${SFX}`);
 const RE_POOL = new RegExp(`(?:^|_)pool_(\\d+)_(label|level|status|total_size|used_size|disk_count)${SFX}`);
 const RE_VOLUME = new RegExp(
@@ -1821,7 +1826,8 @@ const ugnasIds = (hass) => {
  */
 const discoverUgreen = (hass, nasId) => {
   const all = ugnasIds(hass);
-  const key = `${nasId || ""}\n${all.join(",")}`;
+  const reboots = rebootIds(hass);
+  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}`;
   if (_cache.has(key)) return _cache.get(key);
   if (_cache.size > 8) _cache.clear();
 
@@ -1857,12 +1863,37 @@ const discoverUgreen = (hass, nasId) => {
     }
   }
   if (nas.nasId) {
+    const reboot = ugreenReboot(hass, nas, all, reboots);
+    if (reboot) nas.scalars.reboot = reboot;
     _cache.set(key, nas);
     _lastGood.set(nas.nasId, nas);
     _lastGood.set(nasId || "", nas);
     return nas;
   }
   return offlineUgreen(hass, nasId) || nas;
+};
+
+// UGREEN reboot buttons among the integration's entities.
+const rebootIds = (hass) =>
+  candidateIds(hass)
+    .filter((id) => id.startsWith("button.") && hass.states[id] && RE_REBOOT.test(id.slice(7)))
+    .sort();
+
+// The reboot button of one UGREEN NAS. Buttons carry no UGNAS_device_id: the button is the one on the NAS's
+// device in the registry, else the one named after the NAS's entity prefix (UGNAS_device_id is that prefix),
+// else the only one of a single-NAS install.
+const ugreenReboot = (hass, nas, all, reboots) => {
+  if (!reboots.length) return undefined;
+  const root = (id) => rootDevice(hass, hass.entities?.[id]?.device_id)?.id;
+  const nasRoot = mappedIds(nas).map(root).find(Boolean);
+  if (nasRoot) {
+    const same = reboots.find((id) => root(id) === nasRoot);
+    if (same) return same;
+  }
+  const named = reboots.find((id) => id.slice(7).startsWith(`${nas.nasId}_`));
+  if (named) return named;
+  const single = new Set(all.map((id) => hass.states[id].attributes.UGNAS_device_id)).size === 1;
+  return single && reboots.length === 1 && !(nasRoot && root(reboots[0])) ? reboots[0] : undefined;
 };
 
 // Last mapping found for each UGREEN NAS (and for the default NAS under ""). When the integration's
@@ -2441,7 +2472,7 @@ class NasBase extends HTMLElement {
   }
 
   // Round reboot button at the end of the system facts (full card, zoomed mini card): only when the NAS exposes a
-  // reboot button (Synology DSM). Disabled while it is unavailable (a button never pressed is "unknown": its normal state).
+  // reboot button (UGREEN NAS, Synology DSM). Disabled while it is unavailable (a button never pressed is "unknown": its normal state).
   _rebootBtn(nas) {
     const id = nas.scalars.reboot;
     if (!id) return "";
@@ -2450,12 +2481,14 @@ class NasBase extends HTMLElement {
     return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.restart)}</button>`;
   }
 
-  // Update available (Synology DSM update entity on): the version it brings, for the update chip.
+  // Update available (Synology DSM update entity on, UGREEN "Update Available" sensor "True"): the version it
+  // brings, for the update chip.
   _updateInfo(nas) {
     const u = this._s(nas.scalars.update);
-    if (u?.state !== "on") return null;
-    const latest = u.attributes?.latest_version;
-    return { id: u.entity_id, text: this._t("update_available"), version: latest ? String(latest) : "" };
+    if (!u || !/^(on|true)$/i.test(String(u.state))) return null;
+    const latest = u.attributes?.latest_version ?? u.attributes?.available_version;
+    const version = latest && !/^unknown$/i.test(String(latest)) ? String(latest) : "";
+    return { id: u.entity_id, text: this._t("update_available"), version };
   }
 
   set hass(hass) {
