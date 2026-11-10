@@ -1660,3 +1660,20 @@ test("nas option: the device name of a Synology or QNAP NAS, device ids still re
   assert.equal(discover(twin, "diskstation").nasId, null);
   assert.equal(discover(twin, "syno_nas2").nasId, "syno_nas2");
 });
+
+test("fallback labels number Synology volumes and disks keyed by device id, keep QNAP bays (#74)", async () => {
+  const qnap = await registryHass("qnap");
+  const card = new NasCard();
+  card._config = {};
+  card._hass = qnap;
+  assert.match(card._disks(discover(qnap, "")), /Disk 0:1</);
+  const syno = await registryHass("synology");
+  const id = "630cf136dbad6481f0e2c1a7b2d3e4f5";
+  const h = structuredClone(syno);
+  h.devices[id] = { id, via_device_id: "syno_nas" }; // no name
+  h.entities["sensor.nameless_disk_status"] = { entity_id: "sensor.nameless_disk_status", platform: "synology_dsm", device_id: id, translation_key: "disk_status" };
+  card._hass = h;
+  const html = card._disks(discover(h, ""));
+  assert.doesNotMatch(html, new RegExp(`<span>[^<]*${id}`)); // shown labels only (data-key keeps the id)
+  assert.match(html, />Disk 5</);
+});

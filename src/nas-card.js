@@ -2011,6 +2011,9 @@ const rootDevice = (hass, id, platform) => {
   return d;
 };
 
+// Home Assistant device id (registry key), never shown as a label.
+const DEVICE_ID_RE = /^[0-9a-f]{32}$/;
+
 const naturalOrder = (a, b) => a.localeCompare(b, "en", { numeric: true });
 
 // `nas` option of a Synology DSM or QNAP NAS: the name of its device (as shown in Home Assistant,
@@ -2952,7 +2955,7 @@ class NasCard extends NasBase {
       const raid = this._text(pool.level);
       Object.entries(pool.volumes).forEach(([vn, vol], vi) => {
         // Synology keys volumes by device id: the fallback name numbers them in order instead.
-        const vno = /^\d+$/.test(vn) ? vn : String(vi + 1);
+        const vno = DEVICE_ID_RE.test(vn) ? String(vi + 1) : vn;
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
         const label = this._text(vol.label) || vol.labelText || this._t("volume_n").replace("{n}", multi ? `${pn}-${vno}` : vno);
@@ -2981,7 +2984,7 @@ class NasCard extends NasBase {
     const items = [];
     for (const [pn, pool] of Object.entries(nas.pools)) {
       Object.entries(pool.disks).forEach(([dn, d], di) => {
-        const dno = /^\d+$/.test(dn) ? dn : String(di + 1); // Synology keys disks by device id.
+        const dno = DEVICE_ID_RE.test(dn) ? String(di + 1) : dn; // Synology keys disks by device id (QNAP by bay, « 0:1 »).
         const health = diskHealth(this._hass, d);
         const temp = temperature(this._s(d.temperature), this._hass);
         const hours = num(this._s(d.power_on_hours));
