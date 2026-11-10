@@ -3179,9 +3179,6 @@ class NasMiniCard extends NasCard {
     const rows = [];
     rows.push(this._metric(sc.cpu_usage, ICONS.cpu, this._t("cpu"), cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu), hist));
     rows.push(this._metric(sc.ram_usage, ICONS.ram, this._t("ram"), ram, ram === null ? "—" : `${Math.round(ram)}%`, this._level("ram", ram), hist));
-    rows.push(
-      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, this._level("temperature", temp))
-    );
     if (c.show_storage !== false) {
       let used = 0;
       let total = 0;
@@ -3200,6 +3197,10 @@ class NasMiniCard extends NasCard {
       if (pct !== null)
         rows.push(this._metric("", ICONS.database, this._t("storage"), pct, `${pct.toFixed(0)}%`, this._level("volume", pct)));
     }
+    // Temperature after the storage, as on the System Monitor mini card.
+    rows.push(
+      this._metric(tempId, ICONS.temp, this._t("temperature"), temp, tempText, this._level("temperature", temp))
+    );
     const foot = [];
     if (status) {
       // The full text in title and aria-label too: on a narrow card, the visible one may be truncated.

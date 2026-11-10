@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.3 - 2026-11-10
+
+### Changes
+- Mini card: the temperature row now comes after the storage row (CPU, RAM, storage, temperature), as on the System Monitor mini card.
+
 ## 1.21.2 - 2026-11-10
 
 ### Fixes
