@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.21.2 - 2026-11-10
+
+### Fixes
+- Synology DSM and QNAP behind a FRITZ! mesh repeater (#74): FRITZ!Box Tools links its network clients, the NAS device merged in by its MAC address, to the repeater they go through, and the card took that repeater for the NAS: wrong model and version under the name (« FRITZ!Repeater 1610 Outdoor · 8.20 »), empty CPU, RAM and temperature gauges, the NAS temperature shown as a ninth drive, the repeater (« CarPort ») in the editor's list and « NAS not found » with the NAS device id. The NAS is now the topmost device of its own integration.
+- `nas` option of a Synology DSM or QNAP NAS: the visual editor writes the NAS's device name instead of its device id (the device id only when two NAS share a name); device ids written by earlier versions are still read and become the name when the card is saved again.
+- A volume or drive without a « (…) » part in its device name is labelled with that name, and one without any name with its number, never with its device id.
+
 ## 1.21.1 - 2026-11-09
 
 ### Fixes

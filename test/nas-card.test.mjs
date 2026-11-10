@@ -715,8 +715,9 @@ const twoNas = () => ({
 test("without nas, the editor and the stub config pick the NAS the card shows", () => {
   for (const [brand, hass] of Object.entries(twoNas())) {
     const m = load("nas-card.js", ["discover", "NasCard", "NasCardEditor", "NasMiniCardEditor"]);
-    const shown = m.discover(hass, "").nasId;
-    assert.equal(shown, brand === "ugreen" ? "A" : "0000");
+    assert.equal(m.discover(hass, "").nasId, brand === "ugreen" ? "A" : "0000");
+    // Synology and QNAP NAS are named by their device name in the YAML (#74).
+    const shown = brand === "ugreen" ? "A" : "Backup NAS";
     assert.equal(m.NasCard.getStubConfig(hass).nas, shown, brand);
     for (const Editor of [m.NasCardEditor, m.NasMiniCardEditor]) {
       const ed = new Editor();
@@ -1606,4 +1607,56 @@ test("UGREEN: with several NAS, each gets its own reboot button (entity prefix, 
   // No match at all: no reboot button rather than another NAS's.
   const s3 = statesOf(ug("sensor.c_cpu_usage", 1, "c_nas"), ug("sensor.d_cpu_usage", 2, "d_nas"), btn("button.z_power_action_reboot"));
   assert.equal(discover({ states: s3 }, "c_nas").scalars.reboot, undefined);
+});
+
+// #74: FRITZ!Box Tools links the NAS device (merged by MAC address) to the mesh repeater it goes
+// through. The root must stay within the Synology integration, or the repeater becomes the NAS.
+const fritzHass = async (configEntries) => {
+  const base = await registryHass("synology");
+  const devices = structuredClone(base.devices);
+  devices.repeater = { id: "repeater", name: "CarPort", model: "FRITZ!Repeater 1610 Outdoor", sw_version: "8.20", via_device_id: "box" };
+  devices.box = { id: "box", name: "FRITZ!Box 7590", model: "FRITZ!Box 7590" };
+  devices.syno_nas = { ...devices.syno_nas, via_device_id: "repeater" };
+  if (configEntries) {
+    for (const d of Object.values(devices)) d.config_entries = ["syno"];
+    devices.syno_nas.config_entries = ["syno", "fritz"];
+    devices.repeater.config_entries = devices.box.config_entries = ["fritz"];
+  }
+  return { ...base, devices };
+};
+
+test("Synology NAS behind a FRITZ! mesh repeater: the NAS stays the root (#74)", async () => {
+  for (const configEntries of [true, false]) {
+    const hass = await fritzHass(configEntries);
+    const nas = discover(hass, "");
+    assert.equal(nas.nasId, "syno_nas");
+    assert.equal(nas.info.model, "DS923+");
+    assert.equal(nas.scalars.cpu_usage, "sensor.diskstation_cpu_utilization_total");
+    assert.equal(nas.scalars.ram_usage, "sensor.diskstation_memory_usage_real");
+    assert.equal(nas.scalars.sys_temp, "sensor.diskstation_temperature");
+    assert.equal(Object.keys(nas.pools[1].disks).length, 4); // no phantom disk from the NAS temperature
+    assert.equal(discover(hass, "syno_nas").nasId, "syno_nas");
+  }
+});
+
+test("nas option: the device name of a Synology or QNAP NAS, device ids still read (#74)", async () => {
+  const hass = await registryHass("synology");
+  const { NasCard: Card, NasCardEditor } = load("nas-card.js", ["NasCard", "NasCardEditor"]);
+  assert.equal(discover(hass, "diskstation").nasId, "syno_nas");
+  assert.equal(discover(hass, "DiskStation").nasId, "syno_nas");
+  assert.equal(discover(hass, "syno_nas").nasId, "syno_nas");
+  assert.equal(discover(hass, "other").nasId, null);
+  assert.deepEqual({ ...Card.getStubConfig(hass) }, { nas: "diskstation" });
+  const ed = new NasCardEditor();
+  ed._hass = hass;
+  ed._config = { nas: "syno_nas" }; // written by an earlier version
+  ed._render();
+  assert.equal(ed._form.data.nas, "diskstation");
+  assert.equal(JSON.stringify(ed._schema()[0].selector.select.options), JSON.stringify([{ value: "diskstation", label: "diskstation" }]));
+  // Two NAS of the same name: the device id tells them apart.
+  const twin = structuredClone(hass);
+  twin.devices.syno_nas2 = { ...twin.devices.syno_nas, id: "syno_nas2" };
+  twin.entities["sensor.twin_cpu"] = { entity_id: "sensor.twin_cpu", platform: "synology_dsm", device_id: "syno_nas2", translation_key: "cpu_total_load" };
+  assert.equal(discover(twin, "diskstation").nasId, null);
+  assert.equal(discover(twin, "syno_nas2").nasId, "syno_nas2");
 });

@@ -1696,7 +1696,7 @@ const deviceUrl = (hass, nas) => {
   if (nas.info?.url) return webUrl(nas.info.url);
   const id = Object.values(nas.scalars)[0];
   const deviceId = id && hass.entities?.[id]?.device_id;
-  return deviceId ? webUrl(rootDevice(hass, deviceId)?.configuration_url) : null;
+  return deviceId ? webUrl(rootDevice(hass, deviceId, hass.entities[id].platform)?.configuration_url) : null;
 };
 // Picture choices of the editor: sorted by brand, then by model (numbers in natural order), each
 // label prefixed with its brand; the value stays the bare model name.
@@ -1783,8 +1783,8 @@ const listNas = (hass) => {
   const list = [...ids.entries()].map(([value, label]) => ({ value, label }));
   for (const brand of Object.keys(REGISTRY_PLATFORMS))
     for (const rootId of [...registryRoots(hass, brand).keys()].sort()) {
-      const d = hass.devices[rootId];
-      list.push({ value: rootId, label: d.name_by_user || d.name || rootId });
+      const label = deviceName(hass.devices[rootId]) || rootId;
+      list.push({ value: registryNasValue(hass, rootId), label });
     }
   return list;
 };
@@ -1884,7 +1884,7 @@ const rebootIds = (hass) =>
 // else the only one of a single-NAS install.
 const ugreenReboot = (hass, nas, all, reboots) => {
   if (!reboots.length) return undefined;
-  const root = (id) => rootDevice(hass, hass.entities?.[id]?.device_id)?.id;
+  const root = (id) => rootDevice(hass, hass.entities?.[id]?.device_id, hass.entities?.[id]?.platform)?.id;
   const nasRoot = mappedIds(nas).map(root).find(Boolean);
   if (nasRoot) {
     const same = reboots.find((id) => root(id) === nasRoot);
@@ -1984,13 +1984,55 @@ const registryCache = (hass) => {
   return _registries.cache;
 };
 
-const rootDevice = (hass, id) => {
+// Devices hosting entities of one platform (cached with the registries).
+const platformDevices = (hass, platform) => {
+  const cache = registryCache(hass);
+  const key = `devices\n${platform}`;
+  if (!cache.has(key)) {
+    const ids = new Set();
+    for (const e of Object.values(hass.entities || {})) if (e?.platform === platform && e.device_id) ids.add(e.device_id);
+    cache.set(key, ids);
+  }
+  return cache.get(key);
+};
+
+// Root device of the NAS: up the via_device chain while the parent belongs to the same integration.
+// Other integrations link devices too (#74: FRITZ!Box Tools puts network clients, the NAS merged in
+// by its MAC address, behind the mesh repeater they go through; the merged NAS device then carries
+// the FRITZ!Box config entry as well). A parent hosting no entity of the platform is another
+// integration's device and ends the chain.
+const rootDevice = (hass, id, platform) => {
   let d = hass.devices?.[id];
-  for (let i = 0; d?.via_device_id && hass.devices[d.via_device_id] && i < 4; i++) d = hass.devices[d.via_device_id];
+  for (let i = 0; d?.via_device_id && i < 4; i++) {
+    const p = hass.devices[d.via_device_id];
+    if (!p || (platform && !platformDevices(hass, platform).has(p.id))) break;
+    d = p;
+  }
   return d;
 };
 
 const naturalOrder = (a, b) => a.localeCompare(b, "en", { numeric: true });
+
+// `nas` option of a Synology DSM or QNAP NAS: the name of its device (as shown in Home Assistant,
+// renamed or not), readable in the YAML; the device id only when another NAS has the same name.
+// Device ids written by earlier versions are still read.
+const deviceName = (d) => String(d?.name_by_user || d?.name || "").trim();
+const sameName = (a, b) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
+const allRegistryRoots = (hass) => Object.keys(REGISTRY_PLATFORMS).flatMap((b) => [...registryRoots(hass, b).keys()]);
+const registryNasValue = (hass, rootId) => {
+  const name = deviceName(hass.devices[rootId]);
+  if (!name) return rootId;
+  const twins = allRegistryRoots(hass).filter((id) => sameName(deviceName(hass.devices[id]), name));
+  return twins.length === 1 ? name : rootId;
+};
+// `nas` value of a discovered NAS (UGREEN: its UGNAS_device_id).
+const nasValue = (hass, nas) => (nas.nasId && nas.brand !== "ugreen" ? registryNasValue(hass, nas.nasId) : nas.nasId);
+const resolveRoot = (hass, byRoot, nas) => {
+  if (byRoot.has(nas)) return nas;
+  const want = String(nas).trim();
+  const named = [...byRoot.keys()].filter((id) => sameName(deviceName(hass.devices[id]), want));
+  return named.length === 1 ? named[0] : null;
+};
 
 /** The NAS of one registry integration: root device id → sorted entity ids (NAS and child devices). */
 const registryRoots = (hass, brand) => {
@@ -2001,7 +2043,7 @@ const registryRoots = (hass, brand) => {
   if (hass.entities && hass.devices) {
     for (const [id, e] of Object.entries(hass.entities)) {
       if (e?.platform !== REGISTRY_PLATFORMS[brand] || !e.device_id) continue;
-      const root = rootDevice(hass, e.device_id);
+      const root = rootDevice(hass, e.device_id, REGISTRY_PLATFORMS[brand]);
       if (!root) continue;
       if (!byRoot.has(root.id)) byRoot.set(root.id, []);
       byRoot.get(root.id).push(id);
@@ -2030,7 +2072,8 @@ const monitorOf = (names, i) => {
 // Trailing parenthesized insert of an entity name (QNAP volume names), doubling as the label.
 const parenOf = (name) => (String(name || "").match(/\(([^()]*)\)[^()]*$/) || [])[1] ?? null;
 // Trailing parenthesized part of a device name ("hostname (Volume 1)" → "Volume 1").
-const deviceLabel = (name) => (String(name || "").match(/\(([^()]*)\)\s*$/) || [])[1];
+// Without that part, the device name itself, never the device id (#74).
+const deviceLabel = (name) => (String(name || "").match(/\(([^()]*)\)\s*$/) || [])[1] ?? (String(name || "").trim() || undefined);
 
 const set = (obj, k, id) => {
   if (!(k in obj)) obj[k] = id;
@@ -2043,7 +2086,7 @@ const discoverRegistry = (hass, brand, nasId) => {
   if (cache.has(key)) return cache.get(key);
 
   const byRoot = registryRoots(hass, brand);
-  const rootId = nasId ? (byRoot.has(nasId) ? nasId : null) : ([...byRoot.keys()].sort()[0] ?? null);
+  const rootId = nasId ? resolveRoot(hass, byRoot, nasId) : ([...byRoot.keys()].sort()[0] ?? null);
   const nas = { brand, nasId: rootId, scalars: {}, fans: {}, pools: {}, info: null };
   if (!rootId) {
     cache.set(key, nas);
@@ -2065,9 +2108,9 @@ const discoverRegistry = (hass, brand, nasId) => {
     if (brand === "synology" && e.device_id !== rootId) {
       // Child device of the NAS: a volume or a disk, labelled and (for disks) modelled by its device.
       const d = hass.devices[e.device_id];
-      if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: deviceLabel(d?.name) }), VOLUME_KEYS[tk], id);
+      if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: deviceLabel(d?.name_by_user || d?.name) }), VOLUME_KEYS[tk], id);
       else if (tk in DISK_KEYS || isTemp)
-        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name), modelText: d?.model }), isTemp ? "temperature" : DISK_KEYS[tk], id);
+        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name_by_user || d?.name), modelText: d?.model }), isTemp ? "temperature" : DISK_KEYS[tk], id);
     } else if (isTemp) {
       set(nas.scalars, "sys_temp", id);
     } else if (brand === "synology" && tk === "status" && id.startsWith("binary_sensor.")) {
@@ -2751,7 +2794,7 @@ class NasCard extends NasBase {
 
   static getStubConfig(hass) {
     // The NAS this card shows without nas (the first of the editor's list).
-    const nas = hass ? discover(hass, "").nasId : null;
+    const nas = hass ? nasValue(hass, discover(hass, "")) : null;
     return nas ? { nas } : {};
   }
 
@@ -2907,10 +2950,12 @@ class NasCard extends NasBase {
     const multi = Object.keys(nas.pools).length > 1;
     for (const [pn, pool] of Object.entries(nas.pools)) {
       const raid = this._text(pool.level);
-      for (const [vn, vol] of Object.entries(pool.volumes)) {
+      Object.entries(pool.volumes).forEach(([vn, vol], vi) => {
+        // Synology keys volumes by device id: the fallback name numbers them in order instead.
+        const vno = /^\d+$/.test(vn) ? vn : String(vi + 1);
         const u = volumeUsage(this._hass, vol);
         const status = this._s(vol.status) || this._s(vol.health);
-        const label = this._text(vol.label) || vol.labelText || this._t("volume_n").replace("{n}", multi ? `${pn}-${vn}` : vn);
+        const label = this._text(vol.label) || vol.labelText || this._t("volume_n").replace("{n}", multi ? `${pn}-${vno}` : vno);
         const fs = this._text(vol.filesystem);
         const cls = this._level("volume", u.pct);
         rows.push(`<div class="vol clickable ${cls}" role="button" tabindex="0" data-key="${esc(`${pn}-${vn}`)}" data-entity="${vol.used_size_raw || vol.used_size || vol.used_pct || ""}">
@@ -2926,7 +2971,7 @@ class NasCard extends NasBase {
             <span>${u.pct === null ? "" : `${u.pct.toFixed(0)}%`}</span>
           </div>
         </div>`);
-      }
+      });
     }
     if (!rows.length) return "";
     return `<div><div class="section-title">${svgIcon(ICONS.database)}${this._t("volumes")}</div>${rows.join("")}</div>`;
@@ -2935,13 +2980,14 @@ class NasCard extends NasBase {
   _disks(nas) {
     const items = [];
     for (const [pn, pool] of Object.entries(nas.pools)) {
-      for (const [dn, d] of Object.entries(pool.disks)) {
+      Object.entries(pool.disks).forEach(([dn, d], di) => {
+        const dno = /^\d+$/.test(dn) ? dn : String(di + 1); // Synology keys disks by device id.
         const health = diskHealth(this._hass, d);
         const temp = temperature(this._s(d.temperature), this._hass);
         const hours = num(this._s(d.power_on_hours));
         const size = toBytes(this._s(d.size));
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
-          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || this._t("disk_n").replace("{n}", dn))}</span>
+          <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || this._t("disk_n").replace("{n}", dno))}</span>
             ${health ? `<span class="dot ${health.cls}" title="${esc(health.title ?? this._dotTitle(health.state))}"></span>` : ""}</div>
           <div class="model">${esc(this._text(d.model) || d.modelText || "")}</div>
           <div class="meta">
@@ -2951,7 +2997,7 @@ class NasCard extends NasBase {
             }</span>
           </div>
         </div>`);
-      }
+      });
     }
     if (!items.length) return "";
     return `<div><div class="section-title">${svgIcon(ICONS.disk)}${this._t("disks")}</div><div class="disks">${items.join(
@@ -3349,7 +3395,8 @@ class NasEditorBase extends HTMLElement {
       })
     );
     // Without nas (hand-written YAML), show the NAS the card shows: saving the form then keeps it.
-    if (!data.nas && this._hass) data.nas = discover(this._hass, "").nasId || undefined;
+    // Registry NAS by their name in the form (a device id from earlier versions becomes the name on save).
+    if (this._hass) data.nas = nasValue(this._hass, discover(this._hass, data.nas || "")) || data.nas || undefined;
     this._form.hass = this._hass;
     this._form.data = data;
     this._form.schema = this._schema();
