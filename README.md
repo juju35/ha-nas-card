@@ -32,6 +32,7 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - CPU, RAM and temperature gauges, uptime and CPU model; the CPU and RAM gauges (and the mini card's CPU and RAM bars) draw their last 24 hours behind them, on a 0–100 % scale (recorder statistics)
 - Network download / upload rates, with their last 24 hours drawn behind each tile, on the full card and the mini card (recorder statistics)
 - Volumes with RAID level, filesystem, status and used space
+- RAID state of each volume as a coloured chip: healthy (green), a background task such as syncing, rebuilding, repairing or checking (orange), degraded or crashed (red); the mini card shows the worst unhealthy one in its footer. From the storage pool status on UGREEN and the volume status on Synology DSM (QNAP's integration reports none)
 - Disks with model, status, temperature, size and power-on hours; the status dot turns red on any disk problem (on Synology also the SMART status and the bad sector / remaining life thresholds); a volume or disk without status entity has no dot
 - UGREEN and Synology: an « Update available » chip when UGOS or DSM has an update (click for its more-info dialog), and a reboot button at the end of the system facts, with a confirmation popup at the top of the card
 - Fans speed (CPU fan and case fans, UGREEN)

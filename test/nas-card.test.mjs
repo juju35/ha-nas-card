@@ -1677,3 +1677,65 @@ test("fallback labels number Synology volumes and disks keyed by device id, keep
   assert.doesNotMatch(html, new RegExp(`<span>[^<]*${id}`)); // shown labels only (data-key keeps the id)
   assert.match(html, />Disk 5</);
 });
+
+// RAID state: UGREEN pools (UGOS codes as words), Synology volumes (DSM volume status); QNAP reports none.
+test("RAID state: a chip per volume on the full card, the worst unhealthy one in the mini card's footer", async () => {
+  const states = await ugreenWith({});
+  const pool1 = "sensor.ugreen_nas_pool_1_status";
+  const pool2 = "sensor.ugreen_nas_pool_2_status_2";
+  assert.ok(states[pool1] && states[pool2]);
+  const full = new NasCard();
+  full._config = {};
+  full._hass = { states, language: "en" };
+  let html = full._render();
+  // Healthy: a green chip next to the RAID level, the volume's own status dot kept.
+  assert.match(html, new RegExp(`<span class="chip raid clickable ok"[^>]*data-entity="${pool1}" title="RAID1 · Normal"`));
+  assert.match(html, /data-key="1-1"[\s\S]*?<span class="dot ok"/);
+  const mini = new NasMiniCard();
+  mini._config = {};
+  mini._hass = { states, language: "en" };
+  assert.doesNotMatch(mini._render(), /data-key="raid"/);
+
+  // Rebuilding (orange) on one pool, degraded (red) on the other: the footer shows the red one, translated.
+  states[pool1] = { ...states[pool1], state: "Rebuilding" };
+  states[pool2] = { ...states[pool2], state: "Degraded" };
+  full._hass = { states, language: "fr" };
+  html = full._render();
+  assert.match(html, /<span class="chip raid clickable warn"[^>]*><span class="dot"><\/span><span class="txt">Reconstruction<\/span>/);
+  assert.match(html, /<span class="chip raid clickable crit"[^>]*><span class="dot"><\/span><span class="txt">Dégradé<\/span>/);
+  mini._hass = { states, language: "fr" };
+  assert.match(mini._render(), new RegExp(`class="clickable raid crit"[^>]*data-key="raid" data-entity="${pool2}"[^>]*>.*RAID1 · Dégradé`));
+
+  // A task the card has no word for keeps the integration's own, in orange; no value is neutral.
+  states[pool1] = { ...states[pool1], state: "Data organizing" };
+  states[pool2] = { ...states[pool2], state: "unavailable" };
+  full._hass = { states, language: "en" };
+  html = full._render();
+  assert.match(html, /chip raid clickable warn[^>]*><span class="dot"><\/span><span class="txt">Data organizing</);
+  assert.match(html, /chip raid clickable na[^>]*><span class="dot"><\/span><span class="txt">Unavailable</);
+  mini._hass = { states, language: "en" };
+  assert.match(mini._render(), /class="clickable raid warn"[^>]*>.*RAID1 · Data organizing/);
+});
+
+test("RAID state: a Synology volume's status is its RAID chip, shown once; QNAP volumes have none", async () => {
+  const hass = await registryHass("synology");
+  const vol = "sensor.diskstation_volume_1_status";
+  const full = new NasCard();
+  full._config = {};
+  full._hass = hass;
+  let html = full._render();
+  assert.match(html, new RegExp(`<span class="chip raid clickable ok"[^>]*data-entity="${vol}"`));
+  // No status dot beside it any more: the same entity would show twice.
+  assert.doesNotMatch(html, /class="vol[^"]*"[^>]*>\s*<div class="row">\s*<span class="dot/);
+  hass.states[vol] = { ...hass.states[vol], state: "degraded" };
+  html = full._render();
+  assert.match(html, /chip raid clickable crit[^>]*><span class="dot"><\/span><span class="txt">Degraded</);
+  const mini = new NasMiniCard();
+  mini._config = {};
+  mini._hass = hass;
+  assert.match(mini._render(), new RegExp(`class="clickable raid crit"[^>]*data-entity="${vol}"[^>]*>.*RAID · Degraded`));
+
+  const qnap = await registryHass("qnap");
+  full._hass = qnap;
+  assert.doesNotMatch(full._render(), /chip raid/);
+});

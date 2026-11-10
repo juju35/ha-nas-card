@@ -63,6 +63,12 @@ const STRINGS = {
     reboot_btn: "Restart",
     cancel: "Cancel",
     volume_n: "Volume {n}",
+    raid_degraded: "Degraded",
+    raid_crashed: "Crashed",
+    raid_rebuilding: "Rebuilding",
+    raid_repairing: "Repairing",
+    raid_syncing: "Syncing",
+    raid_checking: "Checking",
     disk_n: "Disk {n}",
     rpm: "rpm",
     // Editor
@@ -126,6 +132,12 @@ const STRINGS = {
     reboot_btn: "Redémarrer",
     cancel: "Annuler",
     volume_n: "Volume {n}",
+    raid_degraded: "Dégradé",
+    raid_crashed: "Défaillant",
+    raid_rebuilding: "Reconstruction",
+    raid_repairing: "Réparation",
+    raid_syncing: "Synchronisation",
+    raid_checking: "Vérification",
     disk_n: "Disque {n}",
     rpm: "tr/min",
     nas: "NAS (appareil UGREEN, Synology DSM ou QNAP)",
@@ -188,6 +200,12 @@ const STRINGS = {
     reboot_btn: "Neu starten",
     cancel: "Abbrechen",
     volume_n: "Volume {n}",
+    raid_degraded: "Herabgestuft",
+    raid_crashed: "Abgestürzt",
+    raid_rebuilding: "Wiederherstellung",
+    raid_repairing: "Reparatur",
+    raid_syncing: "Synchronisierung",
+    raid_checking: "Prüfung",
     disk_n: "Laufwerk {n}",
     rpm: "U/min",
     nas: "NAS (UGREEN-, Synology-DSM- oder QNAP-Gerät)",
@@ -250,6 +268,12 @@ const STRINGS = {
     reboot_btn: "Reiniciar",
     cancel: "Cancelar",
     volume_n: "Volumen {n}",
+    raid_degraded: "Degradado",
+    raid_crashed: "Fallido",
+    raid_rebuilding: "Reconstruyendo",
+    raid_repairing: "Reparando",
+    raid_syncing: "Sincronizando",
+    raid_checking: "Comprobando",
     disk_n: "Disco {n}",
     rpm: "rpm",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
@@ -312,6 +336,12 @@ const STRINGS = {
     reboot_btn: "Поново покрени",
     cancel: "Откажи",
     volume_n: "Волумен {n}",
+    raid_degraded: "Деградирано",
+    raid_crashed: "Отказало",
+    raid_rebuilding: "Обнова",
+    raid_repairing: "Поправка",
+    raid_syncing: "Синхронизација",
+    raid_checking: "Провера",
     disk_n: "Диск {n}",
     rpm: "о/мин",
     nas: "NAS (UGREEN, Synology DSM или QNAP уређај)",
@@ -374,6 +404,12 @@ const STRINGS = {
     reboot_btn: "Ponovo pokreni",
     cancel: "Otkaži",
     volume_n: "Volumen {n}",
+    raid_degraded: "Degradirano",
+    raid_crashed: "Otkazalo",
+    raid_rebuilding: "Obnova",
+    raid_repairing: "Popravka",
+    raid_syncing: "Sinhronizacija",
+    raid_checking: "Provera",
     disk_n: "Disk {n}",
     rpm: "o/min",
     nas: "NAS (UGREEN, Synology DSM ili QNAP uređaj)",
@@ -436,6 +472,12 @@ const STRINGS = {
     reboot_btn: "Riavvia",
     cancel: "Annulla",
     volume_n: "Volume {n}",
+    raid_degraded: "Degradato",
+    raid_crashed: "Guasto",
+    raid_rebuilding: "Ricostruzione",
+    raid_repairing: "Riparazione",
+    raid_syncing: "Sincronizzazione",
+    raid_checking: "Verifica",
     disk_n: "Disco {n}",
     rpm: "giri/min",
     nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
@@ -498,6 +540,12 @@ const STRINGS = {
     reboot_btn: "Herstarten",
     cancel: "Annuleren",
     volume_n: "Volume {n}",
+    raid_degraded: "Gedegradeerd",
+    raid_crashed: "Gecrasht",
+    raid_rebuilding: "Herbouwen",
+    raid_repairing: "Repareren",
+    raid_syncing: "Synchroniseren",
+    raid_checking: "Controleren",
     disk_n: "Schijf {n}",
     rpm: "tpm",
     nas: "NAS (UGREEN-, Synology DSM- of QNAP-apparaat)",
@@ -560,6 +608,12 @@ const STRINGS = {
     reboot_btn: "Reiniciar",
     cancel: "Cancelar",
     volume_n: "Volume {n}",
+    raid_degraded: "Degradado",
+    raid_crashed: "Falhado",
+    raid_rebuilding: "A reconstruir",
+    raid_repairing: "A reparar",
+    raid_syncing: "A sincronizar",
+    raid_checking: "A verificar",
     disk_n: "Disco {n}",
     rpm: "rpm",
     nas: "NAS (dispositivo UGREEN, Synology DSM ou QNAP)",
@@ -622,6 +676,12 @@ const STRINGS = {
     reboot_btn: "Uruchom ponownie",
     cancel: "Anuluj",
     volume_n: "Wolumin {n}",
+    raid_degraded: "Zdegradowany",
+    raid_crashed: "Uszkodzony",
+    raid_rebuilding: "Odbudowa",
+    raid_repairing: "Naprawa",
+    raid_syncing: "Synchronizacja",
+    raid_checking: "Sprawdzanie",
     disk_n: "Dysk {n}",
     rpm: "obr./min",
     nas: "NAS (urządzenie UGREEN, Synology DSM lub QNAP)",
@@ -684,6 +744,12 @@ const STRINGS = {
     reboot_btn: "Repornește",
     cancel: "Anulează",
     volume_n: "Volum {n}",
+    raid_degraded: "Degradat",
+    raid_crashed: "Defect",
+    raid_rebuilding: "Reconstruire",
+    raid_repairing: "Reparare",
+    raid_syncing: "Sincronizare",
+    raid_checking: "Verificare",
     disk_n: "Disc {n}",
     rpm: "rot/min",
     nas: "NAS (dispozitiv UGREEN, Synology DSM sau QNAP)",
@@ -746,6 +812,12 @@ const STRINGS = {
     reboot_btn: "Genstart",
     cancel: "Annuller",
     volume_n: "Volume {n}",
+    raid_degraded: "Degraderet",
+    raid_crashed: "Nedbrudt",
+    raid_rebuilding: "Genopbygger",
+    raid_repairing: "Reparerer",
+    raid_syncing: "Synkroniserer",
+    raid_checking: "Kontrollerer",
     disk_n: "Disk {n}",
     rpm: "o/min",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhed)",
@@ -808,6 +880,12 @@ const STRINGS = {
     reboot_btn: "Starta om",
     cancel: "Avbryt",
     volume_n: "Volym {n}",
+    raid_degraded: "Degraderad",
+    raid_crashed: "Kraschad",
+    raid_rebuilding: "Återuppbygger",
+    raid_repairing: "Reparerar",
+    raid_syncing: "Synkroniserar",
+    raid_checking: "Kontrollerar",
     disk_n: "Disk {n}",
     rpm: "v/min",
     nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhet)",
@@ -870,6 +948,12 @@ const STRINGS = {
     reboot_btn: "Рестартиране",
     cancel: "Отказ",
     volume_n: "Том {n}",
+    raid_degraded: "Деградирал",
+    raid_crashed: "Срив",
+    raid_rebuilding: "Възстановяване",
+    raid_repairing: "Поправка",
+    raid_syncing: "Синхронизиране",
+    raid_checking: "Проверка",
     disk_n: "Диск {n}",
     rpm: "об/мин",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
@@ -932,6 +1016,12 @@ const STRINGS = {
     reboot_btn: "Перезагрузить",
     cancel: "Отмена",
     volume_n: "Том {n}",
+    raid_degraded: "Деградирован",
+    raid_crashed: "Сбой",
+    raid_rebuilding: "Перестроение",
+    raid_repairing: "Восстановление",
+    raid_syncing: "Синхронизация",
+    raid_checking: "Проверка",
     disk_n: "Диск {n}",
     rpm: "об/мин",
     nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
@@ -994,6 +1084,12 @@ const STRINGS = {
     reboot_btn: "Перезапуск",
     cancel: "Скасувати",
     volume_n: "Том {n}",
+    raid_degraded: "Деградований",
+    raid_crashed: "Збій",
+    raid_rebuilding: "Перебудова",
+    raid_repairing: "Відновлення",
+    raid_syncing: "Синхронізація",
+    raid_checking: "Перевірка",
     disk_n: "Диск {n}",
     rpm: "об/хв",
     nas: "NAS (пристрій UGREEN, Synology DSM або QNAP)",
@@ -1056,6 +1152,12 @@ const STRINGS = {
     reboot_btn: "Újraindítás",
     cancel: "Mégse",
     volume_n: "Kötet {n}",
+    raid_degraded: "Leromlott",
+    raid_crashed: "Összeomlott",
+    raid_rebuilding: "Újraépítés",
+    raid_repairing: "Javítás",
+    raid_syncing: "Szinkronizálás",
+    raid_checking: "Ellenőrzés",
     disk_n: "Lemez {n}",
     rpm: "f/perc",
     nas: "NAS (UGREEN, Synology DSM vagy QNAP eszköz)",
@@ -1118,6 +1220,12 @@ const STRINGS = {
     reboot_btn: "Reštartovať",
     cancel: "Zrušiť",
     volume_n: "Zväzok {n}",
+    raid_degraded: "Degradovaný",
+    raid_crashed: "Zlyhaný",
+    raid_rebuilding: "Obnova",
+    raid_repairing: "Oprava",
+    raid_syncing: "Synchronizácia",
+    raid_checking: "Kontrola",
     disk_n: "Disk {n}",
     rpm: "ot./min",
     nas: "NAS (zariadenie UGREEN, Synology DSM alebo QNAP)",
@@ -1180,6 +1288,12 @@ const STRINGS = {
     reboot_btn: "Restartovat",
     cancel: "Zrušit",
     volume_n: "Svazek {n}",
+    raid_degraded: "Degradovaný",
+    raid_crashed: "Selhal",
+    raid_rebuilding: "Obnova",
+    raid_repairing: "Oprava",
+    raid_syncing: "Synchronizace",
+    raid_checking: "Kontrola",
     disk_n: "Disk {n}",
     rpm: "ot./min",
     nas: "NAS (zařízení UGREEN, Synology DSM nebo QNAP)",
@@ -1242,6 +1356,12 @@ const STRINGS = {
     reboot_btn: "Znova zaženi",
     cancel: "Prekliči",
     volume_n: "Nosilec {n}",
+    raid_degraded: "Degradirano",
+    raid_crashed: "Odpovedalo",
+    raid_rebuilding: "Obnova",
+    raid_repairing: "Popravilo",
+    raid_syncing: "Sinhronizacija",
+    raid_checking: "Preverjanje",
     disk_n: "Disk {n}",
     rpm: "obr./min",
     nas: "NAS (naprava UGREEN, Synology DSM ali QNAP)",
@@ -1304,6 +1424,12 @@ const STRINGS = {
     reboot_btn: "Restartēt",
     cancel: "Atcelt",
     volume_n: "Sējums {n}",
+    raid_degraded: "Degradēts",
+    raid_crashed: "Avarējis",
+    raid_rebuilding: "Atjaunošana",
+    raid_repairing: "Labošana",
+    raid_syncing: "Sinhronizācija",
+    raid_checking: "Pārbaude",
     disk_n: "Disks {n}",
     rpm: "apgr./min",
     nas: "NAS (UGREEN, Synology DSM vai QNAP ierīce)",
@@ -1366,6 +1492,12 @@ const STRINGS = {
     reboot_btn: "Επανεκκίνηση",
     cancel: "Ακύρωση",
     volume_n: "Τόμος {n}",
+    raid_degraded: "Υποβαθμισμένο",
+    raid_crashed: "Κατεστραμμένο",
+    raid_rebuilding: "Ανακατασκευή",
+    raid_repairing: "Επισκευή",
+    raid_syncing: "Συγχρονισμός",
+    raid_checking: "Έλεγχος",
     disk_n: "Δίσκος {n}",
     rpm: "σ.α.λ.",
     nas: "NAS (συσκευή UGREEN, Synology DSM ή QNAP)",
@@ -1547,6 +1679,33 @@ const temperature = (s, hass) => {
 
 // Class of a status dot: no value (unavailable / unknown) is neither healthy nor a problem.
 const dotClass = (s) => (s && NO_VALUE.has(s.state) ? "na" : isOk(s) ? "ok" : "crit");
+
+// RAID state of a storage pool (UGREEN, its 15 UGOS codes as words) or of a Synology volume (DSM's volume status):
+// healthy, a background task (sync, rebuild, repair, check, drive added or replaced…: orange), or a failure
+// (degraded, crashed, corrupted: red). A known state is translated; any other keeps the integration's own word.
+// QNAP's integration reports no RAID state.
+const RAID_STATES = [
+  [/^(normal|healthy|good|ok)$/i, "ok", "status_ok"],
+  [/degrad/i, "crit", "raid_degraded"],
+  [/crash|corrupt|fault|fail|danger|broken/i, "crit", "raid_crashed"],
+  [/rebuild/i, "warn", "raid_rebuilding"],
+  [/repair/i, "warn", "raid_repairing"],
+  [/sync/i, "warn", "raid_syncing"],
+  [/check|scrub|consisten/i, "warn", "raid_checking"],
+  [/^(warning|attention|abnormal)$/i, "warn", "status_problem"],
+];
+const raidState = (s) => {
+  if (!s) return null;
+  if (NO_VALUE.has(s.state)) return { cls: "na", key: s.state };
+  const word = String(s.state);
+  const hit = RAID_STATES.find(([re]) => re.test(word));
+  if (hit) return { cls: hit[1], key: hit[2] };
+  // Another task in progress (creating, adding or replacing a drive, RAID upgrade…): orange, its own words.
+  const raw = word.replace(/_/g, " ");
+  return { cls: "warn", raw: raw.charAt(0).toUpperCase() + raw.slice(1) };
+};
+// Entity of a volume's RAID state: its pool's status (UGREEN), else the volume status of a Synology volume.
+const raidEntity = (nas, pool, vol) => pool.status || (nas.brand === "synology" ? vol.status : undefined);
 
 // Health of a disk: its status and SMART status words, plus the Synology bad sector and remaining life threshold
 // binary sensors (on = problem). Any problem turns it red, titled with what is wrong; without any of these
@@ -2767,6 +2926,7 @@ const FULL_STYLE = `
   .row .tag { font-size: 11px; padding: 1px 6px; border-radius: 6px; background: var(--secondary-background-color, rgba(127,127,127,.12));
               color: var(--secondary-text-color); text-transform: uppercase; flex: 0 1 auto; min-width: 0; overflow: hidden;
               text-overflow: ellipsis; white-space: nowrap; }
+  .row .chip.raid { flex: 0 1 auto; min-width: 0; text-transform: none; }
   .vol .bar { margin: 4px 0 0; grid-column: 1 / -1; grid-row: 2; }
   .vol .detail { font-size: 11px; color: var(--secondary-text-color); display: flex; justify-content: flex-end; grid-column: 2; grid-row: 1; gap: 8px; }
   .disks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
@@ -2947,17 +3107,32 @@ class NasCard extends NasBase {
     return this._histKey === key ? this._hist : null;
   }
 
+  _raidText(rs) {
+    return rs.raw ?? this._t(rs.key);
+  }
+
+  // RAID state chip of a volume: dot and word in the state colour, opening the state's entity.
+  _raidChip(id, rs, level) {
+    const text = esc(this._raidText(rs));
+    const title = esc(level ? `${level} · ${this._raidText(rs)}` : this._raidText(rs));
+    return `<span class="chip raid clickable ${rs.cls}" role="button" tabindex="0" data-entity="${id}" title="${title}" aria-label="${title}"><span class="dot"></span><span class="txt">${text}</span></span>`;
+  }
+
   _volumes(nas) {
     const rows = [];
     // Volume numbers start again in each pool: with several pools, the fallback name carries the pool number.
     const multi = Object.keys(nas.pools).length > 1;
     for (const [pn, pool] of Object.entries(nas.pools)) {
       const raid = this._text(pool.level);
+      const raidUp = raid?.toUpperCase();
       Object.entries(pool.volumes).forEach(([vn, vol], vi) => {
         // Synology keys volumes by device id: the fallback name numbers them in order instead.
         const vno = DEVICE_ID_RE.test(vn) ? String(vi + 1) : vn;
         const u = volumeUsage(this._hass, vol);
-        const status = this._s(vol.status) || this._s(vol.health);
+        const raidId = raidEntity(nas, pool, vol);
+        const rs = raidState(this._s(raidId));
+        // A Synology volume's status is its RAID state: shown once, as the RAID chip.
+        const status = raidId && raidId === vol.status ? this._s(vol.health) : this._s(vol.status) || this._s(vol.health);
         const label = this._text(vol.label) || vol.labelText || this._t("volume_n").replace("{n}", multi ? `${pn}-${vno}` : vno);
         const fs = this._text(vol.filesystem);
         const cls = this._level("volume", u.pct);
@@ -2966,6 +3141,7 @@ class NasCard extends NasBase {
             ${status ? `<span class="dot ${dotClass(status)}" title="${esc(this._dotTitle(status))}"></span>` : ""}
             <span class="grow">${esc(label)}</span>
             ${raid ? `<span class="tag">${esc(raid)}</span>` : ""}
+            ${rs ? this._raidChip(raidId, rs, raidUp) : ""}
             ${fs ? `<span class="tag">${esc(fs)}</span>` : ""}
           </div>
           <div class="bar"><div style="width:${u.pct ?? 0}%"></div></div>
@@ -3073,6 +3249,7 @@ const MINI_STYLE = `
   .foot > [data-key="network"] { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; column-gap: 8px; }
   .foot .txt { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .foot .icon { width: 14px; height: 14px; }
+  .foot > .raid { flex: 0 1 auto; min-width: 0; overflow: hidden; font-weight: 500; color: color-mix(in srgb, var(--c) 40%, var(--primary-text-color, #212121)); }
   .foot > .upd { flex: 0 1 auto; min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--c) 40%, var(--primary-text-color, #212121)); font-weight: 500; }
   /* Narrow mini card: the uptime goes first, then the picture. */
   @container (max-width: 340px) { .foot [data-key="uptime"] { display: none; } }
@@ -3207,6 +3384,22 @@ class NasMiniCard extends NasCard {
       const text = esc(this._statusText(status, nas.brand));
       foot.push(
         `<span class="clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-key="status" data-entity="${status.entity_id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
+      );
+    }
+    // A RAID that is not healthy (degraded, rebuilding…): the worst one, in its colour, opening its entity.
+    const raids = new Map();
+    for (const pool of Object.values(nas.pools))
+      for (const vol of Object.values(pool.volumes)) {
+        const id = raidEntity(nas, pool, vol);
+        if (id && !raids.has(id)) raids.set(id, { id, rs: raidState(this._s(id)), level: this._text(pool.level)?.toUpperCase() });
+      }
+    const rank = { crit: 2, warn: 1 };
+    const bad = [...raids.values()].filter((r) => r.rs && rank[r.rs.cls]).sort((a, b) => rank[b.rs.cls] - rank[a.rs.cls]);
+    if (bad.length) {
+      const r = bad[0];
+      const text = esc(`${r.level || "RAID"} · ${this._raidText(r.rs)}`);
+      foot.push(
+        `<span class="clickable raid ${r.rs.cls}" role="button" tabindex="0" data-key="raid" data-entity="${r.id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
       );
     }
     if (c.show_network !== false && !netTiles && (sc.lan_down || sc.lan_up))

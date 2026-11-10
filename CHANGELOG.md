@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.22.0 - 2026-11-10
+
+### Features
+- **RAID state**: each volume of the full card shows its RAID state as a chip next to the RAID level — green while healthy, orange during a background task (syncing, rebuilding, repairing, checking, a drive being added or replaced…), red when degraded or crashed. A click opens the state's entity. Known states are translated in the 22 languages; any other keeps the integration's own word.
+- Mini card: a RAID that is not healthy shows in the footer (« RAID1 · Degraded »), the worst one first, in its colour.
+- UGREEN: from the storage pool status (the 15 UGOS states). Synology DSM: from the volume status, now shown once as the RAID chip instead of the volume's dot. QNAP's integration reports no RAID or volume state, so its volumes show none.
+
 ## 1.21.3 - 2026-11-10
 
 ### Changes
