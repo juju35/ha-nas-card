@@ -2927,6 +2927,9 @@ const FULL_STYLE = `
               color: var(--secondary-text-color); text-transform: uppercase; flex: 0 1 auto; min-width: 0; overflow: hidden;
               text-overflow: ellipsis; white-space: nowrap; }
   .row .chip.raid { flex: 0 1 auto; min-width: 0; text-transform: none; }
+  /* On a narrow card the volume name keeps a readable width: the tags and the RAID chip give way first (the chip
+     down to its dot, its whole state in its title). */
+  .vol .row .grow { min-width: min(64px, 30%); }
   .vol .bar { margin: 4px 0 0; grid-column: 1 / -1; grid-row: 2; }
   .vol .detail { font-size: 11px; color: var(--secondary-text-color); display: flex; justify-content: flex-end; grid-column: 2; grid-row: 1; gap: 8px; }
   .disks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
