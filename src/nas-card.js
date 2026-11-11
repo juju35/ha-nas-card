@@ -47,7 +47,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "No NAS entities found. Is a supported integration (UGREEN NAS, Synology DSM or QNAP) installed?",
+    no_nas: "No NAS entities found. Is a supported integration (UGREEN NAS, Synology DSM, QNAP or ASUSTOR) installed?",
     unknown_nas: "NAS not found",
     status_ok: "Normal",
     status_problem: "Warning",
@@ -72,7 +72,7 @@ const STRINGS = {
     disk_n: "Disk {n}",
     rpm: "rpm",
     // Editor
-    nas: "NAS (UGREEN, Synology DSM or QNAP device)",
+    nas: "NAS (UGREEN, Synology DSM, QNAP or ASUSTOR device)",
     title: "Title (optional, defaults to the NAS name)",
     show_image: "Show NAS picture",
     image: "NAS picture (model or image URL)",
@@ -91,7 +91,7 @@ const STRINGS = {
     threshold_warning: "orange from",
     threshold_critical: "red from",
     url: "NAS interface URL (click on the NAS picture)",
-    url_helper: "Automatic from Home Assistant when empty (UGREEN, Synology); set it for QNAP, e.g. http://192.168.1.10:8080",
+    url_helper: "Automatic from Home Assistant when empty (UGREEN, Synology); set it for QNAP/ASUSTOR, e.g. http://192.168.1.10:8080",
     brand_url: "Brand website URL (click on the logo)",
     brand_url_helper: "Official website of the brand when empty",
     open_nas: "Open the NAS interface",
@@ -116,7 +116,7 @@ const STRINGS = {
     hours: "h",
     days: "j",
     minutes: "min",
-    no_nas: "Aucune entité NAS trouvée. Une intégration prise en charge (UGREEN NAS, Synology DSM ou QNAP) est-elle installée ?",
+    no_nas: "Aucune entité NAS trouvée. Une intégration prise en charge (UGREEN NAS, Synology DSM, QNAP ou ASUSTOR) est-elle installée ?",
     unknown_nas: "NAS introuvable",
     status_ok: "Normal",
     status_problem: "Alerte",
@@ -140,7 +140,7 @@ const STRINGS = {
     raid_checking: "Vérification",
     disk_n: "Disque {n}",
     rpm: "tr/min",
-    nas: "NAS (appareil UGREEN, Synology DSM ou QNAP)",
+    nas: "NAS (appareil UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
     image: "Illustration du NAS (modèle ou URL d'image)",
@@ -159,7 +159,7 @@ const STRINGS = {
     threshold_warning: "orange dès",
     threshold_critical: "rouge dès",
     url: "URL de l'interface du NAS (clic sur l'illustration)",
-    url_helper: "Automatique depuis Home Assistant si vide (UGREEN, Synology) ; à renseigner pour QNAP, ex. http://192.168.1.10:8080",
+    url_helper: "Automatique depuis Home Assistant si vide (UGREEN, Synology) ; à renseigner pour QNAP/ASUSTOR, ex. http://192.168.1.10:8080",
     brand_url: "URL du site de la marque (clic sur le logo)",
     brand_url_helper: "Site officiel de la marque si vide",
     open_nas: "Ouvrir l'interface du NAS",
@@ -184,7 +184,7 @@ const STRINGS = {
     hours: "h",
     days: "T",
     minutes: "min",
-    no_nas: "Keine NAS-Entitäten gefunden. Ist eine unterstützte Integration (UGREEN NAS, Synology DSM oder QNAP) installiert?",
+    no_nas: "Keine NAS-Entitäten gefunden. Ist eine unterstützte Integration (UGREEN NAS, Synology DSM, QNAP oder ASUSTOR) installiert?",
     unknown_nas: "NAS nicht gefunden",
     status_ok: "Normal",
     status_problem: "Warnung",
@@ -208,7 +208,7 @@ const STRINGS = {
     raid_checking: "Prüfung",
     disk_n: "Laufwerk {n}",
     rpm: "U/min",
-    nas: "NAS (UGREEN-, Synology-DSM- oder QNAP-Gerät)",
+    nas: "NAS (UGREEN-, Synology-DSM-, QNAP- oder ASUSTOR-Gerät)",
     title: "Titel (optional, standardmäßig der NAS-Name)",
     show_image: "NAS-Bild anzeigen",
     image: "NAS-Bild (Modell oder Bild-URL)",
@@ -227,7 +227,7 @@ const STRINGS = {
     threshold_warning: "orange ab",
     threshold_critical: "rot ab",
     url: "URL der NAS-Oberfläche (Klick auf das NAS-Bild)",
-    url_helper: "Wenn leer, automatisch aus Home Assistant (UGREEN, Synology); für QNAP angeben, z. B. http://192.168.1.10:8080",
+    url_helper: "Wenn leer, automatisch aus Home Assistant (UGREEN, Synology); für QNAP/ASUSTOR angeben, z. B. http://192.168.1.10:8080",
     brand_url: "URL der Hersteller-Website (Klick auf das Logo)",
     brand_url_helper: "Wenn leer, die offizielle Website des Herstellers",
     open_nas: "NAS-Oberfläche öffnen",
@@ -252,7 +252,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "No se han encontrado entidades de NAS. ¿Está instalada una integración compatible (UGREEN NAS, Synology DSM o QNAP)?",
+    no_nas: "No se han encontrado entidades de NAS. ¿Está instalada una integración compatible (UGREEN NAS, Synology DSM, QNAP o ASUSTOR)?",
     unknown_nas: "NAS no encontrado",
     status_ok: "Normal",
     status_problem: "Alerta",
@@ -276,7 +276,7 @@ const STRINGS = {
     raid_checking: "Comprobando",
     disk_n: "Disco {n}",
     rpm: "rpm",
-    nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
+    nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Título (opcional, por defecto el nombre del NAS)",
     show_image: "Mostrar la imagen del NAS",
     image: "Imagen del NAS (modelo o URL de imagen)",
@@ -295,7 +295,7 @@ const STRINGS = {
     threshold_warning: "naranja desde",
     threshold_critical: "rojo desde",
     url: "URL de la interfaz del NAS (clic en la imagen del NAS)",
-    url_helper: "Automática desde Home Assistant si está vacía (UGREEN, Synology); indícala para QNAP, p. ej. http://192.168.1.10:8080",
+    url_helper: "Automática desde Home Assistant si está vacía (UGREEN, Synology); indícala para QNAP/ASUSTOR, p. ej. http://192.168.1.10:8080",
     brand_url: "URL del sitio web de la marca (clic en el logotipo)",
     brand_url_helper: "Sitio web oficial de la marca si está vacía",
     open_nas: "Abrir la interfaz del NAS",
@@ -320,7 +320,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Нису пронађени NAS ентитети. Да ли је инсталирана подржана интеграција (UGREEN NAS, Synology DSM или QNAP)?",
+    no_nas: "Нису пронађени NAS ентитети. Да ли је инсталирана подржана интеграција (UGREEN NAS, Synology DSM, QNAP или ASUSTOR)?",
     unknown_nas: "NAS није пронађен",
     status_ok: "Нормално",
     status_problem: "Упозорење",
@@ -344,7 +344,7 @@ const STRINGS = {
     raid_checking: "Провера",
     disk_n: "Диск {n}",
     rpm: "о/мин",
-    nas: "NAS (UGREEN, Synology DSM или QNAP уређај)",
+    nas: "NAS (UGREEN, Synology DSM, QNAP или ASUSTOR уређај)",
     title: "Наслов (опционо, подразумевано је назив NAS-а)",
     show_image: "Прикажи слику NAS-а",
     image: "Слика NAS-а (модел или URL слике)",
@@ -363,7 +363,7 @@ const STRINGS = {
     threshold_warning: "наранџасто од",
     threshold_critical: "црвено од",
     url: "URL интерфејса NAS-а (клик на слику NAS-а)",
-    url_helper: "Ако је празно, аутоматски из Home Assistant-а (UGREEN, Synology); за QNAP га унесите, нпр. http://192.168.1.10:8080",
+    url_helper: "Ако је празно, аутоматски из Home Assistant-а (UGREEN, Synology); за QNAP/ASUSTOR га унесите, нпр. http://192.168.1.10:8080",
     brand_url: "URL веб-сајта бренда (клик на лого)",
     brand_url_helper: "Ако је празно, званични веб-сајт бренда",
     open_nas: "Отвори интерфејс NAS-а",
@@ -388,7 +388,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Nisu pronađeni NAS entiteti. Da li je instalirana podržana integracija (UGREEN NAS, Synology DSM ili QNAP)?",
+    no_nas: "Nisu pronađeni NAS entiteti. Da li je instalirana podržana integracija (UGREEN NAS, Synology DSM, QNAP ili ASUSTOR)?",
     unknown_nas: "NAS nije pronađen",
     status_ok: "Normalno",
     status_problem: "Upozorenje",
@@ -412,7 +412,7 @@ const STRINGS = {
     raid_checking: "Provera",
     disk_n: "Disk {n}",
     rpm: "o/min",
-    nas: "NAS (UGREEN, Synology DSM ili QNAP uređaj)",
+    nas: "NAS (UGREEN, Synology DSM, QNAP ili ASUSTOR uređaj)",
     title: "Naslov (opciono, podrazumevano je naziv NAS-a)",
     show_image: "Prikaži sliku NAS-a",
     image: "Slika NAS-a (model ili URL slike)",
@@ -431,7 +431,7 @@ const STRINGS = {
     threshold_warning: "narandžasto od",
     threshold_critical: "crveno od",
     url: "URL interfejsa NAS-a (klik na sliku NAS-a)",
-    url_helper: "Ako je prazno, automatski iz Home Assistant-a (UGREEN, Synology); za QNAP ga unesite, npr. http://192.168.1.10:8080",
+    url_helper: "Ako je prazno, automatski iz Home Assistant-a (UGREEN, Synology); za QNAP/ASUSTOR ga unesite, npr. http://192.168.1.10:8080",
     brand_url: "URL veb-sajta brenda (klik na logo)",
     brand_url_helper: "Ako je prazno, zvanični veb-sajt brenda",
     open_nas: "Otvori interfejs NAS-a",
@@ -456,7 +456,7 @@ const STRINGS = {
     hours: "h",
     days: "g",
     minutes: "min",
-    no_nas: "Nessuna entità NAS trovata. È installata un'integrazione supportata (UGREEN NAS, Synology DSM o QNAP)?",
+    no_nas: "Nessuna entità NAS trovata. È installata un'integrazione supportata (UGREEN NAS, Synology DSM, QNAP o ASUSTOR)?",
     unknown_nas: "NAS non trovato",
     status_ok: "Normale",
     status_problem: "Avviso",
@@ -480,7 +480,7 @@ const STRINGS = {
     raid_checking: "Verifica",
     disk_n: "Disco {n}",
     rpm: "giri/min",
-    nas: "NAS (dispositivo UGREEN, Synology DSM o QNAP)",
+    nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Titolo (facoltativo, per impostazione predefinita il nome del NAS)",
     show_image: "Mostra l'immagine del NAS",
     image: "Immagine del NAS (modello o URL dell'immagine)",
@@ -499,7 +499,7 @@ const STRINGS = {
     threshold_warning: "arancione da",
     threshold_critical: "rosso da",
     url: "URL dell'interfaccia del NAS (clic sull'immagine del NAS)",
-    url_helper: "Automatico da Home Assistant se vuoto (UGREEN, Synology); da indicare per QNAP, ad es. http://192.168.1.10:8080",
+    url_helper: "Automatico da Home Assistant se vuoto (UGREEN, Synology); da indicare per QNAP/ASUSTOR, ad es. http://192.168.1.10:8080",
     brand_url: "URL del sito del marchio (clic sul logo)",
     brand_url_helper: "Sito ufficiale del marchio se vuoto",
     open_nas: "Apri l'interfaccia del NAS",
@@ -524,7 +524,7 @@ const STRINGS = {
     hours: "u",
     days: "d",
     minutes: "min",
-    no_nas: "Geen NAS-entiteiten gevonden. Is een ondersteunde integratie (UGREEN NAS, Synology DSM of QNAP) geïnstalleerd?",
+    no_nas: "Geen NAS-entiteiten gevonden. Is een ondersteunde integratie (UGREEN NAS, Synology DSM, QNAP of ASUSTOR) geïnstalleerd?",
     unknown_nas: "NAS niet gevonden",
     status_ok: "Normaal",
     status_problem: "Waarschuwing",
@@ -548,7 +548,7 @@ const STRINGS = {
     raid_checking: "Controleren",
     disk_n: "Schijf {n}",
     rpm: "tpm",
-    nas: "NAS (UGREEN-, Synology DSM- of QNAP-apparaat)",
+    nas: "NAS (UGREEN-, Synology DSM-, QNAP- of ASUSTOR-apparaat)",
     title: "Titel (optioneel, standaard de naam van de NAS)",
     show_image: "Afbeelding van de NAS weergeven",
     image: "Afbeelding van de NAS (model of afbeeldings-URL)",
@@ -567,7 +567,7 @@ const STRINGS = {
     threshold_warning: "oranje vanaf",
     threshold_critical: "rood vanaf",
     url: "URL van de NAS-interface (klik op de afbeelding van de NAS)",
-    url_helper: "Indien leeg automatisch vanuit Home Assistant (UGREEN, Synology); vul in voor QNAP, bijv. http://192.168.1.10:8080",
+    url_helper: "Indien leeg automatisch vanuit Home Assistant (UGREEN, Synology); vul in voor QNAP/ASUSTOR, bijv. http://192.168.1.10:8080",
     brand_url: "URL van de website van het merk (klik op het logo)",
     brand_url_helper: "Indien leeg de officiële website van het merk",
     open_nas: "NAS-interface openen",
@@ -592,7 +592,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Nenhuma entidade de NAS encontrada. Está instalada uma integração suportada (UGREEN NAS, Synology DSM ou QNAP)?",
+    no_nas: "Nenhuma entidade de NAS encontrada. Está instalada uma integração suportada (UGREEN NAS, Synology DSM, QNAP ou ASUSTOR)?",
     unknown_nas: "NAS não encontrado",
     status_ok: "Normal",
     status_problem: "Aviso",
@@ -616,7 +616,7 @@ const STRINGS = {
     raid_checking: "A verificar",
     disk_n: "Disco {n}",
     rpm: "rpm",
-    nas: "NAS (dispositivo UGREEN, Synology DSM ou QNAP)",
+    nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Título (opcional, por predefinição o nome do NAS)",
     show_image: "Mostrar a imagem do NAS",
     image: "Imagem do NAS (modelo ou URL da imagem)",
@@ -635,7 +635,7 @@ const STRINGS = {
     threshold_warning: "laranja a partir de",
     threshold_critical: "vermelho a partir de",
     url: "URL da interface do NAS (clique na imagem do NAS)",
-    url_helper: "Automático a partir do Home Assistant se vazio (UGREEN, Synology); indique-o para QNAP, p. ex. http://192.168.1.10:8080",
+    url_helper: "Automático a partir do Home Assistant se vazio (UGREEN, Synology); indique-o para QNAP/ASUSTOR, p. ex. http://192.168.1.10:8080",
     brand_url: "URL do site da marca (clique no logótipo)",
     brand_url_helper: "Site oficial da marca se vazio",
     open_nas: "Abrir a interface do NAS",
@@ -660,7 +660,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Nie znaleziono encji NAS. Czy zainstalowano obsługiwaną integrację (UGREEN NAS, Synology DSM lub QNAP)?",
+    no_nas: "Nie znaleziono encji NAS. Czy zainstalowano obsługiwaną integrację (UGREEN NAS, Synology DSM, QNAP lub ASUSTOR)?",
     unknown_nas: "Nie znaleziono NAS",
     status_ok: "Normalny",
     status_problem: "Ostrzeżenie",
@@ -684,7 +684,7 @@ const STRINGS = {
     raid_checking: "Sprawdzanie",
     disk_n: "Dysk {n}",
     rpm: "obr./min",
-    nas: "NAS (urządzenie UGREEN, Synology DSM lub QNAP)",
+    nas: "NAS (urządzenie UGREEN, Synology DSM, QNAP lub ASUSTOR)",
     title: "Tytuł (opcjonalny, domyślnie nazwa NAS)",
     show_image: "Pokaż obraz NAS",
     image: "Obraz NAS (model lub URL obrazu)",
@@ -703,7 +703,7 @@ const STRINGS = {
     threshold_warning: "pomarańczowy od",
     threshold_critical: "czerwony od",
     url: "URL interfejsu NAS (kliknięcie obrazu NAS)",
-    url_helper: "Jeśli puste, automatycznie z Home Assistant (UGREEN, Synology); dla QNAP wpisz go, np. http://192.168.1.10:8080",
+    url_helper: "Jeśli puste, automatycznie z Home Assistant (UGREEN, Synology); dla QNAP/ASUSTOR wpisz go, np. http://192.168.1.10:8080",
     brand_url: "URL strony marki (kliknięcie logo)",
     brand_url_helper: "Jeśli puste, oficjalna strona marki",
     open_nas: "Otwórz interfejs NAS",
@@ -728,7 +728,7 @@ const STRINGS = {
     hours: "h",
     days: "z",
     minutes: "min",
-    no_nas: "Nu s-au găsit entități NAS. Este instalată o integrare compatibilă (UGREEN NAS, Synology DSM sau QNAP)?",
+    no_nas: "Nu s-au găsit entități NAS. Este instalată o integrare compatibilă (UGREEN NAS, Synology DSM, QNAP sau ASUSTOR)?",
     unknown_nas: "NAS negăsit",
     status_ok: "Normal",
     status_problem: "Avertisment",
@@ -752,7 +752,7 @@ const STRINGS = {
     raid_checking: "Verificare",
     disk_n: "Disc {n}",
     rpm: "rot/min",
-    nas: "NAS (dispozitiv UGREEN, Synology DSM sau QNAP)",
+    nas: "NAS (dispozitiv UGREEN, Synology DSM, QNAP sau ASUSTOR)",
     title: "Titlu (opțional, implicit numele NAS-ului)",
     show_image: "Afișează imaginea NAS-ului",
     image: "Imaginea NAS-ului (model sau URL de imagine)",
@@ -771,7 +771,7 @@ const STRINGS = {
     threshold_warning: "portocaliu de la",
     threshold_critical: "roșu de la",
     url: "URL-ul interfeței NAS (clic pe imaginea NAS-ului)",
-    url_helper: "Dacă este gol, automat din Home Assistant (UGREEN, Synology); completați-l pentru QNAP, de ex. http://192.168.1.10:8080",
+    url_helper: "Dacă este gol, automat din Home Assistant (UGREEN, Synology); completați-l pentru QNAP/ASUSTOR, de ex. http://192.168.1.10:8080",
     brand_url: "URL-ul site-ului mărcii (clic pe logo)",
     brand_url_helper: "Dacă este gol, site-ul oficial al mărcii",
     open_nas: "Deschide interfața NAS",
@@ -796,7 +796,7 @@ const STRINGS = {
     hours: "t",
     days: "d",
     minutes: "min",
-    no_nas: "Ingen NAS-enheder fundet. Er en understøttet integration (UGREEN NAS, Synology DSM eller QNAP) installeret?",
+    no_nas: "Ingen NAS-enheder fundet. Er en understøttet integration (UGREEN NAS, Synology DSM, QNAP eller ASUSTOR) installeret?",
     unknown_nas: "NAS ikke fundet",
     status_ok: "Normal",
     status_problem: "Advarsel",
@@ -820,7 +820,7 @@ const STRINGS = {
     raid_checking: "Kontrollerer",
     disk_n: "Disk {n}",
     rpm: "o/min",
-    nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhed)",
+    nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhed)",
     title: "Titel (valgfri, som standard NAS'ens navn)",
     show_image: "Vis billede af NAS'en",
     image: "Billede af NAS'en (model eller billed-URL)",
@@ -839,7 +839,7 @@ const STRINGS = {
     threshold_warning: "orange fra",
     threshold_critical: "rød fra",
     url: "URL til NAS-brugerfladen (klik på billedet af NAS'en)",
-    url_helper: "Automatisk fra Home Assistant, hvis tom (UGREEN, Synology); angiv den for QNAP, f.eks. http://192.168.1.10:8080",
+    url_helper: "Automatisk fra Home Assistant, hvis tom (UGREEN, Synology); angiv den for QNAP/ASUSTOR, f.eks. http://192.168.1.10:8080",
     brand_url: "URL til mærkets websted (klik på logoet)",
     brand_url_helper: "Mærkets officielle websted, hvis tom",
     open_nas: "Åbn NAS-brugerfladen",
@@ -864,7 +864,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Inga NAS-entiteter hittades. Är en integration som stöds (UGREEN NAS, Synology DSM eller QNAP) installerad?",
+    no_nas: "Inga NAS-entiteter hittades. Är en integration som stöds (UGREEN NAS, Synology DSM, QNAP eller ASUSTOR) installerad?",
     unknown_nas: "NAS hittades inte",
     status_ok: "Normal",
     status_problem: "Varning",
@@ -888,7 +888,7 @@ const STRINGS = {
     raid_checking: "Kontrollerar",
     disk_n: "Disk {n}",
     rpm: "v/min",
-    nas: "NAS (UGREEN-, Synology DSM- eller QNAP-enhet)",
+    nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhet)",
     title: "Titel (valfri, NAS-enhetens namn som standard)",
     show_image: "Visa bild av NAS-enheten",
     image: "Bild av NAS-enheten (modell eller bild-URL)",
@@ -907,7 +907,7 @@ const STRINGS = {
     threshold_warning: "orange från",
     threshold_critical: "röd från",
     url: "URL till NAS-gränssnittet (klick på bilden av NAS-enheten)",
-    url_helper: "Automatiskt från Home Assistant om tom (UGREEN, Synology); ange den för QNAP, t.ex. http://192.168.1.10:8080",
+    url_helper: "Automatiskt från Home Assistant om tom (UGREEN, Synology); ange den för QNAP/ASUSTOR, t.ex. http://192.168.1.10:8080",
     brand_url: "URL till märkets webbplats (klick på logotypen)",
     brand_url_helper: "Märkets officiella webbplats om tom",
     open_nas: "Öppna NAS-gränssnittet",
@@ -932,7 +932,7 @@ const STRINGS = {
     hours: "ч",
     days: "д",
     minutes: "мин",
-    no_nas: "Не са намерени NAS обекти. Инсталирана ли е поддържана интеграция (UGREEN NAS, Synology DSM или QNAP)?",
+    no_nas: "Не са намерени NAS обекти. Инсталирана ли е поддържана интеграция (UGREEN NAS, Synology DSM, QNAP или ASUSTOR)?",
     unknown_nas: "NAS не е намерен",
     status_ok: "Нормално",
     status_problem: "Предупреждение",
@@ -956,7 +956,7 @@ const STRINGS = {
     raid_checking: "Проверка",
     disk_n: "Диск {n}",
     rpm: "об/мин",
-    nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
+    nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заглавие (по избор, по подразбиране името на NAS)",
     show_image: "Показване на изображение на NAS",
     image: "Изображение на NAS (модел или URL на изображение)",
@@ -975,7 +975,7 @@ const STRINGS = {
     threshold_warning: "оранжево от",
     threshold_critical: "червено от",
     url: "URL на интерфейса на NAS (щракване върху изображението на NAS)",
-    url_helper: "Ако е празно, автоматично от Home Assistant (UGREEN, Synology); за QNAP го въведете, напр. http://192.168.1.10:8080",
+    url_helper: "Ако е празно, автоматично от Home Assistant (UGREEN, Synology); за QNAP/ASUSTOR го въведете, напр. http://192.168.1.10:8080",
     brand_url: "URL на уебсайта на марката (щракване върху логото)",
     brand_url_helper: "Ако е празно, официалният уебсайт на марката",
     open_nas: "Отвори интерфейса на NAS",
@@ -1000,7 +1000,7 @@ const STRINGS = {
     hours: "ч",
     days: "д",
     minutes: "мин",
-    no_nas: "Объекты NAS не найдены. Установлена ли поддерживаемая интеграция (UGREEN NAS, Synology DSM или QNAP)?",
+    no_nas: "Объекты NAS не найдены. Установлена ли поддерживаемая интеграция (UGREEN NAS, Synology DSM, QNAP или ASUSTOR)?",
     unknown_nas: "NAS не найден",
     status_ok: "Норма",
     status_problem: "Предупреждение",
@@ -1024,7 +1024,7 @@ const STRINGS = {
     raid_checking: "Проверка",
     disk_n: "Диск {n}",
     rpm: "об/мин",
-    nas: "NAS (устройство UGREEN, Synology DSM или QNAP)",
+    nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заголовок (необязательно, по умолчанию имя NAS)",
     show_image: "Показывать изображение NAS",
     image: "Изображение NAS (модель или URL изображения)",
@@ -1043,7 +1043,7 @@ const STRINGS = {
     threshold_warning: "оранжевый от",
     threshold_critical: "красный от",
     url: "URL интерфейса NAS (нажатие на изображение NAS)",
-    url_helper: "Если пусто, автоматически из Home Assistant (UGREEN, Synology); для QNAP укажите его, например http://192.168.1.10:8080",
+    url_helper: "Если пусто, автоматически из Home Assistant (UGREEN, Synology); для QNAP/ASUSTOR укажите его, например http://192.168.1.10:8080",
     brand_url: "URL сайта производителя (нажатие на логотип)",
     brand_url_helper: "Если пусто, официальный сайт производителя",
     open_nas: "Открыть интерфейс NAS",
@@ -1068,7 +1068,7 @@ const STRINGS = {
     hours: "год",
     days: "д",
     minutes: "хв",
-    no_nas: "Об'єкти NAS не знайдено. Чи встановлено підтримувану інтеграцію (UGREEN NAS, Synology DSM або QNAP)?",
+    no_nas: "Об'єкти NAS не знайдено. Чи встановлено підтримувану інтеграцію (UGREEN NAS, Synology DSM, QNAP або ASUSTOR)?",
     unknown_nas: "NAS не знайдено",
     status_ok: "Норма",
     status_problem: "Попередження",
@@ -1092,7 +1092,7 @@ const STRINGS = {
     raid_checking: "Перевірка",
     disk_n: "Диск {n}",
     rpm: "об/хв",
-    nas: "NAS (пристрій UGREEN, Synology DSM або QNAP)",
+    nas: "NAS (пристрій UGREEN, Synology DSM, QNAP або ASUSTOR)",
     title: "Заголовок (необов'язково, за замовчуванням назва NAS)",
     show_image: "Показувати зображення NAS",
     image: "Зображення NAS (модель або URL зображення)",
@@ -1111,7 +1111,7 @@ const STRINGS = {
     threshold_warning: "помаранчевий від",
     threshold_critical: "червоний від",
     url: "URL інтерфейсу NAS (натискання на зображення NAS)",
-    url_helper: "Якщо порожньо, автоматично з Home Assistant (UGREEN, Synology); для QNAP вкажіть його, наприклад http://192.168.1.10:8080",
+    url_helper: "Якщо порожньо, автоматично з Home Assistant (UGREEN, Synology); для QNAP/ASUSTOR вкажіть його, наприклад http://192.168.1.10:8080",
     brand_url: "URL сайту виробника (натискання на логотип)",
     brand_url_helper: "Якщо порожньо, офіційний сайт виробника",
     open_nas: "Відкрити інтерфейс NAS",
@@ -1136,7 +1136,7 @@ const STRINGS = {
     hours: "ó",
     days: "n",
     minutes: "p",
-    no_nas: "Nem található NAS-entitás. Telepítve van egy támogatott integráció (UGREEN NAS, Synology DSM vagy QNAP)?",
+    no_nas: "Nem található NAS-entitás. Telepítve van egy támogatott integráció (UGREEN NAS, Synology DSM, QNAP vagy ASUSTOR)?",
     unknown_nas: "A NAS nem található",
     status_ok: "Normál",
     status_problem: "Figyelmeztetés",
@@ -1160,7 +1160,7 @@ const STRINGS = {
     raid_checking: "Ellenőrzés",
     disk_n: "Lemez {n}",
     rpm: "f/perc",
-    nas: "NAS (UGREEN, Synology DSM vagy QNAP eszköz)",
+    nas: "NAS (UGREEN, Synology DSM, QNAP vagy ASUSTOR eszköz)",
     title: "Cím (nem kötelező, alapértelmezés szerint a NAS neve)",
     show_image: "NAS képének megjelenítése",
     image: "NAS képe (modell vagy kép URL-je)",
@@ -1179,7 +1179,7 @@ const STRINGS = {
     threshold_warning: "narancs ettől",
     threshold_critical: "piros ettől",
     url: "A NAS felületének URL-je (kattintás a NAS képére)",
-    url_helper: "Ha üres, automatikusan a Home Assistantből (UGREEN, Synology); QNAP esetén adja meg, pl. http://192.168.1.10:8080",
+    url_helper: "Ha üres, automatikusan a Home Assistantből (UGREEN, Synology); QNAP/ASUSTOR esetén adja meg, pl. http://192.168.1.10:8080",
     brand_url: "A márka webhelyének URL-je (kattintás a logóra)",
     brand_url_helper: "Ha üres, a márka hivatalos webhelye",
     open_nas: "A NAS felületének megnyitása",
@@ -1204,7 +1204,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Nenašli sa žiadne entity NAS. Je nainštalovaná podporovaná integrácia (UGREEN NAS, Synology DSM alebo QNAP)?",
+    no_nas: "Nenašli sa žiadne entity NAS. Je nainštalovaná podporovaná integrácia (UGREEN NAS, Synology DSM, QNAP alebo ASUSTOR)?",
     unknown_nas: "NAS sa nenašiel",
     status_ok: "Normálny",
     status_problem: "Upozornenie",
@@ -1228,7 +1228,7 @@ const STRINGS = {
     raid_checking: "Kontrola",
     disk_n: "Disk {n}",
     rpm: "ot./min",
-    nas: "NAS (zariadenie UGREEN, Synology DSM alebo QNAP)",
+    nas: "NAS (zariadenie UGREEN, Synology DSM, QNAP alebo ASUSTOR)",
     title: "Názov (voliteľný, predvolene názov NAS)",
     show_image: "Zobraziť obrázok NAS",
     image: "Obrázok NAS (model alebo URL obrázka)",
@@ -1247,7 +1247,7 @@ const STRINGS = {
     threshold_warning: "oranžová od",
     threshold_critical: "červená od",
     url: "URL rozhrania NAS (kliknutie na obrázok NAS)",
-    url_helper: "Ak je prázdne, automaticky z Home Assistant (UGREEN, Synology); pre QNAP ho zadajte, napr. http://192.168.1.10:8080",
+    url_helper: "Ak je prázdne, automaticky z Home Assistant (UGREEN, Synology); pre QNAP/ASUSTOR ho zadajte, napr. http://192.168.1.10:8080",
     brand_url: "URL webovej stránky značky (kliknutie na logo)",
     brand_url_helper: "Ak je prázdne, oficiálna webová stránka značky",
     open_nas: "Otvoriť rozhranie NAS",
@@ -1272,7 +1272,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Nebyly nalezeny žádné entity NAS. Je nainstalována podporovaná integrace (UGREEN NAS, Synology DSM nebo QNAP)?",
+    no_nas: "Nebyly nalezeny žádné entity NAS. Je nainstalována podporovaná integrace (UGREEN NAS, Synology DSM, QNAP nebo ASUSTOR)?",
     unknown_nas: "NAS nenalezen",
     status_ok: "Normální",
     status_problem: "Varování",
@@ -1296,7 +1296,7 @@ const STRINGS = {
     raid_checking: "Kontrola",
     disk_n: "Disk {n}",
     rpm: "ot./min",
-    nas: "NAS (zařízení UGREEN, Synology DSM nebo QNAP)",
+    nas: "NAS (zařízení UGREEN, Synology DSM, QNAP nebo ASUSTOR)",
     title: "Název (volitelný, výchozí je název NAS)",
     show_image: "Zobrazit obrázek NAS",
     image: "Obrázek NAS (model nebo URL obrázku)",
@@ -1315,7 +1315,7 @@ const STRINGS = {
     threshold_warning: "oranžová od",
     threshold_critical: "červená od",
     url: "URL rozhraní NAS (kliknutí na obrázek NAS)",
-    url_helper: "Pokud je prázdné, automaticky z Home Assistant (UGREEN, Synology); pro QNAP ho zadejte, např. http://192.168.1.10:8080",
+    url_helper: "Pokud je prázdné, automaticky z Home Assistant (UGREEN, Synology); pro QNAP/ASUSTOR ho zadejte, např. http://192.168.1.10:8080",
     brand_url: "URL webu značky (kliknutí na logo)",
     brand_url_helper: "Pokud je prázdné, oficiální web značky",
     open_nas: "Otevřít rozhraní NAS",
@@ -1340,7 +1340,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Ni najdenih entitet NAS. Ali je nameščena podprta integracija (UGREEN NAS, Synology DSM ali QNAP)?",
+    no_nas: "Ni najdenih entitet NAS. Ali je nameščena podprta integracija (UGREEN NAS, Synology DSM, QNAP ali ASUSTOR)?",
     unknown_nas: "NAS ni najden",
     status_ok: "Normalno",
     status_problem: "Opozorilo",
@@ -1364,7 +1364,7 @@ const STRINGS = {
     raid_checking: "Preverjanje",
     disk_n: "Disk {n}",
     rpm: "obr./min",
-    nas: "NAS (naprava UGREEN, Synology DSM ali QNAP)",
+    nas: "NAS (naprava UGREEN, Synology DSM, QNAP ali ASUSTOR)",
     title: "Naslov (neobvezno, privzeto ime NAS)",
     show_image: "Prikaži sliko NAS",
     image: "Slika NAS (model ali URL slike)",
@@ -1383,7 +1383,7 @@ const STRINGS = {
     threshold_warning: "oranžna od",
     threshold_critical: "rdeča od",
     url: "URL vmesnika NAS (klik na sliko NAS)",
-    url_helper: "Če je prazno, samodejno iz Home Assistanta (UGREEN, Synology); za QNAP ga vnesite, npr. http://192.168.1.10:8080",
+    url_helper: "Če je prazno, samodejno iz Home Assistanta (UGREEN, Synology); za QNAP/ASUSTOR ga vnesite, npr. http://192.168.1.10:8080",
     brand_url: "URL spletnega mesta znamke (klik na logotip)",
     brand_url_helper: "Če je prazno, uradno spletno mesto znamke",
     open_nas: "Odpri vmesnik NAS",
@@ -1408,7 +1408,7 @@ const STRINGS = {
     hours: "h",
     days: "d",
     minutes: "min",
-    no_nas: "Netika atrastas NAS entītijas. Vai ir instalēta atbalstīta integrācija (UGREEN NAS, Synology DSM vai QNAP)?",
+    no_nas: "Netika atrastas NAS entītijas. Vai ir instalēta atbalstīta integrācija (UGREEN NAS, Synology DSM, QNAP vai ASUSTOR)?",
     unknown_nas: "NAS nav atrasts",
     status_ok: "Normāls",
     status_problem: "Brīdinājums",
@@ -1432,7 +1432,7 @@ const STRINGS = {
     raid_checking: "Pārbaude",
     disk_n: "Disks {n}",
     rpm: "apgr./min",
-    nas: "NAS (UGREEN, Synology DSM vai QNAP ierīce)",
+    nas: "NAS (UGREEN, Synology DSM, QNAP vai ASUSTOR ierīce)",
     title: "Nosaukums (neobligāts, pēc noklusējuma NAS nosaukums)",
     show_image: "Rādīt NAS attēlu",
     image: "NAS attēls (modelis vai attēla URL)",
@@ -1451,7 +1451,7 @@ const STRINGS = {
     threshold_warning: "oranžs no",
     threshold_critical: "sarkans no",
     url: "NAS saskarnes URL (klikšķis uz NAS attēla)",
-    url_helper: "Ja tukšs, automātiski no Home Assistant (UGREEN, Synology); QNAP gadījumā norādiet to, piem., http://192.168.1.10:8080",
+    url_helper: "Ja tukšs, automātiski no Home Assistant (UGREEN, Synology); QNAP/ASUSTOR gadījumā norādiet to, piem., http://192.168.1.10:8080",
     brand_url: "Zīmola tīmekļa vietnes URL (klikšķis uz logotipa)",
     brand_url_helper: "Ja tukšs, zīmola oficiālā tīmekļa vietne",
     open_nas: "Atvērt NAS saskarni",
@@ -1476,7 +1476,7 @@ const STRINGS = {
     hours: "ώρ.",
     days: "ημ.",
     minutes: "λεπ.",
-    no_nas: "Δεν βρέθηκαν οντότητες NAS. Είναι εγκατεστημένη μια υποστηριζόμενη ενσωμάτωση (UGREEN NAS, Synology DSM ή QNAP);",
+    no_nas: "Δεν βρέθηκαν οντότητες NAS. Είναι εγκατεστημένη μια υποστηριζόμενη ενσωμάτωση (UGREEN NAS, Synology DSM, QNAP ή ASUSTOR);",
     unknown_nas: "Το NAS δεν βρέθηκε",
     status_ok: "Κανονικό",
     status_problem: "Προειδοποίηση",
@@ -1500,7 +1500,7 @@ const STRINGS = {
     raid_checking: "Έλεγχος",
     disk_n: "Δίσκος {n}",
     rpm: "σ.α.λ.",
-    nas: "NAS (συσκευή UGREEN, Synology DSM ή QNAP)",
+    nas: "NAS (συσκευή UGREEN, Synology DSM, QNAP ή ASUSTOR)",
     title: "Τίτλος (προαιρετικός, από προεπιλογή το όνομα του NAS)",
     show_image: "Εμφάνιση εικόνας του NAS",
     image: "Εικόνα του NAS (μοντέλο ή URL εικόνας)",
@@ -1519,7 +1519,7 @@ const STRINGS = {
     threshold_warning: "πορτοκαλί από",
     threshold_critical: "κόκκινο από",
     url: "URL της διεπαφής του NAS (κλικ στην εικόνα του NAS)",
-    url_helper: "Αν είναι κενό, αυτόματα από το Home Assistant (UGREEN, Synology)· για το QNAP συμπληρώστε το, π.χ. http://192.168.1.10:8080",
+    url_helper: "Αν είναι κενό, αυτόματα από το Home Assistant (UGREEN, Synology)· για το QNAP/ASUSTOR συμπληρώστε το, π.χ. http://192.168.1.10:8080",
     brand_url: "URL του ιστότοπου της μάρκας (κλικ στο λογότυπο)",
     brand_url_helper: "Αν είναι κενό, ο επίσημος ιστότοπος της μάρκας",
     open_nas: "Άνοιγμα της διεπαφής του NAS",
@@ -1634,6 +1634,14 @@ const fmtUptime = (sec, hass, config) => {
   return `${m} ${t(hass, config, "minutes")}`;
 };
 
+// Uptime in seconds of a duration sensor, whatever unit it is displayed in (ASUSTOR reports seconds, but Home
+// Assistant shows it in days by default).
+const DURATION_FACTORS = { s: 1, sec: 1, min: 60, h: 3600, d: 86400, w: 604800 };
+const durationSeconds = (s) => {
+  const v = num(s);
+  return v === null ? null : v * (DURATION_FACTORS[String(s.attributes?.unit_of_measurement || "s").toLowerCase()] ?? 1);
+};
+
 // Age in seconds of a boot timestamp sensor (Synology "Last boot", QNAP "Uptime").
 const bootAge = (s) => {
   const ts = s && Date.parse(s.state);
@@ -1642,9 +1650,10 @@ const bootAge = (s) => {
 
 // OS line of the subtitle: UGOS comes from its own sensor, the Synology firmware string already
 // spells out DSM, and QNAP firmware starts with "h" on QuTS hero.
-const osVersion = (v, brand) => (!v ? null : brand === "qnap" ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}` : v);
+const osVersion = (v, brand) =>
+  !v ? null : brand === "qnap" ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}` : brand === "asustor" ? `ADM ${v}` : v;
 
-const isOk = (s) => !s || /^(normal|ok|good|healthy|safe|passed|on|false)$/i.test(String(s.state));
+const isOk = (s) => !s || /^(normal|ok|good|healthy|safe|passed|idle|on|false)$/i.test(String(s.state));
 
 // Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found).
 // An entity without value (NAS offline) is never "ok", whatever the brand.
@@ -1687,7 +1696,7 @@ const dotClass = (s) => (s && NO_VALUE.has(s.state) ? "na" : isOk(s) ? "ok" : "c
 const RAID_STATES = [
   [/^(normal|healthy|good|ok)$/i, "ok", "status_ok"],
   [/degrad/i, "crit", "raid_degraded"],
-  [/crash|corrupt|fault|fail|danger|broken/i, "crit", "raid_crashed"],
+  [/crash|corrupt|fault|fail|danger|broken|inactive/i, "crit", "raid_crashed"],
   [/rebuild/i, "warn", "raid_rebuilding"],
   [/repair/i, "warn", "raid_repairing"],
   [/sync/i, "warn", "raid_syncing"],
@@ -1705,7 +1714,7 @@ const raidState = (s) => {
   return { cls: "warn", raw: raw.charAt(0).toUpperCase() + raw.slice(1) };
 };
 // Entity of a volume's RAID state: its pool's status (UGREEN), else the volume status of a Synology volume.
-const raidEntity = (nas, pool, vol) => pool.status || (nas.brand === "synology" ? vol.status : undefined);
+const raidEntity = (nas, pool, vol) => pool.status || (CHILD_DEVICE_BRANDS.has(nas.brand) ? vol.status : undefined);
 
 // Health of a disk: its status and SMART status words, plus the Synology bad sector and remaining life threshold
 // binary sensors (on = problem). Any problem turns it red, titled with what is wrong; without any of these
@@ -1803,6 +1812,17 @@ const NAS_MODELS = {
     "DS124", "DS223", "DS223j", "DS224+", "DS225+", "DS423", "DS423+", "DS425+", "DS723+", "DS923+", "DS925+",
     "DS1522+", "DS1621+", "DS1821+", "DS1825+", "DS2422+", "RS422+", "RS822+", "RS1221+", "RS2423+",
   ],
+  asustor: [
+    "AS1002T", "AS1004T", "AS1102T", "AS1102TL", "AS1104T", "AS1202T", "AS1204T", "AS3102T", "AS3104T", "AS3202T",
+    "AS3204T", "AS3302T", "AS3304T", "AS4002T", "AS4004T", "AS5002T", "AS5004T", "AS5008T", "AS5010T", "AS5102T",
+    "AS5104T", "AS5108T", "AS5110T", "AS5202T", "AS5304T", "AS5402T", "AS5404T", "AS6102T", "AS6104T", "AS6202T",
+    "AS6204RD", "AS6204RS", "AS6204T", "AS6208T", "AS6210T", "AS6212RD", "AS6302T", "AS6404T", "AS6504RD", "AS6504RS",
+    "AS6508T", "AS6510T", "AS6512RD", "AS6602T", "AS6604T", "AS6702T", "AS6704T", "AS6706T", "AS6804T", "AS6806T",
+    "AS6808T", "AS6810T", "AS7004T", "AS7008T", "AS7009RD", "AS7009RDX", "AS7010T", "AS7012RD", "AS7012RDX",
+    "AS7110T", "AS7112RDX", "AS7116RDX", "AS7212RDX", "AS7216RDX", "AS7224RDX", "AS-202T", "AS-202TE", "AS-204RS",
+    "AS-204T", "AS-204TE", "AS-302T", "AS-304T", "AS-602T", "AS-604RD", "AS-604RS", "AS-606T", "AS-608T", "AS-609RD",
+    "AS-609RS", "FS6706T", "FS6712X", "FS6806X", "FS6812X",
+  ],
   qnap: [
     "TS-133", "TS-233", "TS-433", "TS-264", "TS-464", "TS-664", "TS-473A", "TS-673A", "TS-873A", "TS-h973AX",
     "TVS-h674", "TVS-h874", "HS-264", "TS-873AeU", "TS-1264U-RP",
@@ -1826,11 +1846,115 @@ const qnapBays = (m) => {
   const d = m.match(/(\d{3,4})/);
   return d ? Math.min(d[1].length === 4 ? +d[1].slice(0, 2) : +d[1][0] || 4, 12) : 4;
 };
+// ASUSTOR: the last two digits of the four-digit number are the bay count (AS5304T → 4, AS6708T → 8, FS6712X → 12), the
+// last digit of an older three-digit one (AS-604RS → 4, AS-609RS → 9); an "R" before the suffix is a rackmount model.
+const asustorBays = (m) => {
+  const d = m.match(/(\d{4})/) || m.match(/(\d{3})/);
+  return d ? +d[1].slice(2) || 4 : 4;
+};
 const brandOfModel = (m) =>
-  /^(DXP|DH)\d/.test(m) ? "ugreen" : /^(DS|RS|FS|SA|DVA)\d/.test(m) ? "synology" : /^(TS|TVS|TBS|HS|TR)-?\w*\d/.test(m) ? "qnap" : null;
+  /^(DXP|DH)\d/.test(m) ? "ugreen" : /^(AS|LS)-?\d{3,4}/.test(m) ? "asustor" : /^(DS|RS|FS|SA|DVA)\d/.test(m) ? "synology" : /^(TS|TVS|TBS|HS|TR)-?\w*\d/.test(m) ? "qnap" : null;
+// ASUSTOR drawings, one per product family, after the manufacturer's product photos: Drivestor (closed front with a
+// diamond texture, orange mark, blue USB), Drivestor Pro and Nimbustor (glossy black front, control strip with red
+// lines), Lockerstor and the older AS50…AS70 ranges (control strip with teal and blue lines, a display from 4 bays,
+// vertical trays or two columns of horizontal trays from 8 bays), rackmounts, and the flat Flashstor.
+const asusSvg = (w, h, body, defs = "") =>
+  `<svg xmlns="http://www.w3.org/2000/svg" data-nas="asustor" viewBox="0 0 ${w} ${h + 8}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3f47"/><stop offset="1" stop-color="#14161a"/></linearGradient>${defs}</defs><ellipse cx="${w / 2}" cy="${h + 3}" rx="${w / 2 - 6}" ry="4" opacity=".25"/>${body}</svg>`;
+const ASUS = { tray: "#1b1d22", handle: "#30343b", front: "#0e0f12", red: "#d0242e", teal: "#2bb3c0", blue: "#2d6fe0", usb: "#2e7de8", led: "#43c463" };
+const asustorTextured = (bays) => {
+  const w = bays <= 2 ? 98 : 150, h = 150;
+  const defs = `<pattern id="d" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H10M0 0V10" stroke="#2c3036" stroke-width="1.2" fill="none"/></pattern>`;
+  return asusSvg(
+    w, h,
+    `<rect width="${w}" height="${h}" rx="10" fill="#17191d"/><rect width="${w}" height="${h}" rx="10" fill="url(#d)"/><rect x="${w - 34}" y="14" width="20" height="4" rx="2" fill="#d9822b"/><rect x="12" y="${h - 24}" width="9" height="5" rx="1.5" fill="${ASUS.usb}"/><rect x="2" y="${h - 8}" width="${w - 4}" height="6" rx="3" fill="${ASUS.front}"/>`,
+    defs
+  );
+};
+const asustorGlossy = (bays) => {
+  const n = bays <= 2 ? 2 : 4;
+  const w = n === 2 ? 118 : 190, h = 150, s = 22, x0 = s + 16, gap = 4;
+  const px = x0, pw = w - 12 - x0, tw = (pw - (n - 1) * gap) / n;
+  let leds = "";
+  for (let i = 0; i < 3; i++) leds += `<circle cx="21" cy="${52 + i * 8}" r="1.4" fill="${ASUS.led}"/>`;
+  // One glossy tray per bay, side by side behind the dark front.
+  let trays = "";
+  for (let i = 0; i < n; i++) {
+    const x = px + i * (tw + gap);
+    trays += `<rect class="t" x="${x}" y="14" width="${tw}" height="${h - 28}" rx="3" fill="#07080a" stroke="#1d2025" stroke-width="1"/><rect x="${x + tw / 2 - 5}" y="${h - 44}" width="10" height="14" rx="2" fill="#16181c"/>`;
+  }
+  return asusSvg(
+    w, h,
+    `<rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="6" y="6" width="${w - 12}" height="${h - 12}" rx="8" fill="#0b0c0e"/><rect x="10" y="12" width="${s}" height="2" fill="${ASUS.red}"/><rect x="10" y="${h - 14}" width="${s}" height="2" fill="${ASUS.red}"/><circle cx="21" cy="32" r="5" fill="none" stroke="#a3a8b0" stroke-width="1.6"/>${leds}<rect x="16" y="${h - 34}" width="10" height="5" rx="1" fill="${ASUS.usb}"/>${trays}<path d="M${px} 14H${px + pw * 0.55}L${px} ${h * 0.55}Z" fill="#fff" opacity=".06"/><rect x="${w - 40}" y="20" width="22" height="4" rx="2" fill="${ASUS.red}"/>`
+  );
+};
+const asustorTrays = (n) => {
+  n = Math.max(2, Math.min(n, 10));
+  const lcd = n >= 4;
+  const horiz = n >= 8;
+  const h = 150, strip = 40, pad = 12, top = lcd ? 42 : 22, bottom = h - 22;
+  const tw = horiz ? 84 : 34, gap = 6;
+  const cols = horiz ? 2 : n;
+  const w = pad + strip + cols * tw + (cols - 1) * gap + pad;
+  let trays = "";
+  if (horiz) {
+    const rows = n / 2, th = (bottom - top - (rows - 1) * 4) / rows;
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < 2; c++) {
+        const x = pad + strip + c * (tw + gap), y = top + r * (th + 4);
+        trays += `<rect class="t" x="${x}" y="${y}" width="${tw}" height="${th}" rx="2" fill="${ASUS.tray}"/><rect x="${x + tw - 18}" y="${y + th / 2 - 1.5}" width="11" height="3" rx="1" fill="${ASUS.handle}"/><circle cx="${x + 7}" cy="${y + th / 2}" r="1.3" fill="${ASUS.led}"/>`;
+      }
+  } else
+    for (let i = 0; i < n; i++) {
+      const x = pad + strip + i * (tw + gap);
+      trays += `<rect class="t" x="${x}" y="${top}" width="${tw}" height="${bottom - top}" rx="3" fill="${ASUS.tray}"/><rect x="${x + tw / 2 - 5}" y="${bottom - 24}" width="10" height="16" rx="2" fill="${ASUS.handle}"/><circle cx="${x + tw / 2}" cy="${top + 10}" r="1.6" fill="${ASUS.led}"/>`;
+    }
+  const display = lcd
+    ? `<rect x="${pad + strip}" y="14" width="${w - pad - strip - pad}" height="20" rx="3" fill="#101a22"/><rect x="${pad + strip + 8}" y="22" width="${Math.min(60, w - pad - strip - 30)}" height="2.4" rx="1" fill="${ASUS.teal}" opacity=".55"/>`
+    : "";
+  const c = pad + (strip - 10) / 2;
+  return asusSvg(
+    w, h,
+    `<rect width="${w}" height="${h}" rx="12" fill="url(#b)"/><rect x="8" y="10" width="${w - 16}" height="${h - 20}" rx="7" fill="${ASUS.front}"/><rect x="${pad}" y="16" width="${strip - 10}" height="2" fill="${ASUS.teal}"/><rect x="${pad}" y="21" width="${strip - 10}" height="2" fill="${ASUS.blue}"/><circle cx="${c}" cy="46" r="5" fill="none" stroke="#a3a8b0" stroke-width="1.6"/><rect x="${c - 6}" y="${h - 38}" width="12" height="5" rx="1" fill="${ASUS.usb}"/>${display}${trays}`
+  );
+};
+const asustorRack = (n) => {
+  const cols = n > 4 ? 4 : Math.max(2, n), rows = Math.min(Math.ceil(n / cols), 6);
+  const tw = n > 4 ? 38 : 44, th = n > 4 ? 14 : 16, gap = 4, ear = 12, pad = 8, right = 34;
+  const h = rows === 1 ? 34 : rows * th + (rows - 1) * gap + 2 * pad;
+  const w = ear * 2 + pad * 2 + cols * tw + (cols - 1) * gap + right;
+  let trays = "";
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      const x = ear + pad + c * (tw + gap), y = (rows === 1 ? (h - th) / 2 : pad) + r * (th + gap);
+      trays += `<rect class="t" x="${x}" y="${y}" width="${tw}" height="${th}" rx="2" fill="${ASUS.tray}"/><rect x="${x + tw - 12}" y="${y + th / 2 - 1.2}" width="8" height="2.4" rx="1" fill="${ASUS.handle}"/>`;
+    }
+  const cx = w - ear - right / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" data-nas="asustor" viewBox="0 0 ${w} ${h + 10}"><defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3f47"/><stop offset="1" stop-color="#14161a"/></linearGradient></defs><ellipse cx="${w / 2}" cy="${h + 4}" rx="${w / 2 - 8}" ry="3.5" opacity=".25"/><rect x="0" y="3" width="${ear}" height="${h - 6}" rx="2" fill="#14161a"/><rect x="${w - ear}" y="3" width="${ear}" height="${h - 6}" rx="2" fill="#14161a"/><rect x="${ear}" width="${w - 2 * ear}" height="${h}" rx="5" fill="url(#b)"/><rect x="${ear + 4}" y="3" width="${w - 2 * ear - 8}" height="${h - 6}" rx="3" fill="${ASUS.front}"/><rect x="${ear + 6}" y="3" width="26" height="2" fill="${ASUS.teal}"/>${trays}<circle cx="${cx}" cy="${h / 2}" r="4.5" fill="none" stroke="#a3a8b0" stroke-width="1.5"/></svg>`;
+};
+// Flashstor: a flat black box with two panels (the FS6712X is a thin slab on feet), red mark bottom right.
+const asustorSlab = (thin) => {
+  if (thin) {
+    const w = 260, h = 44;
+    return asusSvg(w, h, `<rect x="4" y="6" width="${w - 8}" height="${h - 14}" rx="9" fill="url(#b)"/><rect x="10" y="12" width="${w - 20}" height="${h - 26}" rx="5" fill="${ASUS.front}"/><rect x="${w - 52}" y="${h / 2 - 1}" width="24" height="3" rx="1.5" fill="${ASUS.red}"/><rect x="26" y="${h - 8}" width="22" height="4" rx="2" fill="#0a0b0d"/><rect x="${w - 48}" y="${h - 8}" width="22" height="4" rx="2" fill="#0a0b0d"/>`);
+  }
+  const w = 190, h = 130;
+  let vents = "";
+  for (let i = 0; i < 9; i++) vents += `<rect x="${w / 2 + 10 + i * 8}" y="14" width="1.4" height="${h - 40}" fill="#fff" opacity=".07"/>`;
+  return asusSvg(w, h, `<rect width="${w}" height="${h}" rx="9" fill="url(#b)"/><rect x="7" y="7" width="${w / 2 - 10}" height="${h - 14}" rx="4" fill="${ASUS.front}"/><rect x="${w / 2 + 3}" y="7" width="${w / 2 - 10}" height="${h - 14}" rx="4" fill="#121316"/>${vents}<circle cx="20" cy="${h - 18}" r="1.4" fill="#cfd3d8"/><circle cx="27" cy="${h - 18}" r="1.4" fill="#cfd3d8"/><circle cx="34" cy="${h - 18}" r="1.4" fill="#cfd3d8"/><circle cx="41" cy="${h - 18}" r="1.4" fill="#cfd3d8"/><rect x="${w - 36}" y="${h - 20}" width="22" height="4" rx="2" fill="${ASUS.red}"/>`);
+};
+const asustorSvg = (m) => {
+  const n = asustorBays(m);
+  if (/^FS/.test(m)) return asustorSlab(/^FS6712/.test(m));
+  if (/\d{3,4}R/.test(m)) return asustorRack(n);
+  if (/^AS(10|11|12|31|32)\d{2}/.test(m)) return asustorTextured(n);
+  if (/^AS(33|40|52|53|54)\d{2}/.test(m)) return asustorGlossy(n);
+  return asustorTrays(n);
+};
 const nasSvg = (model, brand) => {
   const m = String(model || "").toUpperCase().replace(/\s+/g, "");
-  const b = brandOfModel(m) || brand || "ugreen";
+  // FS is both a Synology and an ASUSTOR prefix (FS6706T): the discovered brand decides.
+  const b = (/^FS\d/.test(m) && brand === "asustor" ? "asustor" : brandOfModel(m)) || brand || "ugreen";
+  if (b === "asustor") return asustorSvg(m);
   if (b === "synology") return /^RS/.test(m) ? rackSvg(synoRackBays(m), PALETTES.synology) : towerSvg(synoBays(m), PALETTES.synology);
   if (b === "qnap") return /U(-RP)?$/.test(m) ? rackSvg(qnapBays(m), PALETTES.qnap) : towerSvg(qnapBays(m), PALETTES.qnap);
   if (/480T/.test(m)) return flatSvg();
@@ -1844,8 +1968,8 @@ const nasSvg = (model, brand) => {
 const nasPicture = (image, model, brand) =>
   /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model, brand))}`;
 
-const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP" };
-const BRAND_SITES = { ugreen: "https://nas.ugreen.com", synology: "https://www.synology.com", qnap: "https://www.qnap.com" };
+const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP", asustor: "ASUSTOR" };
+const BRAND_SITES = { ugreen: "https://nas.ugreen.com", synology: "https://www.synology.com", qnap: "https://www.qnap.com", asustor: "https://www.asustor.com" };
 // Only web addresses become links (a configuration_url can also be a homeassistant:// path).
 const webUrl = (u) => (/^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : null);
 // The NAS web interface: the configuration_url of the NAS device in the device registry (set by the
@@ -1875,6 +1999,8 @@ const BRAND_LOGOS = {
   synology: "data:image/png;base64,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",
   qnap: "data:image/png;base64,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",
 };
+// ASUSTOR: the mark of the Dashboard Icons collection (images/asustor.svg), embedded like the others.
+BRAND_LOGOS.asustor = "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22800%22%20height=%22800%22%20viewBox=%220%200%201024%201024%22%3E%3Ccircle%20cx=%22512%22%20cy=%22512%22%20r=%22512%22%20style=%22fill:%230052a4%22/%3E%3Cpath%20d=%22M240.3%20511.7h-16.9c-3%200-6%201.1-8.9%203.1-2.9%202.1-4.5%204.6-5%207.5l-1.4%208.7c-.6%203.9.6%207.5%203.7%2010.6%203%203.2%206.6%204.8%2010.6%204.8h11.9zm32.2-18.8-11.9%2071.4H208c-8.1%200-15-2.8-20.6-8.5-5.6-5.6-8.5-12.5-8.5-20.6%200-1.2.1-2.6.4-4.3l2.2-13.4c4.3-15.4%2013.8-23%2028.4-23h33.7c.7-4.4-.4-8.4-3.4-12.1s-6.7-5.5-11.2-5.5h-32.2l2.8-16.9h44.1c7.8%200%2014.6%202.8%2020.3%208.5%205.7%205.6%208.6%2012.4%208.6%2020.2.1%201.9%200%203.3-.1%204.2m109.9-33.1-3%2016.9h-45.8c-8%200-12.7%203.9-14.1%2011.8l35.8%2021.8q14.1%208.55%2014.1%2024.6c0%209.4-3.5%2017-10.4%2022.6-5.6%204.5-11.9%206.8-18.7%206.8H278l2.8-17.8h45.8c8.2%200%2013.1-4.2%2014.6-12.6l-36.3-20.2c-9.3-5.2-13.9-13.2-13.9-23.9q0-12.9%208.1-21.3c5.4-5.6%2012.4-8.5%2020.9-8.5h62.4zm104.2%200-13.7%2080.8c-1.2%206.5-4.6%2012.1-10.2%2016.7s-11.8%207-18.4%207H416c-8.1%200-15-2.8-20.5-8.2-5.6-5.5-8.3-12.3-8.3-20.4%200-1.6.2-3.3.4-5l11.7-70.8h29L417%20529.5c-.2.9-.3%201.7-.3%202.6%200%204.2%201.4%207.6%204.3%2010.3s6.4%204%2010.6%204c7.8%200%2012.4-4%2013.7-12.1l12-74.5zm99.8%200-3%2016.9H542c-8%200-12.7%203.9-14.1%2011.8l35.8%2021.8q14.1%208.55%2014.1%2024.6c0%209.4-3.5%2017-10.4%2022.6-5.6%204.5-11.9%206.8-18.7%206.8h-62.3l2.8-17.8H535c8.2%200%2013.1-4.2%2014.5-12.6l-36.3-20.2c-9.3-5.2-13.9-13.2-13.9-23.9%200-8.6%202.7-15.7%208.2-21.3%205.4-5.6%2012.4-8.5%2020.9-8.5h58zm79.5%200-3%2016.9h-29.3l-8.6%2052.7c0%20.9-.1%201.7-.1%202.6%200%203.9%201.4%207.3%204.4%2010.1q4.35%204.2%2010.2%204.2h11.7l-2.8%2017.8h-23.7c-8.1%200-15-2.8-20.5-8.5-5.6-5.6-8.4-12.5-8.4-20.6%200-1.8.2-3.5.4-5.2l14.8-87.7h28.6l-2.9%2017.6h29.2zm90.5%208.3c-5.7-5.5-12.5-8.3-20.5-8.3h-28.2c-6.8%200-13%202.1-18.5%206.2-5.5%204.2-8.8%209.6-10%2016.3l-7.8%2047.5c-.3%201.7-.4%203.5-.4%205.2%200%208.1%202.8%2015%208.4%2020.6s12.4%208.5%2020.5%208.5h27.8c6.9%200%2013.2-2.4%2018.8-7.2s8.9-10.6%2010.1-17.4l8-46.2c.3-1.6.5-3.3.5-5.2-.1-7.8-3-14.5-8.7-20m-12.3%2025.2-6.9%2040.6c-1.4%208.4-6.3%2012.6-14.4%2012.6-4.1%200-7.5-1.3-10.3-3.9s-3.8-5.8-3.8-9.9c0-.9.3-3%20.3-3l6.7-40.6c1.3-8%205.8-12%2013.4-12%204.5%200%2010.3.7%2013.5%203.8%203.1%203.2%202.2%207.9%201.5%2012.4m101-33.5-2.9%2016.9h-17q-12.45%200-14.4%2012.3L799%20564.3h-28.8l13.2-81.4c1-6.7%204.3-12.3%209.9-16.6s11.8-6.5%2018.6-6.5z%22%20style=%22fill:%23fff%22/%3E%3C/svg%3E";
 const UGREEN_LOGO = `<svg viewBox="31.54 11.44 86.93 129.63"><defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
   <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="#001509"/></linearGradient></defs>
   <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/></svg>`;
@@ -2091,7 +2217,9 @@ const offlineUgreen = (hass, nasId) => {
 // through the device registry. Synology attaches volumes and disks to child devices of the NAS;
 // QNAP keeps everything on one device and tells volumes and drives apart in the entity names.
 
-const REGISTRY_PLATFORMS = { synology: "synology_dsm", qnap: "qnap" };
+const REGISTRY_PLATFORMS = { synology: "synology_dsm", qnap: "qnap", asustor: "asustor" };
+// Brands whose volumes, disks and network interfaces are child devices of the NAS device.
+const CHILD_DEVICE_BRANDS = new Set(["synology", "asustor"]);
 
 // NAS-level translation_key → scalar slot.
 const SYNO_SCALARS = {
@@ -2113,6 +2241,17 @@ const QNAP_SCALARS = {
   status: "server_status",
   uptime: "boot",
 };
+// ASUSTOR (ha-asustor, SNMP): fan_speed / fan_speed_n and cpu_temperature(_n) / system_temperature(_n) are handled by
+// their prefix (the "_n" variants exist when the NAS has several fans or sensors); the update entity is its "adm" one.
+const ASUSTOR_SCALARS = {
+  cpu_usage: "cpu_usage",
+  memory_usage: "ram_usage",
+  memory_total: "ram_total",
+  memory_available: "ram_available",
+  uptime: "runtime",
+  cpu_model: "cpu_model",
+};
+const ASUSTOR_TEMPS = { cpu_temperature: "cpu_temp", system_temperature: "sys_temp" };
 // Volume and disk translation_key → per-device slot (Synology prefixes volume_/disk_, QNAP volume_/drive_).
 const VOLUME_KEYS = {
   volume_percentage_used: "used_pct",
@@ -2120,6 +2259,13 @@ const VOLUME_KEYS = {
   volume_size_total: "total_size",
   volume_size_free: "available_size",
   volume_status: "status",
+  // ASUSTOR
+  volume_usage: "used_pct",
+  volume_used: "used_size",
+  volume_total: "total_size",
+  volume_free: "available_size",
+  volume_raid_level: "level",
+  volume_filesystem: "filesystem",
 };
 const DISK_KEYS = {
   disk_temp: "temperature",
@@ -2129,7 +2275,13 @@ const DISK_KEYS = {
   disk_below_remain_life_thr: "low_life",
   drive_temp: "temperature",
   drive_smart_status: "status",
+  // ASUSTOR
+  disk_temperature: "temperature",
+  disk_health: "smart",
+  disk_size: "size",
 };
+// ASUSTOR: translation_key of the rates of a network interface (a child device) → network tile.
+const ASUSTOR_RATES = { if_receive_rate: "lan_down", if_transmit_rate: "lan_up" };
 // Default object id of Synology's translation-key-less temperature sensors ("…_temperature", or
 // "…_temp" in older installs), de-duplicated or not.
 const TEMP_ID_RE = /_temp(?:erature)?(?:_\d+)?$/;
@@ -2256,9 +2408,16 @@ const discoverRegistry = (hass, brand, nasId) => {
   }
   const dev = hass.devices[rootId];
   nas.info = { name: dev.name_by_user || dev.name, model: dev.model, version: dev.sw_version, url: dev.configuration_url };
-  const SCALARS_BY_KEY = brand === "synology" ? SYNO_SCALARS : QNAP_SCALARS;
+  const SCALARS_BY_KEY = { synology: SYNO_SCALARS, qnap: QNAP_SCALARS, asustor: ASUSTOR_SCALARS }[brand];
   const pool = (nas.pools[1] = { volumes: {}, disks: {} });
   const groups = {};
+  // Label of a child device (a volume or a disk). ha-asustor names them "<NAS name> <part>" ("NAS Disk 1"): the NAS
+  // name is left out, so that a narrow disk tile keeps "Disk 1" instead of cutting "NAS Disk…".
+  const childLabel = (d) => {
+    const name = String(d?.name_by_user || d?.name || "");
+    const root = deviceName(dev);
+    return deviceLabel(brand === "asustor" && root && name.toLowerCase().startsWith(`${root.toLowerCase()} `) ? name.slice(root.length + 1) : name);
+  };
 
   for (const id of byRoot.get(rootId)) {
     const e = hass.entities[id];
@@ -2267,16 +2426,21 @@ const discoverRegistry = (hass, brand, nasId) => {
     // the temperature device class): they are told by that class, or by their id when the state
     // is not loaded yet.
     const isTemp = brand === "synology" && !tk && id.startsWith("sensor.") && (hass.states[id]?.attributes?.device_class === "temperature" || TEMP_ID_RE.test(id));
-    if (brand === "synology" && e.device_id !== rootId) {
+    if (CHILD_DEVICE_BRANDS.has(brand) && e.device_id !== rootId) {
       // Child device of the NAS: a volume or a disk, labelled and (for disks) modelled by its device.
       const d = hass.devices[e.device_id];
-      if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: deviceLabel(d?.name_by_user || d?.name) }), VOLUME_KEYS[tk], id);
+      if (brand === "asustor" && tk in ASUSTOR_RATES) set(nas.scalars, ASUSTOR_RATES[tk], id); // First interface feeds the tiles.
+      else if (tk in VOLUME_KEYS) set((pool.volumes[e.device_id] ??= { labelText: childLabel(d) }), VOLUME_KEYS[tk], id);
       else if (tk in DISK_KEYS || isTemp)
-        set((pool.disks[e.device_id] ??= { labelText: deviceLabel(d?.name_by_user || d?.name), modelText: d?.model }), isTemp ? "temperature" : DISK_KEYS[tk], id);
+        set((pool.disks[e.device_id] ??= { labelText: childLabel(d), modelText: d?.model }), isTemp ? "temperature" : DISK_KEYS[tk], id);
     } else if (isTemp) {
       set(nas.scalars, "sys_temp", id);
     } else if (brand === "synology" && tk === "status" && id.startsWith("binary_sensor.")) {
       set(nas.scalars, "server_status", id); // Security status: a safety binary sensor, on = issue found.
+    } else if (brand === "asustor" && /^fan_speed(_n)?$/.test(tk)) {
+      nas.fans[Object.keys(nas.fans).length + 1] = id; // Entities are sorted: fans stay in order.
+    } else if (brand === "asustor" && /^(cpu|system)_temperature(_n)?$/.test(tk)) {
+      set(nas.scalars, ASUSTOR_TEMPS[tk.replace(/_n$/, "")], id);
     } else if (tk in SCALARS_BY_KEY) {
       set(nas.scalars, SCALARS_BY_KEY[tk], id);
     } else if (e.device_id === rootId && id.startsWith("update.")) {
@@ -2347,12 +2511,17 @@ const volumeUsage = (hass, vol) => {
   if (total === null && used !== null && avail !== null) total = used + avail;
   // Unknown used space: no percentage (shown as "—"), rather than an empty bar at 0 %.
   let pct = total && used !== null ? Math.min(100, Math.max(0, (used / total) * 100)) : null;
-  // Synology and QNAP report the percentage directly: it completes whichever size is missing.
+  // Synology, QNAP and ASUSTOR report the percentage directly: it completes whichever size is missing.
   const direct = num(st("used_pct"));
   if (pct === null && direct !== null) {
     pct = Math.min(100, Math.max(0, direct));
     if (used === null && total !== null) used = (total * pct) / 100;
     else if (total === null && used !== null && pct > 0) total = (used * 100) / pct;
+    // Only the free space and the percentage (ASUSTOR: used and total are disabled by default).
+    else if (total === null && used === null && avail !== null && pct < 100) {
+      total = (avail * 100) / (100 - pct);
+      used = total - avail;
+    }
   }
   return { total, used, pct };
 };
@@ -2694,7 +2863,7 @@ class NasBase extends HTMLElement {
     const u = this._s(nas.scalars.update);
     if (!u || !/^(on|true)$/i.test(String(u.state))) return null;
     const latest = u.attributes?.latest_version ?? u.attributes?.available_version;
-    const version = latest && !/^unknown$/i.test(String(latest)) ? String(latest) : "";
+    const version = latest && /\d/.test(String(latest)) ? String(latest) : "";
     return { id: u.entity_id, text: this._t("update_available"), version };
   }
 
@@ -2788,7 +2957,7 @@ class NasBase extends HTMLElement {
     if (!nas.nasId) return sig;
     // The uptime computed from a boot timestamp (Synology, QNAP) ages with the clock, not with a
     // state: tie the signature to the minute so the text refreshes with the next state change.
-    if (nas.scalars.boot && num(this._s(nas.scalars.runtime)) === null) sig.push(Math.floor(Date.now() / 60000));
+    if (nas.scalars.boot && durationSeconds(this._s(nas.scalars.runtime)) === null) sig.push(Math.floor(Date.now() / 60000));
     const walk = (o) => {
       for (const v of Object.values(o)) {
         if (typeof v === "string") sig.push(h.states[v]);
@@ -3013,7 +3182,7 @@ class NasCard extends NasBase {
       toBytes(this._s(sc.ram_used)) ??
       (ramTotal !== null && ramAvail !== null ? ramTotal - ramAvail : ramTotal !== null && ram !== null ? (ramTotal * ram) / 100 : null);
     const ramLabel = ramUsed !== null && ramTotal !== null ? `${this._t("ram")} · ${ramPair(ramUsed, ramTotal, this._loc())}` : this._t("ram");
-    const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
+    const runtime = durationSeconds(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const facts = [];
     if (runtime !== null)
       facts.push(
@@ -3126,9 +3295,9 @@ class NasCard extends NasBase {
     // Volume numbers start again in each pool: with several pools, the fallback name carries the pool number.
     const multi = Object.keys(nas.pools).length > 1;
     for (const [pn, pool] of Object.entries(nas.pools)) {
-      const raid = this._text(pool.level);
-      const raidUp = raid?.toUpperCase();
       Object.entries(pool.volumes).forEach(([vn, vol], vi) => {
+        const raid = this._text(pool.level) || this._text(vol.level); // ASUSTOR: the RAID level is a volume sensor.
+        const raidUp = raid?.toUpperCase();
         // Synology keys volumes by device id: the fallback name numbers them in order instead.
         const vno = DEVICE_ID_RE.test(vn) ? String(vi + 1) : vn;
         const u = volumeUsage(this._hass, vol);
@@ -3412,7 +3581,7 @@ class NasMiniCard extends NasCard {
           ICONS.up
         )}${fmtRate(toBps(this._s(sc.lan_up)), this._loc())}</span></span>`
       );
-    const runtime = num(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
+    const runtime = durationSeconds(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const upd = this._updateInfo(nas);
     if (upd) {
       const text = esc(`${upd.text}${upd.version ? ` · ${upd.version}` : ""}`);

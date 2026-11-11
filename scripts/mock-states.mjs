@@ -173,9 +173,50 @@ export const qnap = registryMock("qnap", qnapDevice, "qnap-nas", [
   ["sensor.qnap_nas_drive_0_2_status", "drive_smart_status", "GOOD", { name: "Drive 0:2 status" }],
 ]);
 
+// ASUSTOR (ha-asustor, SNMP): the NAS device with fans, temperatures and the ADM update; volumes, disks and network
+// interfaces are child devices of it. The uptime is in days, the display unit Home Assistant suggests.
+const asusDevices = {
+  asus_nas: { id: "asus_nas", name: "asustor-nas", manufacturer: "ASUSTOR", model: "AS5304T", sw_version: "5.1.0.RN42", via_device_id: null },
+  asus_vol1: { id: "asus_vol1", name: "asustor-nas Volume 1", manufacturer: "ASUSTOR", model: "RAID5 btrfs", via_device_id: "asus_nas" },
+  asus_d1: { id: "asus_d1", name: "asustor-nas Disk 1", model: "ST8000VN004", via_device_id: "asus_nas" },
+  asus_d2: { id: "asus_d2", name: "asustor-nas Disk 2", model: "ST8000VN004", via_device_id: "asus_nas" },
+  asus_if1: { id: "asus_if1", name: "asustor-nas eth0", manufacturer: "ASUSTOR", model: "Network interface", via_device_id: "asus_nas" },
+  asus_if2: { id: "asus_if2", name: "asustor-nas eth1", manufacturer: "ASUSTOR", model: "Network interface", via_device_id: "asus_nas" },
+};
+export const asustor = registryMock("asustor", asusDevices.asus_nas, "asustor-nas", [
+  ["sensor.asustor_nas_cpu_usage", "cpu_usage", "12.5", { name: "CPU usage", unit_of_measurement: "%" }],
+  ["sensor.asustor_nas_memory_usage", "memory_usage", "41.2", { name: "Memory usage", unit_of_measurement: "%" }],
+  ["sensor.asustor_nas_memory_total", "memory_total", "8.0", { name: "Memory total", unit_of_measurement: "GiB" }],
+  ["sensor.asustor_nas_memory_available", "memory_available", "4.7", { name: "Memory available", unit_of_measurement: "GiB" }],
+  ["sensor.asustor_nas_uptime", "uptime", "12.3", { name: "Uptime", unit_of_measurement: "d", device_class: "duration" }],
+  ["sensor.asustor_nas_cpu_model", "cpu_model", "Intel(R) Celeron(R) J4125", { name: "CPU model" }],
+  ["sensor.asustor_nas_cpu_temperature", "cpu_temperature", "48", { name: "CPU temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.asustor_nas_system_temperature", "system_temperature", "41", { name: "System temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.asustor_nas_fan_speed_1", "fan_speed_n", "1120", { name: "Fan 1 speed", unit_of_measurement: "rpm" }],
+  ["sensor.asustor_nas_fan_speed_2", "fan_speed_n", "1090", { name: "Fan 2 speed", unit_of_measurement: "rpm" }],
+  ["update.asustor_nas_adm", "adm", "on", { name: "ADM", installed_version: "5.1.0.RN42", latest_version: "newer version" }],
+  ["sensor.asustor_nas_volume_1_usage", "volume_usage", "62.5", { name: "Volume 1 Usage", unit_of_measurement: "%" }, "asus_vol1"],
+  ["sensor.asustor_nas_volume_1_free", "volume_free", "6.0", { name: "Volume 1 Free", unit_of_measurement: "TB" }, "asus_vol1"],
+  ["sensor.asustor_nas_volume_1_status", "volume_status", "Normal", { name: "Volume 1 Status" }, "asus_vol1"],
+  ["sensor.asustor_nas_volume_1_raid_level", "volume_raid_level", "RAID5", { name: "Volume 1 RAID level" }, "asus_vol1"],
+  ["sensor.asustor_nas_volume_1_filesystem", "volume_filesystem", "btrfs", { name: "Volume 1 Filesystem" }, "asus_vol1"],
+  ["sensor.asustor_nas_disk_1_temperature", "disk_temperature", "36", { name: "Disk 1 Temperature", unit_of_measurement: "°C", device_class: "temperature" }, "asus_d1"],
+  ["sensor.asustor_nas_disk_1_health", "disk_health", "Healthy", { name: "Disk 1 Health" }, "asus_d1"],
+  ["sensor.asustor_nas_disk_1_status", "disk_status", "Idle", { name: "Disk 1 Status" }, "asus_d1"],
+  ["sensor.asustor_nas_disk_2_temperature", "disk_temperature", "38", { name: "Disk 2 Temperature", unit_of_measurement: "°C", device_class: "temperature" }, "asus_d2"],
+  ["sensor.asustor_nas_disk_2_health", "disk_health", "Healthy", { name: "Disk 2 Health" }, "asus_d2"],
+  ["sensor.asustor_nas_disk_2_status", "disk_status", "Normal", { name: "Disk 2 Status" }, "asus_d2"],
+  ["sensor.asustor_nas_eth0_receive_rate", "if_receive_rate", "152.4", { name: "eth0 Receive rate", unit_of_measurement: "Mbit/s" }, "asus_if1"],
+  ["sensor.asustor_nas_eth0_transmit_rate", "if_transmit_rate", "12.8", { name: "eth0 Transmit rate", unit_of_measurement: "Mbit/s" }, "asus_if1"],
+  ["sensor.asustor_nas_eth1_receive_rate", "if_receive_rate", "0.0", { name: "eth1 Receive rate", unit_of_measurement: "Mbit/s" }, "asus_if2"],
+  ["sensor.asustor_nas_eth1_transmit_rate", "if_transmit_rate", "0.0", { name: "eth1 Transmit rate", unit_of_measurement: "Mbit/s" }, "asus_if2"],
+]);
+for (const d of Object.values(asusDevices)) asustor.devices[d.id] = d;
+
 // One mock Home Assistant per brand, the shape scripts/screenshots.mjs mounts the cards with.
 export const mocks = {
   ugreen: { states },
   synology,
   qnap,
+  asustor,
 };

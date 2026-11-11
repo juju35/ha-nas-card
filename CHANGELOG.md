@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.23.0 - 2026-11-11
+
+### Features
+- **ASUSTOR** (ha-asustor integration, SNMP): discovered like Synology DSM. CPU, RAM, CPU and system temperatures, uptime, CPU model, fans, the ADM update chip and « ADM x.y » under the name; volumes with RAID level, status (RAID chip), filesystem and used space; disks with temperature, status, SMART health, size and model; network rates of the first interface.
+- ASUSTOR pictures: the 83 models of the manufacturer's resource page listed in the editor, each drawn after the product photos of its family (Drivestor, Drivestor Pro / Nimbustor, Lockerstor and AS50…AS70 with a display and trays, rackmounts, Flashstor).
+- The editor and error texts name ASUSTOR in the 22 languages; the « url » hint tells to set it for ASUSTOR as for QNAP (neither integration provides a configuration URL). The brand logo comes from the Dashboard Icons collection.
+
+### Fixes
+- ASUSTOR volumes and disks are labelled « Volume 1 », « Disk 1 » instead of « NAS Volume 1 » / « NAS Disk 1 » (the NAS name prefix of the integration's device names is left out), so a narrow disk tile no longer cuts its name.
+- The uptime of a duration sensor is converted from its own unit (Home Assistant shows ASUSTOR's in days).
+- A volume known only by its free space and used percentage gets its total and used sizes deduced.
+- A disk reported « Idle » is healthy.
+
 ## 1.22.0 - 2026-11-10
 
 ### Features

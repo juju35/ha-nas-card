@@ -25,7 +25,7 @@ for (const [brand, list] of Object.entries(NAS_MODELS)) {
   let y = 0;
   let width = 0;
   models.forEach((model, n) => {
-    const svg = nasSvg(model);
+    const svg = nasSvg(model, brand); // the brand settles the FS prefix (ASUSTOR Flashstor or Synology FS)
     const [vw, vh] = svg.match(/viewBox="[\d.]+ [\d.]+ ([\d.]+) ([\d.]+)"/).slice(1).map(Number);
     const w = (vw / vh) * H;
     if (x > 0 && x + w > MAX_W) {

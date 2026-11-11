@@ -468,7 +468,7 @@ test("the editor lists the pictures sorted by brand, then by model, with the bra
   const options = [...modelOptions()];
   assert.equal(options.length, Object.values(NAS_MODELS).flat().length);
   const brands = [...options.map((o) => o.label.split(" ")[0])];
-  assert.deepEqual([...new Set(brands)], ["QNAP", "Synology", "UGREEN"]);
+  assert.deepEqual([...new Set(brands)], ["ASUSTOR", "QNAP", "Synology", "UGREEN"]);
   // Brands are contiguous blocks, in alphabetical order.
   assert.deepEqual(brands, [...brands].sort());
   // Natural order inside a brand (DS224+ before DS1522+), the value stays the bare model name.
@@ -539,7 +539,7 @@ test("I18N parity: every language has exactly the English keys and placeholders"
 test("Serbian: no Latin letters in sr outside names, brands and units, no Cyrillic in sr-Latn", () => {
   // Proper names, brands, acronyms, units and the example URL stay in Latin script in both variants.
   const allowed =
-    /\{\w+\}|https?:\/\/\S+|Home Assistant|UGREEN|Synology|QNAP|DSM|NAS|CPU|RAM|URL|\b(?:h|d|min)\b/g;
+    /\{\w+\}|https?:\/\/\S+|Home Assistant|UGREEN|Synology|QNAP|ASUSTOR|DSM|NAS|CPU|RAM|URL|\b(?:h|d|min)\b/g;
   for (const [k, v] of Object.entries(STRINGS.sr)) {
     assert.doesNotMatch(String(v).replace(allowed, ""), /[A-Za-z]/, `sr.${k}: ${v}`);
   }
@@ -1738,4 +1738,100 @@ test("RAID state: a Synology volume's status is its RAID chip, shown once; QNAP 
   const qnap = await registryHass("qnap");
   full._hass = qnap;
   assert.doesNotMatch(full._render(), /chip raid/);
+});
+
+test("ASUSTOR discovery: scalars, fans, volume, disks and the first interface's rates from the device registry", async () => {
+  const hass = await registryHass("asustor");
+  const nas = discover(hass, "");
+  assert.equal(nas.brand, "asustor");
+  assert.equal(nas.nasId, "asus_nas");
+  assert.equal(nas.info.model, "AS5304T");
+  const sc = nas.scalars;
+  assert.equal(sc.cpu_usage, "sensor.asustor_nas_cpu_usage");
+  assert.equal(sc.ram_usage, "sensor.asustor_nas_memory_usage");
+  assert.equal(sc.ram_total, "sensor.asustor_nas_memory_total");
+  assert.equal(sc.ram_available, "sensor.asustor_nas_memory_available");
+  assert.equal(sc.cpu_temp, "sensor.asustor_nas_cpu_temperature");
+  assert.equal(sc.sys_temp, "sensor.asustor_nas_system_temperature");
+  assert.equal(sc.runtime, "sensor.asustor_nas_uptime");
+  assert.equal(sc.update, "update.asustor_nas_adm");
+  assert.equal(sc.lan_down, "sensor.asustor_nas_eth0_receive_rate"); // first interface
+  assert.equal(sc.lan_up, "sensor.asustor_nas_eth0_transmit_rate");
+  assert.deepEqual({ ...nas.fans }, { 1: "sensor.asustor_nas_fan_speed_1", 2: "sensor.asustor_nas_fan_speed_2" });
+  const vols = Object.values(nas.pools[1].volumes);
+  assert.equal(vols.length, 1);
+  assert.equal(vols[0].level, "sensor.asustor_nas_volume_1_raid_level");
+  assert.equal(vols[0].labelText, "Volume 1"); // the NAS name prefix of ha-asustor's device names is left out
+  assert.equal(vols[0].filesystem, "sensor.asustor_nas_volume_1_filesystem");
+  const disks = Object.values(nas.pools[1].disks);
+  assert.equal(disks.length, 2);
+  assert.equal(disks[0].modelText, "ST8000VN004");
+  assert.equal(disks[0].labelText, "Disk 1");
+  assert.equal(disks[0].smart, "sensor.asustor_nas_disk_1_health");
+});
+
+test("a volume with only its free space and percentage gets a total and a used size (ASUSTOR)", async () => {
+  const hass = await registryHass("asustor");
+  const vol = Object.values(discover(hass, "").pools[1].volumes)[0];
+  const u = volumeUsage(hass, vol);
+  assert.equal(Math.round(u.pct * 10) / 10, 62.5);
+  assert.equal(u.total, 16e12); // 6 TB free = 37.5 % of 16 TB
+  assert.equal(u.used, 10e12);
+});
+
+test("ASUSTOR card: ADM version, uptime from days, RAID chip, idle disk healthy, fans, rates in Mbit/s", async () => {
+  const hass = await registryHass("asustor");
+  const el = new NasCard();
+  el._config = {};
+  el._hass = hass;
+  const html = el._render();
+  assert.match(html, /ADM 5\.1\.0\.RN42/);
+  assert.match(html, /Uptime: 12 d 7 h/);
+  assert.match(html, /<span class="tag">RAID5<\/span>/);
+  assert.match(html, /<span class="tag">btrfs<\/span>/);
+  assert.match(html, /chip raid clickable ok/);
+  assert.match(html, /Update available/);
+  assert.doesNotMatch(html, /newer version/); // ha-asustor only says "newer version": no version number to show
+  assert.match(html, /1,?120 rpm/);
+  assert.match(html, /19\.1 MB\/s/); // 152.4 Mbit/s
+  assert.doesNotMatch(html, /dot crit/); // "Idle" is not a disk problem
+  hass.states["sensor.asustor_nas_volume_1_status"] = { ...hass.states["sensor.asustor_nas_volume_1_status"], state: "Degraded" };
+  assert.match(el._render(), /chip raid clickable crit[^>]*><span class="dot"><\/span><span class="txt">Degraded</);
+});
+
+test("ASUSTOR pictures: one drawing per family, bay count from the model, FS6706T is ASUSTOR, not Synology", () => {
+  const { nasSvg, NAS_MODELS } = load("nas-card.js", ["nasSvg", "NAS_MODELS"]);
+  const trays = (svg) => (svg.match(/class="t"/g) || []).length;
+  // Lockerstor and the AS50…AS70 ranges: one tray per bay, vertical up to 6 bays, two columns of horizontal trays from 8.
+  assert.equal(trays(nasSvg("AS6602T", "asustor")), 2);
+  assert.equal(trays(nasSvg("AS6604T", "asustor")), 4);
+  assert.equal(trays(nasSvg("AS6706T", "asustor")), 6);
+  assert.equal(trays(nasSvg("AS6806T", "asustor")), 6);
+  assert.doesNotMatch(nasSvg("AS6806T", "asustor"), /width="84"/); // 6 bays stay vertical, as on the photos
+  assert.equal(trays(nasSvg("AS6808T", "asustor")), 8);
+  assert.equal(trays(nasSvg("AS7110T", "asustor")), 10);
+  assert.equal(trays(nasSvg("AS-202T", "asustor")), 2);
+  assert.equal(trays(nasSvg("AS-608T", "asustor")), 8);
+  assert.match(nasSvg("AS6604T", "asustor"), /#101a22/); // display from 4 bays
+  assert.doesNotMatch(nasSvg("AS6602T", "asustor"), /#101a22/);
+  // Drivestor has a closed front (no tray); Drivestor Pro, Nimbustor and AS40 show one glossy tray per disk.
+  for (const m of ["AS1102T", "AS1104T", "AS3202T"]) assert.equal(trays(nasSvg(m, "asustor")), 0, m);
+  for (const [m, n] of [["AS3302T", 2], ["AS3304T", 4], ["AS4002T", 2], ["AS4004T", 4], ["AS5202T", 2], ["AS5304T", 4], ["AS5402T", 2], ["AS5404T", 4]])
+    assert.equal(trays(nasSvg(m, "asustor")), n, m);
+  const width = (svg) => +svg.match(/viewBox="0 0 (\d+)/)[1];
+  assert.ok(width(nasSvg("AS1104T", "asustor")) > width(nasSvg("AS1102T", "asustor")));
+  assert.ok(width(nasSvg("AS5304T", "asustor")) > width(nasSvg("AS5202T", "asustor")));
+  assert.match(nasSvg("AS1102T", "asustor"), /pattern/);
+  // Rackmounts: one row of bays for 1U, a grid of four columns above.
+  assert.equal(trays(nasSvg("AS6204RS", "asustor")), 4);
+  assert.equal(trays(nasSvg("AS6212RD", "asustor")), 12);
+  assert.equal(trays(nasSvg("AS7224RDX", "asustor")), 24);
+  assert.equal(trays(nasSvg("AS-604RS", "asustor")), 4);
+  // Flashstor: a flat box, the FS6712X a thin slab; FS is ASUSTOR's only when the integration says so.
+  assert.equal(trays(nasSvg("FS6706T", "asustor")), 0);
+  assert.ok(width(nasSvg("FS6712X", "asustor")) > width(nasSvg("FS6812X", "asustor")));
+  assert.match(nasSvg("FS6706T", "asustor"), /data-nas="asustor"/);
+  assert.doesNotMatch(nasSvg("FS6706T", "synology"), /data-nas="asustor"/);
+  // Every model of the editor list is recognised, without the brand too (except the FS prefix).
+  for (const m of NAS_MODELS.asustor.filter((x) => !/^FS/.test(x))) assert.match(nasSvg(m), /data-nas="asustor"/, m);
 });
