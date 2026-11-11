@@ -227,11 +227,12 @@ Drawn QNAP models (graphite towers with the copper strip, rackmounts for the mod
 
 ### <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/asustor.svg" alt="" width="24"> ASUSTOR
 
-AS5202T (Nimbustor 2) set up with ha-asustor, in a Home Assistant dashboard:
+AS5304T set up with ha-asustor, with two fans and two network interfaces:
 
-| Full card | Mini card |
+| Light | Dark |
 |---|---|
-| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-asustor.png" alt="card asustor" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-asustor.png" alt="mini card asustor" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-asustor.png" alt="card asustor" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-asustor-dark.png" alt="card asustor dark" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-asustor.png" alt="mini card asustor" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-asustor-dark.png" alt="mini card asustor dark" width="400"> |
 
 Drawn ASUSTOR models, all the 83 of the manufacturer's resource page, one drawing per product family after its product photos: Drivestor (closed front with a diamond texture, orange mark), Drivestor Pro and Nimbustor (glossy black front with one tray per disk, red lines), Lockerstor and the AS50…AS70 ranges (control strip with teal and blue lines, a display from 4 bays, vertical trays, two columns of horizontal trays from 8 bays), rackmounts (a row of bays for 1U, a grid of four columns above) and the flat Flashstor (a thin slab for the FS6712X). The bay count is the last two digits of the model number (AS5304T → 4, AS6708T → 8, FS6712X → 12), or the last digit of an older three-digit one (AS-604RS → 4). Older AS-… models have no photo and use the tray drawing:
 
@@ -245,10 +246,6 @@ Every entity created by the integration carries a `UGNAS_device_id` attribute. T
 
 The UGOS version is read from `nas_ugos_version` or, for a NAS adopted with integration v2026.10.1 or later (where the sensor became « UGOS Version »), from `ugos_version`. The **Update Available** sensor (v2026.10.1 and later) shows an « Update available » chip with the new UGOS version while it is `True`. The **Power Action: Reboot** button (`power_action_reboot`, v2026.05.1 and later) adds the reboot button at the end of the system facts, with the same confirmation popup as on Synology; buttons carry no `UGNAS_device_id`, so the cards pick the one on the NAS's device, or the one named after its entity prefix (shutdown and wake-up buttons are never used).
 
-### ASUSTOR
-
-The [ha-asustor](https://github.com/aubierr/ha-asustor) integration (SNMP) is discovered like Synology DSM: the NAS is the root device, and its volumes, disks and network interfaces are child devices. CPU, RAM, CPU and system temperatures, uptime (converted from the unit Home Assistant displays, days by default), CPU model, fans, the ADM update chip (« ADM x.y » under the name), a volume's RAID level, status (the RAID chip) and filesystem, and each disk's temperature, status, SMART health, size and model. The first network interface feeds the network tiles. Total and used volume sizes are disabled by default in the integration: they are deduced from the free space and the used percentage. No server status and no reboot button (the integration has none). The model pictures (AS…, FS…, rackmounts for AS…R…) are drawings.
-
 ### Synology DSM and QNAP
 
 The cards read the Home Assistant entity and device registries instead of entity ids: every entity of these integrations is matched by its `translation_key` (`cpu_total_load`, `memory_real_usage`, `volume_percentage_used`, `disk_temp`, `drive_temp`…) and by the device it belongs to. Entity ids can therefore be in any language or renamed without breaking the cards.
@@ -256,7 +253,11 @@ The cards read the Home Assistant entity and device registries instead of entity
 - **Synology DSM**: volumes and disks are child devices of the NAS; their labels and the disk models come from there. The security status binary sensor feeds the status pill (« Normal » / « Warning »), and the uptime comes from the **Last boot** sensor. The DSM version is shown under the model. A disk is shown in red when its status or SMART status is not normal, or when its **Exceeded max bad sectors** or **Below min remaining life** binary sensor is on. The DSM **update** entity of the NAS shows an « Update available » chip with the new version while it is on, and the **Reboot** button (found by its `restart` device class, the shutdown button is never used) adds a reboot button at the end of the system facts: it asks for a confirmation at the top of the card before pressing it.
 - **QNAP**: everything sits on one device; volumes and drives are told apart by the identifier the integration inserts in the entity names (for example `DataVol1` or `0:1`). The first network interface feeds the network tiles, and the firmware is shown as QTS or QuTS hero.
 - Some useful sensors are disabled by default by these integrations — on QNAP, drive temperatures, SMART statuses, memory sizes, network rates and volume used space; on Synology, total volume sizes; on ASUSTOR, the total and used volume sizes (deduced from the free space and the used percentage when disabled) and the disk sizes. Enable them in **Settings → Devices & services → Entities** to fill the matching sections of the card (missing sizes are completed from the used percentage when possible).
-- Fans are not reported by these integrations: the fans section only shows on UGREEN NAS.
+- Fans are not reported by these integrations: the fans section only shows on UGREEN and ASUSTOR NAS.
+
+### ASUSTOR
+
+The [ha-asustor](https://github.com/aubierr/ha-asustor) integration (SNMP) is discovered like Synology DSM: the NAS is the root device, and its volumes, disks and network interfaces are child devices. CPU, RAM, CPU and system temperatures, uptime (converted from the unit Home Assistant displays, days by default), CPU model, fans, the ADM update chip (« ADM x.y » under the name), a volume's RAID level, status (the RAID chip) and filesystem, and each disk's temperature, status, SMART health, size and model. The first network interface feeds the network tiles. Total and used volume sizes are disabled by default in the integration: they are deduced from the free space and the used percentage. No server status and no reboot button (the integration has none). The model pictures (AS…, FS…, rackmounts for AS…R…) are drawings.
 
 ### NAS pictures
 

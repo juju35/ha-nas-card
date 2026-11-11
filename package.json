@@ -1,7 +1,7 @@
 {
   "name": "ha-nas-card",
   "version": "1.23.0",
-  "description": "Lovelace cards for Home Assistant to monitor UGREEN, Synology and QNAP NAS devices.",
+  "description": "Lovelace cards for Home Assistant to monitor UGREEN, Synology, QNAP and ASUSTOR NAS devices.",
   "private": true,
   "type": "module",
   "scripts": {
