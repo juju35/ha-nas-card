@@ -75,6 +75,8 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP or ASUSTOR device)",
     title: "Title (optional, defaults to the NAS name)",
     show_image: "Show NAS picture",
+    show_title: "Show title",
+    show_subtitle: "Show subtitle",
     image: "NAS picture (model or image URL)",
     image_helper: "Automatic from the model reported by the integration",
     image_auto: "Automatic",
@@ -143,6 +145,8 @@ const STRINGS = {
     nas: "NAS (appareil UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
+    show_title: "Afficher le titre",
+    show_subtitle: "Afficher le sous-titre",
     image: "Illustration du NAS (modèle ou URL d'image)",
     image_helper: "Automatique selon le modèle remonté par l'intégration",
     image_auto: "Automatique",
@@ -211,6 +215,8 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology-DSM-, QNAP- oder ASUSTOR-Gerät)",
     title: "Titel (optional, standardmäßig der NAS-Name)",
     show_image: "NAS-Bild anzeigen",
+    show_title: "Titel anzeigen",
+    show_subtitle: "Untertitel anzeigen",
     image: "NAS-Bild (Modell oder Bild-URL)",
     image_helper: "Automatisch anhand des von der Integration gemeldeten Modells",
     image_auto: "Automatisch",
@@ -279,6 +285,8 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Título (opcional, por defecto el nombre del NAS)",
     show_image: "Mostrar la imagen del NAS",
+    show_title: "Mostrar el título",
+    show_subtitle: "Mostrar el subtítulo",
     image: "Imagen del NAS (modelo o URL de imagen)",
     image_helper: "Automática según el modelo indicado por la integración",
     image_auto: "Automática",
@@ -347,6 +355,8 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP или ASUSTOR уређај)",
     title: "Наслов (опционо, подразумевано је назив NAS-а)",
     show_image: "Прикажи слику NAS-а",
+    show_title: "Прикажи наслов",
+    show_subtitle: "Прикажи поднаслов",
     image: "Слика NAS-а (модел или URL слике)",
     image_helper: "Аутоматски према моделу који пријављује интеграција",
     image_auto: "Аутоматски",
@@ -415,6 +425,8 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP ili ASUSTOR uređaj)",
     title: "Naslov (opciono, podrazumevano je naziv NAS-a)",
     show_image: "Prikaži sliku NAS-a",
+    show_title: "Prikaži naslov",
+    show_subtitle: "Prikaži podnaslov",
     image: "Slika NAS-a (model ili URL slike)",
     image_helper: "Automatski prema modelu koji prijavljuje integracija",
     image_auto: "Automatski",
@@ -483,6 +495,8 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Titolo (facoltativo, per impostazione predefinita il nome del NAS)",
     show_image: "Mostra l'immagine del NAS",
+    show_title: "Mostra il titolo",
+    show_subtitle: "Mostra il sottotitolo",
     image: "Immagine del NAS (modello o URL dell'immagine)",
     image_helper: "Automatica in base al modello indicato dall'integrazione",
     image_auto: "Automatica",
@@ -551,6 +565,8 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- of ASUSTOR-apparaat)",
     title: "Titel (optioneel, standaard de naam van de NAS)",
     show_image: "Afbeelding van de NAS weergeven",
+    show_title: "Titel tonen",
+    show_subtitle: "Ondertitel tonen",
     image: "Afbeelding van de NAS (model of afbeeldings-URL)",
     image_helper: "Automatisch op basis van het model dat de integratie meldt",
     image_auto: "Automatisch",
@@ -619,6 +635,8 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Título (opcional, por predefinição o nome do NAS)",
     show_image: "Mostrar a imagem do NAS",
+    show_title: "Mostrar o título",
+    show_subtitle: "Mostrar o subtítulo",
     image: "Imagem do NAS (modelo ou URL da imagem)",
     image_helper: "Automática segundo o modelo indicado pela integração",
     image_auto: "Automática",
@@ -687,6 +705,8 @@ const STRINGS = {
     nas: "NAS (urządzenie UGREEN, Synology DSM, QNAP lub ASUSTOR)",
     title: "Tytuł (opcjonalny, domyślnie nazwa NAS)",
     show_image: "Pokaż obraz NAS",
+    show_title: "Pokaż tytuł",
+    show_subtitle: "Pokaż podtytuł",
     image: "Obraz NAS (model lub URL obrazu)",
     image_helper: "Automatycznie według modelu zgłaszanego przez integrację",
     image_auto: "Automatycznie",
@@ -755,6 +775,8 @@ const STRINGS = {
     nas: "NAS (dispozitiv UGREEN, Synology DSM, QNAP sau ASUSTOR)",
     title: "Titlu (opțional, implicit numele NAS-ului)",
     show_image: "Afișează imaginea NAS-ului",
+    show_title: "Afișează titlul",
+    show_subtitle: "Afișează subtitlul",
     image: "Imaginea NAS-ului (model sau URL de imagine)",
     image_helper: "Automată după modelul raportat de integrare",
     image_auto: "Automată",
@@ -823,6 +845,8 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhed)",
     title: "Titel (valgfri, som standard NAS'ens navn)",
     show_image: "Vis billede af NAS'en",
+    show_title: "Vis titel",
+    show_subtitle: "Vis undertitel",
     image: "Billede af NAS'en (model eller billed-URL)",
     image_helper: "Automatisk ud fra den model, integrationen rapporterer",
     image_auto: "Automatisk",
@@ -891,6 +915,8 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhet)",
     title: "Titel (valfri, NAS-enhetens namn som standard)",
     show_image: "Visa bild av NAS-enheten",
+    show_title: "Visa rubrik",
+    show_subtitle: "Visa underrubrik",
     image: "Bild av NAS-enheten (modell eller bild-URL)",
     image_helper: "Automatiskt utifrån modellen som integrationen rapporterar",
     image_auto: "Automatisk",
@@ -959,6 +985,8 @@ const STRINGS = {
     nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заглавие (по избор, по подразбиране името на NAS)",
     show_image: "Показване на изображение на NAS",
+    show_title: "Показване на заглавието",
+    show_subtitle: "Показване на подзаглавието",
     image: "Изображение на NAS (модел или URL на изображение)",
     image_helper: "Автоматично според модела, отчетен от интеграцията",
     image_auto: "Автоматично",
@@ -1027,6 +1055,8 @@ const STRINGS = {
     nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заголовок (необязательно, по умолчанию имя NAS)",
     show_image: "Показывать изображение NAS",
+    show_title: "Показывать заголовок",
+    show_subtitle: "Показывать подзаголовок",
     image: "Изображение NAS (модель или URL изображения)",
     image_helper: "Автоматически по модели, сообщаемой интеграцией",
     image_auto: "Автоматически",
@@ -1095,6 +1125,8 @@ const STRINGS = {
     nas: "NAS (пристрій UGREEN, Synology DSM, QNAP або ASUSTOR)",
     title: "Заголовок (необов'язково, за замовчуванням назва NAS)",
     show_image: "Показувати зображення NAS",
+    show_title: "Показувати заголовок",
+    show_subtitle: "Показувати підзаголовок",
     image: "Зображення NAS (модель або URL зображення)",
     image_helper: "Автоматично за моделлю, яку повідомляє інтеграція",
     image_auto: "Автоматично",
@@ -1163,6 +1195,8 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP vagy ASUSTOR eszköz)",
     title: "Cím (nem kötelező, alapértelmezés szerint a NAS neve)",
     show_image: "NAS képének megjelenítése",
+    show_title: "Cím megjelenítése",
+    show_subtitle: "Alcím megjelenítése",
     image: "NAS képe (modell vagy kép URL-je)",
     image_helper: "Automatikus az integráció által jelentett modell alapján",
     image_auto: "Automatikus",
@@ -1231,6 +1265,8 @@ const STRINGS = {
     nas: "NAS (zariadenie UGREEN, Synology DSM, QNAP alebo ASUSTOR)",
     title: "Názov (voliteľný, predvolene názov NAS)",
     show_image: "Zobraziť obrázok NAS",
+    show_title: "Zobraziť názov",
+    show_subtitle: "Zobraziť podnázov",
     image: "Obrázok NAS (model alebo URL obrázka)",
     image_helper: "Automaticky podľa modelu hláseného integráciou",
     image_auto: "Automaticky",
@@ -1299,6 +1335,8 @@ const STRINGS = {
     nas: "NAS (zařízení UGREEN, Synology DSM, QNAP nebo ASUSTOR)",
     title: "Název (volitelný, výchozí je název NAS)",
     show_image: "Zobrazit obrázek NAS",
+    show_title: "Zobrazit název",
+    show_subtitle: "Zobrazit podnázev",
     image: "Obrázek NAS (model nebo URL obrázku)",
     image_helper: "Automaticky podle modelu hlášeného integrací",
     image_auto: "Automaticky",
@@ -1367,6 +1405,8 @@ const STRINGS = {
     nas: "NAS (naprava UGREEN, Synology DSM, QNAP ali ASUSTOR)",
     title: "Naslov (neobvezno, privzeto ime NAS)",
     show_image: "Prikaži sliko NAS",
+    show_title: "Prikaži naslov",
+    show_subtitle: "Prikaži podnaslov",
     image: "Slika NAS (model ali URL slike)",
     image_helper: "Samodejno glede na model, ki ga sporoča integracija",
     image_auto: "Samodejno",
@@ -1435,6 +1475,8 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP vai ASUSTOR ierīce)",
     title: "Nosaukums (neobligāts, pēc noklusējuma NAS nosaukums)",
     show_image: "Rādīt NAS attēlu",
+    show_title: "Rādīt virsrakstu",
+    show_subtitle: "Rādīt apakšvirsrakstu",
     image: "NAS attēls (modelis vai attēla URL)",
     image_helper: "Automātiski pēc integrācijas paziņotā modeļa",
     image_auto: "Automātiski",
@@ -1503,6 +1545,8 @@ const STRINGS = {
     nas: "NAS (συσκευή UGREEN, Synology DSM, QNAP ή ASUSTOR)",
     title: "Τίτλος (προαιρετικός, από προεπιλογή το όνομα του NAS)",
     show_image: "Εμφάνιση εικόνας του NAS",
+    show_title: "Εμφάνιση τίτλου",
+    show_subtitle: "Εμφάνιση υπότιτλου",
     image: "Εικόνα του NAS (μοντέλο ή URL εικόνας)",
     image_helper: "Αυτόματα βάσει του μοντέλου που αναφέρει η ενσωμάτωση",
     image_auto: "Αυτόματα",
@@ -2626,6 +2670,7 @@ const BASE_STYLE = `
      The pill keeps its whole label as long as the title keeps a few characters (the first column's minimum):
      only then does it truncate its text, and on a very narrow card it shows its dot alone. */
   .titles { flex: 1 1 0; min-width: 0; display: grid; grid-template-columns: minmax(48px, 1fr) auto; }
+  :host([hide-title]) .titles > .name, :host([hide-subtitle]) .titles > .sub { display: none; }
   .titles > .name { grid-column: 1; }
   .titles > .sub { grid-column: 1 / -1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
@@ -2883,6 +2928,9 @@ class NasBase extends HTMLElement {
   setConfig(config) {
     if (!config) throw new Error("Invalid configuration");
     this._config = { ...config };
+    // show_title / show_subtitle: the header's title / subtitle, hidden by the stylesheet
+    this.toggleAttribute?.("hide-title", config.show_title === false);
+    this.toggleAttribute?.("hide-subtitle", config.show_subtitle === false);
     this._html = "";
     this._update();
   }
@@ -3636,7 +3684,7 @@ class NasEditorBase extends HTMLElement {
 
   // Boolean options, all on by default.
   _toggles() {
-    return ["show_image", ...this.constructor.toggles];
+    return ["show_title", "show_subtitle", "show_image", ...this.constructor.toggles];
   }
 
   _schema() {
@@ -3667,6 +3715,8 @@ class NasEditorBase extends HTMLElement {
         type: "grid",
         name: "",
         schema: [
+          { name: "show_title", selector: { boolean: {} } },
+          { name: "show_subtitle", selector: { boolean: {} } },
           { name: "show_image", selector: { boolean: {} } },
           ...this.constructor.toggles.map((name) => ({ name, selector: { boolean: {} } })),
         ],
