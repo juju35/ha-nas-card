@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.24.2 - 2026-11-14
+
+### Fixes
+- **Mini card visual editor**: `show_system`, `show_volumes`, `show_disks` and `show_fans` can now be set in the mini card's editor too, since its zoomed view shows the full card with these sections; the README lists them for both cards.
+
 ## 1.24.1 - 2026-11-13
 
 ### Fixes
