@@ -521,6 +521,20 @@ test("the visual editor offers the url and brand_url options after the picture",
   assert.deepEqual(names.slice(names.indexOf("image"), names.indexOf("image") + 3), ["image", "url", "brand_url"]);
 });
 
+test("the mini card editor offers the full card's sections, used by its zoomed view", () => {
+  const { NasCardEditor, NasMiniCardEditor } = load("nas-card.js", ["NasCardEditor", "NasMiniCardEditor"]);
+  const toggles = (Editor) => {
+    const ed = new Editor();
+    ed._hass = { states: {}, language: "fr" };
+    ed._config = {};
+    return ed._schema().find((f) => f.type === "grid").schema.map((f) => f.name);
+  };
+  const mini = toggles(NasMiniCardEditor);
+  for (const name of toggles(NasCardEditor)) assert.ok(mini.includes(name), name);
+  for (const name of ["show_storage", "zoom"]) assert.ok(mini.includes(name), name);
+  for (const name of mini) assert.ok(STRINGS.fr[name], name);
+});
+
 test("I18N parity: every language has exactly the English keys and placeholders", () => {
   const keys = Object.keys(STRINGS.en).sort();
   assert.deepEqual(Object.keys(STRINGS).sort(), ["bg", "cs", "da", "de", "el", "en", "es", "fr", "hu", "it", "lv", "nl", "pl", "pt", "ro", "ru", "sk", "sl", "sr", "sr-Latn", "sv", "uk"]);

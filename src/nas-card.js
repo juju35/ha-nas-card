@@ -3876,7 +3876,8 @@ class NasCardEditor extends NasEditorBase {
 
 class NasMiniCardEditor extends NasEditorBase {
   static get toggles() {
-    return ["show_storage", "show_network", "show_history", "zoom"];
+    // The compact view's own toggles, then the full card's sections, shown by the zoomed view.
+    return ["show_storage", "show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans", "zoom"];
   }
 }
 
