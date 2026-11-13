@@ -1453,6 +1453,25 @@ test("mini card: update in the footer; a click outside closes the reboot popup w
   assert.equal(el._zoomed, false);
 });
 
+test("folding: a tap elsewhere (pointer) collapses the mini card, not a press in it released outside; leaving the page collapses it too", async () => {
+  const el = await zoomCard({ language: "fr" });
+  el.connectedCallback();
+  el._zoomClick(zoomButton());
+  assert.equal(el._zoomed, true);
+  // Pressed in the card and released outside: it stays.
+  el._onOutsideWatch.tap(click([node("div"), el, node("body")]));
+  assert.equal(el._zoomed, true);
+  // A tap on a spot that sends no click (iOS): the pointer alone collapses it.
+  el._onOutsideWatch.tap(click([node("div"), node("body")]));
+  assert.equal(el._zoomed, false);
+  // Left zoomed and back on the page: compact.
+  el._zoomClick(zoomButton());
+  el.disconnectedCallback();
+  el.connectedCallback();
+  assert.equal(el._zoomed, false);
+  el.disconnectedCallback();
+});
+
 test("reboot popup: Escape and Tab handled on the window, a double click on its button does not reopen it", async () => {
   const hass = await registryHass("synology");
   const el = new NasCard();
