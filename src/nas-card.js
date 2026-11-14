@@ -3293,7 +3293,8 @@ const FULL_STYLE = `
   .facts { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; margin-top: 6px; }
   .facts > span { display: inline-flex; align-items: center; gap: 4px; }
   .facts .icon { width: 14px; height: 14px; color: var(--secondary-text-color); }
-  .facts > .action { display: grid; }
+  .facts > .power { margin-left: auto; gap: 4px; }
+  .facts > .power > .action { display: grid; margin: -4px 0; }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
@@ -3408,10 +3409,9 @@ class NasCard extends NasBase {
           upd.version ? ` · ${esc(upd.version)}` : ""
         }</span>`
       );
-    const reboot = this._rebootBtn(nas);
-    if (reboot) facts.push(reboot);
-    const shutdown = this._shutdownBtn(nas);
-    if (shutdown) facts.push(shutdown);
+    // The power buttons stay together at the end of the line (and wrap together).
+    const power = this._rebootBtn(nas) + this._shutdownBtn(nas);
+    if (power) facts.push(`<span class="power">${power}</span>`);
     return `<div>
       <div class="gauges">
         ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu), hist)}
