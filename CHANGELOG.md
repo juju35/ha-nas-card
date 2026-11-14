@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.25.0 - 2026-11-14
+
+### Features
+- **Shutdown button** ([#89](https://github.com/juju35/ha-nas-card/issues/89), suggested by @dragonslore): beside the reboot button, a shutdown button for the UGREEN NAS **Power Action: Shutdown** button and the Synology DSM **Shutdown** button, with its own confirmation popup at the top of the card (the NAS stays off until it is switched on again). `show_shutdown: false` (also in the visual editors) hides it.
+
 ## 1.24.2 - 2026-11-14
 
 ### Fixes

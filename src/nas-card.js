@@ -23,9 +23,10 @@ const ICONS = {
   // mdi:arrow-expand and mdi:arrow-collapse, the mini card's zoom button.
   expand: "M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z",
   collapse: "M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z",
-  // mdi:arrow-up-circle (update chip) and mdi:restart (reboot button).
+  // mdi:arrow-up-circle (update chip), mdi:restart (reboot button) and mdi:power (shutdown button).
   update: "M12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22M12,7L7,12H10V16H14V12H17L12,7Z",
   restart: "M12,4C14.1,4 16.1,4.8 17.6,6.3C20.7,9.4 20.7,14.5 17.6,17.6C15.8,19.5 13.3,20.2 10.9,19.9L11.4,17.9C13.1,18.1 14.9,17.5 16.2,16.2C18.5,13.9 18.5,10.1 16.2,7.7C15.1,6.6 13.5,6 12,6V10.6L7,5.6L12,0.6V4M6.3,17.6C3.7,15 3.3,11 5.1,7.9L6.6,9.4C5.5,11.6 5.9,14.4 7.8,16.2C8.3,16.7 8.9,17.1 9.6,17.4L9,19.4C8,19 7.1,18.4 6.3,17.6Z",
+  power: "M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13",
   network: "M13,19H14A1,1 0 0,1 15,20H22V22H15A1,1 0 0,1 14,23H10A1,1 0 0,1 9,22H2V20H9A1,1 0 0,1 10,19H11V17H4A1,1 0 0,1 3,16V12A1,1 0 0,1 4,11H20A1,1 0 0,1 21,12V16A1,1 0 0,1 20,17H13V19M4,3H20A1,1 0 0,1 21,4V8A1,1 0 0,1 20,9H4A1,1 0 0,1 3,8V4A1,1 0 0,1 4,3M9,7H10V5H9V7M9,15H10V13H9V15M5,5V7H7V5H5M5,13V15H7V13H5Z",
 };
 
@@ -61,6 +62,9 @@ const STRINGS = {
     reboot: "Restart the NAS",
     reboot_confirm: "Restart the NAS now? Its shares, apps and services will be unavailable for a few minutes.",
     reboot_btn: "Restart",
+    shutdown: "Shut down the NAS",
+    shutdown_confirm: "Shut down the NAS now? It stays off until it is switched on again, on the NAS itself or by Wake-on-LAN.",
+    shutdown_btn: "Shut down",
     cancel: "Cancel",
     volume_n: "Volume {n}",
     raid_degraded: "Degraded",
@@ -86,6 +90,7 @@ const STRINGS = {
     show_disks: "Show disks",
     show_fans: "Show fans",
     show_history: "Show 24 h history",
+    show_shutdown: "Shutdown button",
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -132,6 +137,9 @@ const STRINGS = {
     reboot: "Redémarrer le NAS",
     reboot_confirm: "Redémarrer le NAS maintenant ? Ses partages, applications et services seront indisponibles pendant quelques minutes.",
     reboot_btn: "Redémarrer",
+    shutdown: "Éteindre le NAS",
+    shutdown_confirm: "Éteindre le NAS maintenant ? Il restera éteint jusqu’à ce qu’on le rallume, sur le NAS lui-même ou par Wake-on-LAN.",
+    shutdown_btn: "Éteindre",
     cancel: "Annuler",
     volume_n: "Volume {n}",
     raid_degraded: "Dégradé",
@@ -156,6 +164,7 @@ const STRINGS = {
     show_disks: "Afficher les disques",
     show_fans: "Afficher les ventilateurs",
     show_history: "Afficher l’historique 24 h",
+    show_shutdown: "Bouton d’extinction",
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
@@ -202,6 +211,9 @@ const STRINGS = {
     reboot: "NAS neu starten",
     reboot_confirm: "NAS jetzt neu starten? Freigaben, Apps und Dienste sind für einige Minuten nicht erreichbar.",
     reboot_btn: "Neu starten",
+    shutdown: "NAS herunterfahren",
+    shutdown_confirm: "NAS jetzt herunterfahren? Es bleibt aus, bis es wieder eingeschaltet wird – am NAS selbst oder per Wake-on-LAN.",
+    shutdown_btn: "Herunterfahren",
     cancel: "Abbrechen",
     volume_n: "Volume {n}",
     raid_degraded: "Herabgestuft",
@@ -226,6 +238,7 @@ const STRINGS = {
     show_disks: "Laufwerke anzeigen",
     show_fans: "Lüfter anzeigen",
     show_history: "24-h-Verlauf anzeigen",
+    show_shutdown: "Schaltfläche Herunterfahren",
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
@@ -272,6 +285,9 @@ const STRINGS = {
     reboot: "Reiniciar el NAS",
     reboot_confirm: "¿Reiniciar el NAS ahora? Sus carpetas compartidas, aplicaciones y servicios no estarán disponibles durante unos minutos.",
     reboot_btn: "Reiniciar",
+    shutdown: "Apagar el NAS",
+    shutdown_confirm: "¿Apagar el NAS ahora? Permanecerá apagado hasta que se vuelva a encender, en el propio NAS o mediante Wake-on-LAN.",
+    shutdown_btn: "Apagar",
     cancel: "Cancelar",
     volume_n: "Volumen {n}",
     raid_degraded: "Degradado",
@@ -296,6 +312,7 @@ const STRINGS = {
     show_disks: "Mostrar los discos",
     show_fans: "Mostrar los ventiladores",
     show_history: "Mostrar el historial de 24 h",
+    show_shutdown: "Botón de apagado",
     show_storage: "Mostrar el almacenamiento",
     zoom: "Botón de zoom",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
@@ -342,6 +359,9 @@ const STRINGS = {
     reboot: "Поново покрени NAS",
     reboot_confirm: "Поново покренути NAS сада? Дељене фасцикле, апликације и услуге неће бити доступне неколико минута.",
     reboot_btn: "Поново покрени",
+    shutdown: "Искључи NAS",
+    shutdown_confirm: "Искључити NAS сада? Остаће искључен док се поново не укључи, на самом NAS-у или преко мреже.",
+    shutdown_btn: "Искључи",
     cancel: "Откажи",
     volume_n: "Волумен {n}",
     raid_degraded: "Деградирано",
@@ -366,6 +386,7 @@ const STRINGS = {
     show_disks: "Прикажи дискове",
     show_fans: "Прикажи вентилаторе",
     show_history: "Прикажи историју за 24 ч",
+    show_shutdown: "Дугме за искључивање",
     show_storage: "Прикажи складиште",
     zoom: "Дугме за увећање",
     zoom_helper: "Пребацује мини картицу на пун приказ и назад",
@@ -412,6 +433,9 @@ const STRINGS = {
     reboot: "Ponovo pokreni NAS",
     reboot_confirm: "Ponovo pokrenuti NAS sada? Deljene fascikle, aplikacije i usluge neće biti dostupne nekoliko minuta.",
     reboot_btn: "Ponovo pokreni",
+    shutdown: "Isključi NAS",
+    shutdown_confirm: "Isključiti NAS sada? Ostaće isključen dok se ponovo ne uključi, na samom NAS-u ili putem Wake-on-LAN.",
+    shutdown_btn: "Isključi",
     cancel: "Otkaži",
     volume_n: "Volumen {n}",
     raid_degraded: "Degradirano",
@@ -436,6 +460,7 @@ const STRINGS = {
     show_disks: "Prikaži diskove",
     show_fans: "Prikaži ventilatore",
     show_history: "Prikaži istoriju za 24 č",
+    show_shutdown: "Dugme za isključivanje",
     show_storage: "Prikaži skladište",
     zoom: "Dugme za uvećanje",
     zoom_helper: "Prebacuje mini karticu na pun prikaz i nazad",
@@ -482,6 +507,9 @@ const STRINGS = {
     reboot: "Riavvia il NAS",
     reboot_confirm: "Riavviare il NAS adesso? Cartelle condivise, app e servizi non saranno disponibili per qualche minuto.",
     reboot_btn: "Riavvia",
+    shutdown: "Spegni il NAS",
+    shutdown_confirm: "Spegnere il NAS ora? Resterà spento finché non verrà riacceso, sul NAS stesso o tramite Wake-on-LAN.",
+    shutdown_btn: "Spegni",
     cancel: "Annulla",
     volume_n: "Volume {n}",
     raid_degraded: "Degradato",
@@ -506,6 +534,7 @@ const STRINGS = {
     show_disks: "Mostra i dischi",
     show_fans: "Mostra le ventole",
     show_history: "Mostra lo storico 24 h",
+    show_shutdown: "Pulsante di spegnimento",
     show_storage: "Mostra l'archiviazione",
     zoom: "Pulsante zoom",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
@@ -552,6 +581,9 @@ const STRINGS = {
     reboot: "NAS herstarten",
     reboot_confirm: "NAS nu herstarten? De gedeelde mappen, apps en diensten zijn een paar minuten niet beschikbaar.",
     reboot_btn: "Herstarten",
+    shutdown: "NAS uitschakelen",
+    shutdown_confirm: "De NAS nu uitschakelen? Hij blijft uit tot hij weer wordt aangezet, op de NAS zelf of via Wake-on-LAN.",
+    shutdown_btn: "Uitschakelen",
     cancel: "Annuleren",
     volume_n: "Volume {n}",
     raid_degraded: "Gedegradeerd",
@@ -576,6 +608,7 @@ const STRINGS = {
     show_disks: "Schijven weergeven",
     show_fans: "Ventilatoren weergeven",
     show_history: "24-uursgeschiedenis weergeven",
+    show_shutdown: "Uitschakelknop",
     show_storage: "Opslag weergeven",
     zoom: "Zoomknop",
     zoom_helper: "Schakelt de minikaart over naar de volledige kaart en terug",
@@ -622,6 +655,9 @@ const STRINGS = {
     reboot: "Reiniciar o NAS",
     reboot_confirm: "Reiniciar o NAS agora? As pastas partilhadas, aplicações e serviços ficarão indisponíveis durante alguns minutos.",
     reboot_btn: "Reiniciar",
+    shutdown: "Desligar o NAS",
+    shutdown_confirm: "Desligar o NAS agora? Fica desligado até voltar a ser ligado, no próprio NAS ou por Wake-on-LAN.",
+    shutdown_btn: "Desligar",
     cancel: "Cancelar",
     volume_n: "Volume {n}",
     raid_degraded: "Degradado",
@@ -646,6 +682,7 @@ const STRINGS = {
     show_disks: "Mostrar os discos",
     show_fans: "Mostrar as ventoinhas",
     show_history: "Mostrar o histórico de 24 h",
+    show_shutdown: "Botão de desligar",
     show_storage: "Mostrar o armazenamento",
     zoom: "Botão de zoom",
     zoom_helper: "Alterna o minicartão para o cartão completo e vice-versa",
@@ -692,6 +729,9 @@ const STRINGS = {
     reboot: "Uruchom ponownie NAS",
     reboot_confirm: "Uruchomić teraz ponownie NAS? Udziały, aplikacje i usługi będą niedostępne przez kilka minut.",
     reboot_btn: "Uruchom ponownie",
+    shutdown: "Wyłącz NAS",
+    shutdown_confirm: "Wyłączyć NAS teraz? Pozostanie wyłączony, dopóki nie zostanie ponownie włączony, na samym NAS-ie lub przez Wake-on-LAN.",
+    shutdown_btn: "Wyłącz",
     cancel: "Anuluj",
     volume_n: "Wolumin {n}",
     raid_degraded: "Zdegradowany",
@@ -716,6 +756,7 @@ const STRINGS = {
     show_disks: "Pokaż dyski",
     show_fans: "Pokaż wentylatory",
     show_history: "Pokaż historię z 24 h",
+    show_shutdown: "Przycisk wyłączania",
     show_storage: "Pokaż pamięć masową",
     zoom: "Przycisk powiększenia",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
@@ -762,6 +803,9 @@ const STRINGS = {
     reboot: "Repornește NAS-ul",
     reboot_confirm: "Reporniți NAS-ul acum? Partajările, aplicațiile și serviciile vor fi indisponibile câteva minute.",
     reboot_btn: "Repornește",
+    shutdown: "Oprește NAS-ul",
+    shutdown_confirm: "Oprești NAS-ul acum? Rămâne oprit până când este pornit din nou, de pe NAS sau prin Wake-on-LAN.",
+    shutdown_btn: "Oprește",
     cancel: "Anulează",
     volume_n: "Volum {n}",
     raid_degraded: "Degradat",
@@ -786,6 +830,7 @@ const STRINGS = {
     show_disks: "Afișează discurile",
     show_fans: "Afișează ventilatoarele",
     show_history: "Afișează istoricul pe 24 h",
+    show_shutdown: "Buton de oprire",
     show_storage: "Afișează stocarea",
     zoom: "Buton de zoom",
     zoom_helper: "Comută minicardul la cardul complet și înapoi",
@@ -832,6 +877,9 @@ const STRINGS = {
     reboot: "Genstart NAS'en",
     reboot_confirm: "Vil du genstarte NAS'en nu? Delte mapper, apps og tjenester er utilgængelige i et par minutter.",
     reboot_btn: "Genstart",
+    shutdown: "Sluk NAS'en",
+    shutdown_confirm: "Sluk NAS'en nu? Den forbliver slukket, indtil den tændes igen, på selve NAS'en eller via Wake-on-LAN.",
+    shutdown_btn: "Sluk",
     cancel: "Annuller",
     volume_n: "Volume {n}",
     raid_degraded: "Degraderet",
@@ -856,6 +904,7 @@ const STRINGS = {
     show_disks: "Vis diske",
     show_fans: "Vis blæsere",
     show_history: "Vis 24-timers historik",
+    show_shutdown: "Sluk-knap",
     show_storage: "Vis lager",
     zoom: "Zoomknap",
     zoom_helper: "Skifter fra minikortet til det fulde kort og tilbage",
@@ -902,6 +951,9 @@ const STRINGS = {
     reboot: "Starta om NAS:en",
     reboot_confirm: "Vill du starta om NAS:en nu? Delade mappar, appar och tjänster är otillgängliga i några minuter.",
     reboot_btn: "Starta om",
+    shutdown: "Stäng av NAS:en",
+    shutdown_confirm: "Stänga av NAS:en nu? Den förblir avstängd tills den slås på igen, på själva NAS:en eller via Wake-on-LAN.",
+    shutdown_btn: "Stäng av",
     cancel: "Avbryt",
     volume_n: "Volym {n}",
     raid_degraded: "Degraderad",
@@ -926,6 +978,7 @@ const STRINGS = {
     show_disks: "Visa diskar",
     show_fans: "Visa fläktar",
     show_history: "Visa 24 h-historik",
+    show_shutdown: "Avstängningsknapp",
     show_storage: "Visa lagring",
     zoom: "Zoomknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
@@ -972,6 +1025,9 @@ const STRINGS = {
     reboot: "Рестартиране на NAS",
     reboot_confirm: "Да се рестартира ли NAS сега? Споделените папки, приложенията и услугите няма да са достъпни няколко минути.",
     reboot_btn: "Рестартиране",
+    shutdown: "Изключване на NAS",
+    shutdown_confirm: "Да се изключи ли NAS сега? Ще остане изключен, докато не бъде включен отново – от самия NAS или чрез Wake-on-LAN.",
+    shutdown_btn: "Изключване",
     cancel: "Отказ",
     volume_n: "Том {n}",
     raid_degraded: "Деградирал",
@@ -996,6 +1052,7 @@ const STRINGS = {
     show_disks: "Показване на дисковете",
     show_fans: "Показване на вентилаторите",
     show_history: "Показване на 24-часовата история",
+    show_shutdown: "Бутон за изключване",
     show_storage: "Показване на хранилището",
     zoom: "Бутон за мащабиране",
     zoom_helper: "Превключва от мини картата към пълната карта и обратно",
@@ -1042,6 +1099,9 @@ const STRINGS = {
     reboot: "Перезагрузить NAS",
     reboot_confirm: "Перезагрузить NAS сейчас? Общие папки, приложения и службы будут недоступны несколько минут.",
     reboot_btn: "Перезагрузить",
+    shutdown: "Выключить NAS",
+    shutdown_confirm: "Выключить NAS сейчас? Он останется выключенным, пока его снова не включат — на самом NAS или через Wake-on-LAN.",
+    shutdown_btn: "Выключить",
     cancel: "Отмена",
     volume_n: "Том {n}",
     raid_degraded: "Деградирован",
@@ -1066,6 +1126,7 @@ const STRINGS = {
     show_disks: "Показывать диски",
     show_fans: "Показывать вентиляторы",
     show_history: "Показать историю за 24 ч",
+    show_shutdown: "Кнопка выключения",
     show_storage: "Показывать хранилище",
     zoom: "Кнопка масштаба",
     zoom_helper: "Переключает мини-карточку на полную и обратно",
@@ -1112,6 +1173,9 @@ const STRINGS = {
     reboot: "Перезапустити NAS",
     reboot_confirm: "Перезапустити NAS зараз? Спільні папки, застосунки й служби будуть недоступні кілька хвилин.",
     reboot_btn: "Перезапуск",
+    shutdown: "Вимкнути NAS",
+    shutdown_confirm: "Вимкнути NAS зараз? Він залишиться вимкненим, доки його знову не ввімкнуть — на самому NAS або через Wake-on-LAN.",
+    shutdown_btn: "Вимкнути",
     cancel: "Скасувати",
     volume_n: "Том {n}",
     raid_degraded: "Деградований",
@@ -1136,6 +1200,7 @@ const STRINGS = {
     show_disks: "Показувати диски",
     show_fans: "Показувати вентилятори",
     show_history: "Показати історію за 24 год",
+    show_shutdown: "Кнопка вимкнення",
     show_storage: "Показувати сховище",
     zoom: "Кнопка масштабу",
     zoom_helper: "Перемикає міні-картку на повну картку й назад",
@@ -1182,6 +1247,9 @@ const STRINGS = {
     reboot: "NAS újraindítása",
     reboot_confirm: "Újraindítja most a NAS-t? A megosztások, alkalmazások és szolgáltatások néhány percig nem lesznek elérhetők.",
     reboot_btn: "Újraindítás",
+    shutdown: "NAS leállítása",
+    shutdown_confirm: "Leállítja most a NAS-t? Kikapcsolva marad, amíg újra be nem kapcsolják, magán a NAS-on vagy Wake-on-LAN-nal.",
+    shutdown_btn: "Leállítás",
     cancel: "Mégse",
     volume_n: "Kötet {n}",
     raid_degraded: "Leromlott",
@@ -1206,6 +1274,7 @@ const STRINGS = {
     show_disks: "Lemezek megjelenítése",
     show_fans: "Ventilátorok megjelenítése",
     show_history: "24 órás előzmények megjelenítése",
+    show_shutdown: "Leállítás gomb",
     show_storage: "Tárhely megjelenítése",
     zoom: "Nagyítás gomb",
     zoom_helper: "A mini kártyáról a teljes kártyára vált és vissza",
@@ -1252,6 +1321,9 @@ const STRINGS = {
     reboot: "Reštartovať NAS",
     reboot_confirm: "Reštartovať NAS teraz? Zdieľané priečinky, aplikácie a služby budú na niekoľko minút nedostupné.",
     reboot_btn: "Reštartovať",
+    shutdown: "Vypnúť NAS",
+    shutdown_confirm: "Vypnúť NAS teraz? Zostane vypnutý, kým ho znova nezapnete, priamo na NAS alebo cez Wake-on-LAN.",
+    shutdown_btn: "Vypnúť",
     cancel: "Zrušiť",
     volume_n: "Zväzok {n}",
     raid_degraded: "Degradovaný",
@@ -1276,6 +1348,7 @@ const STRINGS = {
     show_disks: "Zobraziť disky",
     show_fans: "Zobraziť ventilátory",
     show_history: "Zobraziť 24 h históriu",
+    show_shutdown: "Tlačidlo vypnutia",
     show_storage: "Zobraziť úložisko",
     zoom: "Tlačidlo priblíženia",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
@@ -1322,6 +1395,9 @@ const STRINGS = {
     reboot: "Restartovat NAS",
     reboot_confirm: "Restartovat NAS nyní? Sdílené složky, aplikace a služby budou na několik minut nedostupné.",
     reboot_btn: "Restartovat",
+    shutdown: "Vypnout NAS",
+    shutdown_confirm: "Vypnout NAS nyní? Zůstane vypnutý, dokud jej znovu nezapnete, přímo na NAS nebo přes Wake-on-LAN.",
+    shutdown_btn: "Vypnout",
     cancel: "Zrušit",
     volume_n: "Svazek {n}",
     raid_degraded: "Degradovaný",
@@ -1346,6 +1422,7 @@ const STRINGS = {
     show_disks: "Zobrazit disky",
     show_fans: "Zobrazit ventilátory",
     show_history: "Zobrazit 24h historii",
+    show_shutdown: "Tlačítko vypnutí",
     show_storage: "Zobrazit úložiště",
     zoom: "Tlačítko přiblížení",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
@@ -1392,6 +1469,9 @@ const STRINGS = {
     reboot: "Znova zaženi NAS",
     reboot_confirm: "Želite zdaj znova zagnati NAS? Skupne mape, aplikacije in storitve bodo za nekaj minut nedosegljive.",
     reboot_btn: "Znova zaženi",
+    shutdown: "Zaustavi NAS",
+    shutdown_confirm: "Zaustavim NAS zdaj? Ostal bo izklopljen, dokler ga ne vklopite znova, na samem NAS-u ali prek Wake-on-LAN.",
+    shutdown_btn: "Zaustavi",
     cancel: "Prekliči",
     volume_n: "Nosilec {n}",
     raid_degraded: "Degradirano",
@@ -1416,6 +1496,7 @@ const STRINGS = {
     show_disks: "Prikaži diske",
     show_fans: "Prikaži ventilatorje",
     show_history: "Prikaži 24-urno zgodovino",
+    show_shutdown: "Gumb za zaustavitev",
     show_storage: "Prikaži shrambo",
     zoom: "Gumb za povečavo",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
@@ -1462,6 +1543,9 @@ const STRINGS = {
     reboot: "Restartēt NAS",
     reboot_confirm: "Restartēt NAS tagad? Koplietotās mapes, lietotnes un pakalpojumi dažas minūtes nebūs pieejami.",
     reboot_btn: "Restartēt",
+    shutdown: "Izslēgt NAS",
+    shutdown_confirm: "Izslēgt NAS tagad? Tas paliks izslēgts, līdz to atkal ieslēgs – pašā NAS vai ar Wake-on-LAN.",
+    shutdown_btn: "Izslēgt",
     cancel: "Atcelt",
     volume_n: "Sējums {n}",
     raid_degraded: "Degradēts",
@@ -1486,6 +1570,7 @@ const STRINGS = {
     show_disks: "Rādīt diskus",
     show_fans: "Rādīt ventilatorus",
     show_history: "Rādīt 24 h vēsturi",
+    show_shutdown: "Izslēgšanas poga",
     show_storage: "Rādīt krātuvi",
     zoom: "Tālummaiņas poga",
     zoom_helper: "Pārslēdz mini karti uz pilno karti un atpakaļ",
@@ -1532,6 +1617,9 @@ const STRINGS = {
     reboot: "Επανεκκίνηση του NAS",
     reboot_confirm: "Επανεκκίνηση του NAS τώρα; Οι κοινόχρηστοι φάκελοι, οι εφαρμογές και οι υπηρεσίες δεν θα είναι διαθέσιμα για λίγα λεπτά.",
     reboot_btn: "Επανεκκίνηση",
+    shutdown: "Τερματισμός NAS",
+    shutdown_confirm: "Τερματισμός του NAS τώρα; Θα παραμείνει κλειστό μέχρι να ενεργοποιηθεί ξανά, από το ίδιο το NAS ή μέσω Wake-on-LAN.",
+    shutdown_btn: "Τερματισμός",
     cancel: "Ακύρωση",
     volume_n: "Τόμος {n}",
     raid_degraded: "Υποβαθμισμένο",
@@ -1556,6 +1644,7 @@ const STRINGS = {
     show_disks: "Εμφάνιση δίσκων",
     show_fans: "Εμφάνιση ανεμιστήρων",
     show_history: "Εμφάνιση ιστορικού 24 ωρών",
+    show_shutdown: "Κουμπί τερματισμού",
     show_storage: "Εμφάνιση χώρου αποθήκευσης",
     zoom: "Κουμπί μεγέθυνσης",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και αντίστροφα",
@@ -2085,6 +2174,8 @@ const SCALARS = {
 const SCALAR_RE = Object.entries(SCALARS).map(([k, key]) => [k, new RegExp(`(?:^|_)${key}${SFX}`)]);
 // "Power Action: Reboot" button (integration v2026.05.1 and later). Buttons carry no UGNAS_device_id.
 const RE_REBOOT = new RegExp(`(?:^|_)power_action_reboot${SFX}`);
+// "Power Action: Shutdown" button, found the same way (juju35/ha-nas-card#89).
+const RE_SHUTDOWN = new RegExp(`(?:^|_)power_action_shutdown${SFX}`);
 const RE_FAN = new RegExp(`(?:^|_)device_fan_(\\d+)${SFX}`);
 const RE_POOL = new RegExp(`(?:^|_)pool_(\\d+)_(label|level|status|total_size|used_size|disk_count)${SFX}`);
 const RE_VOLUME = new RegExp(
@@ -2156,7 +2247,8 @@ const ugnasIds = (hass) => {
 const discoverUgreen = (hass, nasId) => {
   const all = ugnasIds(hass);
   const reboots = rebootIds(hass);
-  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}`;
+  const shutdowns = buttonIds(hass, RE_SHUTDOWN);
+  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}\n${shutdowns.join(",")}`;
   if (_cache.has(key)) return _cache.get(key);
   if (_cache.size > 8) _cache.clear();
 
@@ -2194,6 +2286,8 @@ const discoverUgreen = (hass, nasId) => {
   if (nas.nasId) {
     const reboot = ugreenReboot(hass, nas, all, reboots);
     if (reboot) nas.scalars.reboot = reboot;
+    const shutdown = ugreenReboot(hass, nas, all, shutdowns);
+    if (shutdown) nas.scalars.shutdown = shutdown;
     _cache.set(key, nas);
     _lastGood.set(nas.nasId, nas);
     _lastGood.set(nasId || "", nas);
@@ -2202,13 +2296,14 @@ const discoverUgreen = (hass, nasId) => {
   return offlineUgreen(hass, nasId) || nas;
 };
 
-// UGREEN reboot buttons among the integration's entities.
-const rebootIds = (hass) =>
+// UGREEN power buttons among the integration's entities: reboot (RE_REBOOT), shutdown (RE_SHUTDOWN).
+const buttonIds = (hass, re) =>
   candidateIds(hass)
-    .filter((id) => id.startsWith("button.") && hass.states[id] && RE_REBOOT.test(id.slice(7)))
+    .filter((id) => id.startsWith("button.") && hass.states[id] && re.test(id.slice(7)))
     .sort();
+const rebootIds = (hass) => buttonIds(hass, RE_REBOOT);
 
-// The reboot button of one UGREEN NAS. Buttons carry no UGNAS_device_id: the button is the one on the NAS's
+// The reboot (or shutdown) button of one UGREEN NAS. Buttons carry no UGNAS_device_id: the button is the one on the NAS's
 // device in the registry, else the one named after the NAS's entity prefix (UGNAS_device_id is that prefix),
 // else the only one of a single-NAS install.
 const ugreenReboot = (hass, nas, all, reboots) => {
@@ -2495,6 +2590,12 @@ const discoverRegistry = (hass, brand, nasId) => {
       (tk === "reboot" || hass.states[id]?.attributes?.device_class === "restart")
     ) {
       set(nas.scalars, "reboot", id); // Synology "Reboot" (restart device class; "Shutdown" has none).
+    } else if (
+      e.device_id === rootId &&
+      id.startsWith("button.") &&
+      (tk === "shutdown" || (!tk && (/_shutdown$/.test(id) || hass.states[id]?.attributes?.icon === "mdi:power")))
+    ) {
+      set(nas.scalars, "shutdown", id); // Synology "Shutdown": no translation key nor device class, mdi:power.
     } else if (brand === "qnap" && (tk in VOLUME_KEYS || tk in DISK_KEYS || tk === "network_rx" || tk === "network_tx")) {
       (groups[tk] ??= []).push(id);
     } else if (!tk && id.startsWith("sensor.") && hass.states[id]?.attributes?.device_class === "timestamp") {
@@ -2834,8 +2935,8 @@ class NasBase extends HTMLElement {
         }
         return;
       }
-      // The reboot button opens a confirmation popup before pressing the NAS's reboot button.
-      if (action?.dataset.action === "reboot") return this._confirmReboot();
+      // The reboot and shutdown buttons open a confirmation popup before pressing the NAS's button.
+      if (action?.dataset.action === "reboot" || action?.dataset.action === "shutdown") return this._confirmPower(action.dataset.action);
       const el = path.find((n) => n.dataset?.entity);
       if (el) fireMoreInfo(this, el.dataset.entity);
     });
@@ -2892,15 +2993,21 @@ class NasBase extends HTMLElement {
       .catch((err) => console.error("nas-card: button.press failed", err));
   }
 
-  // Opens the reboot confirmation popup; on confirmation, presses the NAS's reboot button.
   _confirmReboot() {
-    const reboot = discover(this._hass, this._config.nas).scalars.reboot;
-    if (!reboot || this._s(reboot)?.state === "unavailable") return;
+    return this._confirmPower("reboot");
+  }
+
+  // Opens the reboot (or shutdown) confirmation popup; on confirmation, presses the NAS's button.
+  _confirmPower(kind) {
+    const id = discover(this._hass, this._config.nas).scalars[kind];
+    if (!id || this._s(id)?.state === "unavailable") return;
     this._dialog = {
-      title: this._t("reboot"),
-      body: this._t("reboot_confirm"),
-      ok: this._t("reboot_btn"),
-      onOk: () => this._press(reboot),
+      kind,
+      icon: kind === "shutdown" ? ICONS.power : ICONS.restart,
+      title: this._t(kind),
+      body: this._t(`${kind}_confirm`),
+      ok: this._t(`${kind}_btn`),
+      onOk: () => this._press(id),
     };
     window.addEventListener("keydown", this._onKey);
     this._update();
@@ -2908,14 +3015,15 @@ class NasBase extends HTMLElement {
     this.shadowRoot.querySelector?.(".modal .danger")?.focus({ preventScroll: true });
   }
 
-  // Closes the popup; `refocus` gives the focus back to the reboot button (not after a click elsewhere on the page).
+  // Closes the popup; `refocus` gives the focus back to the button that opened it (not after a click elsewhere on the page).
   _closeDialog(refocus) {
     if (!this._dialog) return;
+    const kind = this._dialog.kind || "reboot";
     this._dialog = null;
     this._dialogClosedAt = Date.now();
     window.removeEventListener("keydown", this._onKey);
     this._update();
-    if (refocus) this.shadowRoot.querySelector?.('[data-action="reboot"]')?.focus({ preventScroll: true });
+    if (refocus) this.shadowRoot.querySelector?.(`[data-action="${kind}"]`)?.focus({ preventScroll: true });
   }
 
   _dialogHtml() {
@@ -2923,7 +3031,7 @@ class NasBase extends HTMLElement {
     if (!d) return "";
     return `<style>${DIALOG_STYLE}</style><div class="backdrop" data-action="dialog-backdrop">
       <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-body">
-        <h3 id="dlg-title">${svgIcon(ICONS.restart)}${esc(d.title)}</h3>
+        <h3 id="dlg-title">${svgIcon(d.icon || ICONS.restart)}${esc(d.title)}</h3>
         <div class="hint" id="dlg-body">${esc(d.body)}</div>
         <div class="modal-actions">
           <button type="button" class="act cancel" data-action="dialog-cancel">${esc(this._t("cancel"))}</button>
@@ -2941,6 +3049,16 @@ class NasBase extends HTMLElement {
     const label = esc(this._t("reboot"));
     const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
     return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.restart)}</button>`;
+  }
+
+  // Round shutdown button beside it, when the NAS exposes a shutdown button (UGREEN NAS, Synology DSM) and
+  // `show_shutdown` is not false.
+  _shutdownBtn(nas) {
+    const id = nas.scalars.shutdown;
+    if (!id || this._config.show_shutdown === false) return "";
+    const label = esc(this._t("shutdown"));
+    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
+    return `<button class="action" data-action="shutdown" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.power)}</button>`;
   }
 
   // Update available (Synology DSM update entity on, UGREEN "Update Available" sensor "True"): the version it
@@ -3175,7 +3293,8 @@ const FULL_STYLE = `
   .facts { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; margin-top: 6px; }
   .facts > span { display: inline-flex; align-items: center; gap: 4px; }
   .facts .icon { width: 14px; height: 14px; color: var(--secondary-text-color); }
-  .facts > .action { display: grid; }
+  .facts > .power { margin-left: auto; gap: 4px; }
+  .facts > .power > .action { display: grid; margin: -4px 0; }
   .vol { margin-bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
   .vol .row { grid-column: 1; grid-row: 1; }
   .vol:last-child { margin-bottom: 0; }
@@ -3290,8 +3409,9 @@ class NasCard extends NasBase {
           upd.version ? ` · ${esc(upd.version)}` : ""
         }</span>`
       );
-    const reboot = this._rebootBtn(nas);
-    if (reboot) facts.push(reboot);
+    // The power buttons stay together at the end of the line (and wrap together).
+    const power = this._rebootBtn(nas) + this._shutdownBtn(nas);
+    if (power) facts.push(`<span class="power">${power}</span>`);
     return `<div>
       <div class="gauges">
         ${this._gauge(sc.cpu_usage, this._t("cpu"), ICONS.cpu, cpu, cpu === null ? "—" : `${Math.round(cpu)}%`, this._level("cpu", cpu), hist)}
@@ -3870,14 +3990,14 @@ class NasEditorBase extends HTMLElement {
 
 class NasCardEditor extends NasEditorBase {
   static get toggles() {
-    return ["show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans"];
+    return ["show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans", "show_shutdown"];
   }
 }
 
 class NasMiniCardEditor extends NasEditorBase {
   static get toggles() {
     // The compact view's own toggles, then the full card's sections, shown by the zoomed view.
-    return ["show_storage", "show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans", "zoom"];
+    return ["show_storage", "show_system", "show_network", "show_history", "show_volumes", "show_disks", "show_fans", "show_shutdown", "zoom"];
   }
 }
 
