@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.25.1 - 2026-11-14
+
+### Fixes
+- **RAM used / total** ([#91](https://github.com/juju35/ha-nas-card/issues/91), reported by @titis14): on Synology DSM, the used RAM was the total minus the « available (real) » memory, which DSM reports without its buffers and cache, so the label read nearly full beside a low percentage. The used figure now follows the usage percentage of the gauge when no used-memory sensor exists (total minus available is kept as a last resort).
+- RAM sizes are shown in powers of 1024 with KiB / MiB / GiB, like the other cards (« 778 MiB / 3.8 GiB »); volume and disk sizes keep Home Assistant's decimal units.
 ## 1.25.0 - 2026-11-14
 
 ### Features

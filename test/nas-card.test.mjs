@@ -660,11 +660,32 @@ test("the RAM label keeps the unit of the used figure when it differs from the t
   el._config = {};
   const st = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: { unit_of_measurement: unit } });
   const run = (used) => {
-    el._hass = { states: { "sensor.ram_used": st("sensor.ram_used", used, "MB"), "sensor.ram_total": st("sensor.ram_total", 2000, "MB") }, language: "en" };
+    el._hass = { states: { "sensor.ram_used": st("sensor.ram_used", used, "MiB"), "sensor.ram_total": st("sensor.ram_total", 2048, "MiB") }, language: "en" };
     return el._system({ scalars: { ram_used: "sensor.ram_used", ram_total: "sensor.ram_total" } });
   };
-  assert.match(run(800), /RAM · 800 MB \/ 2 GB/);
-  assert.match(run(1500), /RAM · 1\.5 \/ 2 GB/);
+  assert.match(run(800), /RAM · 800 MiB \/ 2 GiB/);
+  assert.match(run(1536), /RAM · 1\.5 \/ 2 GiB/);
+});
+
+test("Synology RAM used follows the real usage percentage, not total minus free memory (#91)", () => {
+  const el = new NasCard();
+  el._config = {};
+  const st = (entity_id, state, unit) => ({ entity_id, state: String(state), attributes: { unit_of_measurement: unit } });
+  // DS918+ with 4 GB: DSM reports 3.8 GiB of real memory, 20 % real usage, and only 300 MiB free (the rest is cache).
+  el._hass = {
+    states: {
+      "sensor.ram_usage": st("sensor.ram_usage", 20, "%"),
+      "sensor.ram_total": st("sensor.ram_total", 3.8 * 1024 ** 3, "B"),
+      "sensor.ram_available": st("sensor.ram_available", 300 * 1024 ** 2, "B"),
+    },
+    language: "en",
+  };
+  const html = el._system({ scalars: { ram_usage: "sensor.ram_usage", ram_total: "sensor.ram_total", ram_available: "sensor.ram_available" } });
+  assert.match(html, /RAM · 778 MiB \/ 3\.8 GiB/);
+  assert.match(html, />20%</);
+  // Without a percentage, total minus available is still used.
+  delete el._hass.states["sensor.ram_usage"];
+  assert.match(el._system({ scalars: { ram_total: "sensor.ram_total", ram_available: "sensor.ram_available" } }), /RAM · 3\.51 \/ 3\.8 GiB/);
 });
 
 test("a network tile without its sensor is neither focusable nor clickable", () => {

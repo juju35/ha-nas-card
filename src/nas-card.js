@@ -1722,13 +1722,37 @@ const fmtBytes = (b, loc) => {
   return `${fmtNum(b, loc, b >= 100 || i === 0 ? 0 : b >= 10 ? 1 : 2)} ${units[i]}`;
 };
 
+// RAM sizes in powers of 1024 with binary prefixes (KiB, MiB, GiB), like the other ha-* cards: up to 2 decimals
+// under 10, 1 under 100, none above ("3.8 GiB", "980 MiB").
+const fmtRam = (b, loc) => {
+  if (b === null || b === undefined) return "—";
+  const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+  let i = 0;
+  while (b >= 1024 && i < units.length - 1) {
+    b /= 1024;
+    i++;
+  }
+  return `${fmtNum(b, loc, b >= 100 || i === 0 ? 0 : b >= 10 ? 1 : 2)} ${units[i]}`;
+};
+
 // "used / total" for the RAM gauge: the used figure drops its unit only when both share it
-// ("1.5 / 2 GB", but "800 MB / 2 GB").
+// ("1.5 / 2 GiB", but "800 MiB / 2 GiB").
 const ramPair = (used, total, loc) => {
-  const u = fmtBytes(used, loc);
-  const tot = fmtBytes(total, loc);
+  const u = fmtRam(used, loc);
+  const tot = fmtRam(total, loc);
   const [uv, uu] = u.split(" ");
   return uu === tot.split(" ")[1] ? `${uv} / ${tot}` : `${u} / ${tot}`;
+};
+
+// Used RAM in bytes, from an explicit "used" sensor first, then from the usage percentage (so that the figure matches
+// the gauge), and only then as total minus available. Synology's "available (real)" memory is DSM's free memory, without
+// the buffers and the cache that its real usage percentage leaves out: total minus it counts the cache as used, and
+// read « 3.5 / 3.8 GiB » beside a 20 % gauge (juju35/ha-nas-card#91).
+const ramUsedBytes = (used, total, avail, pct) => {
+  if (used !== null) return used;
+  if (total === null) return null;
+  if (pct !== null) return (total * pct) / 100;
+  return avail !== null ? total - avail : null;
 };
 
 // Rate in B/s from a sensor, whatever unit it is displayed in (the integration reports B/s, but the
@@ -3386,9 +3410,7 @@ class NasCard extends NasBase {
     const { cpu, ram, tempId, temp, tempText } = this._vitals(sc);
     const ramTotal = toBytes(this._s(sc.ram_total));
     const ramAvail = toBytes(this._s(sc.ram_available));
-    const ramUsed =
-      toBytes(this._s(sc.ram_used)) ??
-      (ramTotal !== null && ramAvail !== null ? ramTotal - ramAvail : ramTotal !== null && ram !== null ? (ramTotal * ram) / 100 : null);
+    const ramUsed = ramUsedBytes(toBytes(this._s(sc.ram_used)), ramTotal, ramAvail, ram);
     const ramLabel = ramUsed !== null && ramTotal !== null ? `${this._t("ram")} · ${ramPair(ramUsed, ramTotal, this._loc())}` : this._t("ram");
     const runtime = durationSeconds(this._s(sc.runtime)) ?? bootAge(this._s(sc.boot));
     const facts = [];
