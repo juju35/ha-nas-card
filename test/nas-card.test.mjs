@@ -1619,6 +1619,34 @@ test("UGREEN: reboot button of a single NAS, pressed after confirmation", async 
   assert.deepEqual({ ...calls[0][2] }, { entity_id: "button.one_nas_power_action_reboot" });
 });
 
+test("shutdown button beside the reboot one, pressed after its own confirmation; show_shutdown: false hides it (#89)", async () => {
+  const states = statesOf(ug("sensor.one_nas_cpu_usage", 12, "nas"), btn("button.one_nas_power_action_reboot"), btn("button.one_nas_power_action_shutdown"));
+  assert.equal(discover({ states }, "").scalars.shutdown, "button.one_nas_power_action_shutdown");
+  const syno = discover(await registryHass("synology"), "");
+  assert.equal(syno.scalars.shutdown, "button.diskstation_shutdown");
+  assert.equal(syno.scalars.reboot, "button.diskstation_reboot");
+  const calls = [];
+  const el = new NasCard();
+  el._config = {};
+  el._hass = { states, language: "en", callService: (...a) => calls.push(a) };
+  el._update = () => {
+    el.html = el._render();
+  };
+  el.shadowRoot.querySelector = () => null;
+  el._update();
+  assert.match(el.html, /data-action="reboot"[^>]*>[\s\S]*<button class="action" data-action="shutdown" title="Shut down the NAS"/);
+  el._confirmPower("shutdown");
+  assert.match(el.html, /Shut down the NAS now\?/);
+  el._dialog.onOk();
+  await Promise.resolve();
+  assert.deepEqual({ ...calls[0][2] }, { entity_id: "button.one_nas_power_action_shutdown" });
+  el._dialog = null;
+  el._config = { show_shutdown: false };
+  el._update();
+  assert.doesNotMatch(el.html, /data-action="shutdown"/);
+  assert.match(el.html, /data-action="reboot"/);
+});
+
 test("UGREEN: with several NAS, each gets its own reboot button (entity prefix, then device registry)", () => {
   const states = statesOf(
     ug("sensor.office_nas_cpu_usage", 1, "office_nas"),
