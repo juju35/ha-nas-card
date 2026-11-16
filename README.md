@@ -171,6 +171,11 @@ language: fr
 | `show_network` | both | `true` | Network download / upload |
 | `show_history` | both | `true` | 24 h curves behind the download / upload tiles (on the mini card, the rates then show as tiles above the footer instead of in it) and behind the CPU and RAM gauges and mini card bars (0–100 % scale), from the recorder's 5-minute statistics, fetched in one query (needs sensors with a `state_class`; a sensor without one simply gets no curve). Sections hidden with `show_system` / `show_network` are not fetched. Points sit at their time over the last 24 hours, and the curve breaks where data is missing |
 | `show_shutdown` | both | `true` | The shutdown button beside the reboot button (UGREEN NAS **Power Action: Shutdown**, Synology DSM **Shutdown**), with its own confirmation popup; on the mini card, in its zoomed view |
+| `show_wake` | both | `false` | Enable Wake-on-LAN control in the card editor (optional; old configs with `wake_mac` or `wake_entity` are enabled unless explicitly set to `false`) |
+| `wake_mac` | both | Empty | Optional MAC address for matching an existing WOL/FRITZ!Box target or calling an already available `wake_on_lan.send_magic_packet` action; not required with an explicit target |
+| `wake_broadcast` | both | Empty | Optional broadcast address for Wake-on-LAN (otherwise 255.255.255.255) |
+| `wake_entity` | both | Automatic | Optional selected WOL target from the visual editor: a `button.*` (HA Wake on LAN, FRITZ!Box Tools, UGREEN) or legacy `switch.*` (Wake on LAN switch). Only invoked when the NAS is offline |
+| `online_entity` | both | Auto | Optional explicit Ping binary sensor; otherwise discovers a Ping sensor by NAS name or host/IP; falls back to NAS telemetry if none is available |
 | `show_volumes` | both | `true` | Volumes and used space |
 | `show_disks` | both | `true` | Disks details |
 | `show_fans` | both | `true` | Fans speed |
@@ -178,6 +183,58 @@ language: fr
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it). The full card's options (`show_system`, `show_volumes`, `show_disks`, `show_fans`, thresholds…) apply to the zoomed view and are also set in the mini card's visual editor |
 | `thresholds` | both | See [Thresholds](#thresholds) | Orange (`warning`) and red (`critical`) levels per reading: `cpu`, `ram`, `temperature` (CPU / system), `disk_temperature` and `volume` (volumes, and the mini card storage bar); set only the values to change |
 | `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |
+
+### Optional Wake-on-LAN (restart button becomes a wake button when offline)
+
+Wake-on-LAN is **off by default** for new cards. In the **visual card editor**, turn on
+**Enable Wake-on-LAN** to reveal a **Wake-on-LAN target** dropdown. It lists available
+Home Assistant Wake on LAN buttons, legacy Wake on LAN switches, FRITZ!Box Tools wake buttons
+and UGREEN wake-up buttons that Home Assistant has already created.
+
+- **Choose a target**: the card calls `button.press` on a selected WOL button or
+  `switch.turn_on` on a selected WOL switch (never `turn_off`).
+  **No MAC address is needed** when a target entity is selected.
+- **Automatic**: leaving the dropdown on **Automatic** allows UGREEN's built-in wake button,
+  an available HA Wake on LAN button or FRITZ!Box Tools button with a MAC matching `wake_mac`,
+  or a legacy Wake on LAN switch matched by MAC. If no entity is available, an existing
+  `wake_on_lan.send_magic_packet` action can be used with `wake_mac`.
+- **No new integration required** when an existing FRITZ!Box Tools wake button works.
+  FRITZ!Box Tools wake buttons for network devices are disabled by default; enable the correct
+  entity under the NAS device in Home Assistant.
+- **Opt-out**: `show_wake: false` disables wake-up even if a MAC address or target is configured.
+  Existing cards configured with `wake_mac` or `wake_entity` before the opt-in feature stay
+  enabled unless explicitly disabled, to preserve their previous behaviour.
+
+The card itself does not create a Wake on LAN integration, a target entity or a Ping sensor;
+browsers cannot send raw UDP wake packets. The NAS must support Wake-on-LAN.
+
+**Power-state detection**: an explicitly configured `online_entity` is used if available;
+otherwise the card searches for an existing Ping (ICMP) binary sensor matching the NAS name,
+hostname or IP address. If no matching Ping sensor is available, NAS telemetry is used.
+An unavailable NAS integration can be mistaken for a powered-off NAS; a Ping sensor improves
+reliability.
+
+Example, choosing a target already provided by the Home Assistant Wake on LAN integration:
+```yaml
+type: custom:nas-card
+nas: Demo_NAS
+language: de
+show_wake: true
+wake_entity: button.demo_nas_wake_on_lan   # Replace with your actual entity ID
+```
+
+Example, using an existing FRITZ!Box Tools or other WOL button automatically by MAC:
+```yaml
+type: custom:nas-card
+nas: Demo_NAS
+language: de
+show_wake: true
+wake_mac: "02:AA:BB:CC:DD:EE"
+```
+
+The same options work in `custom:nas-mini-card` (in its zoomed view).
+If wake-up is disabled or no usable target is found, the normal restart control remains
+unchanged while online and is disabled while offline.
 
 ## Screenshots
 

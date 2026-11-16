@@ -62,6 +62,9 @@ const STRINGS = {
     reboot: "Restart the NAS",
     reboot_confirm: "Restart the NAS now? Its shares, apps and services will be unavailable for a few minutes.",
     reboot_btn: "Restart",
+    wake: "Wake the NAS",
+    wake_confirm: "Send a Wake-on-LAN packet to start the NAS?",
+    wake_btn: "Wake up",
     shutdown: "Shut down the NAS",
     shutdown_confirm: "Shut down the NAS now? It stays off until it is switched on again, on the NAS itself or by Wake-on-LAN.",
     shutdown_btn: "Shut down",
@@ -91,6 +94,18 @@ const STRINGS = {
     show_fans: "Show fans",
     show_history: "Show 24 h history",
     show_shutdown: "Shutdown button",
+    show_wake: "Enable Wake-on-LAN",
+    show_wake_helper: "Optional: adds a wake-up action to the restart button while the NAS is offline.",
+    wake_target_auto: "Automatic (by NAS or MAC address)",
+    wake_mac: "Wake-on-LAN MAC address (optional)",
+    wake_mac_helper: "Optional for automatic matching or a send_magic_packet action; not needed when a target entity is selected.",
+    wake_broadcast: "Wake-on-LAN broadcast address (optional)",
+    wake_broadcast_helper: "Leave blank for the default broadcast address (255.255.255.255).",
+    wake_entity: "Wake-on-LAN target (button or switch)",
+    wake_entity_helper: "Select an existing Wake on LAN / FRITZ!Box / NAS entity, or leave on Automatic. Switch targets are switched on only.",
+    wake_missing: "Wake-on-LAN unavailable: select an available target in card settings or enable a compatible Wake-on-LAN action.",
+    online_entity: "NAS online status (optional)",
+    online_entity_helper: "Optional override; a matching Ping sensor is otherwise found automatically, followed by NAS telemetry.",
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -211,6 +226,9 @@ const STRINGS = {
     reboot: "NAS neu starten",
     reboot_confirm: "NAS jetzt neu starten? Freigaben, Apps und Dienste sind für einige Minuten nicht erreichbar.",
     reboot_btn: "Neu starten",
+    wake: "NAS einschalten",
+    wake_confirm: "NAS jetzt per Wake-on-LAN einschalten?",
+    wake_btn: "Einschalten",
     shutdown: "NAS herunterfahren",
     shutdown_confirm: "NAS jetzt herunterfahren? Es bleibt aus, bis es wieder eingeschaltet wird – am NAS selbst oder per Wake-on-LAN.",
     shutdown_btn: "Herunterfahren",
@@ -239,6 +257,18 @@ const STRINGS = {
     show_fans: "Lüfter anzeigen",
     show_history: "24-h-Verlauf anzeigen",
     show_shutdown: "Schaltfläche Herunterfahren",
+    show_wake: "Wake-on-LAN aktivieren",
+    show_wake_helper: "Optional: Beim ausgeschalteten NAS bietet der Neustart-Button eine Einschaltfunktion.",
+    wake_target_auto: "Automatisch (über NAS oder MAC-Adresse)",
+    wake_mac: "Wake-on-LAN-MAC-Adresse (optional)",
+    wake_mac_helper: "Optional für die automatische Zuordnung oder einen vorhandenen send_magic_packet-Dienst. Bei ausgewählter Ziel-Entität nicht nötig.",
+    wake_broadcast: "Wake-on-LAN-Broadcast-Adresse (optional)",
+    wake_broadcast_helper: "Leer lassen für die Standardadresse (255.255.255.255).",
+    wake_entity: "Wake-on-LAN-Ziel (Button oder Schalter)",
+    wake_entity_helper: "Vorhandene WOL-, FRITZ!Box- oder NAS-Entität auswählen oder auf Automatisch lassen. Schalter werden nur eingeschaltet.",
+    wake_missing: "Wake-on-LAN nicht verfügbar: in den Karteneinstellungen ein gültiges Ziel auswählen oder eine Einschaltaktion aktivieren.",
+    online_entity: "NAS-Onlinestatus (optional)",
+    online_entity_helper: "Optionale Vorgabe: Passenden Ping-Sensor sonst automatisch erkennen und bei Fehlen NAS-Entitäten auswerten.",
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
@@ -2200,6 +2230,8 @@ const SCALAR_RE = Object.entries(SCALARS).map(([k, key]) => [k, new RegExp(`(?:^
 const RE_REBOOT = new RegExp(`(?:^|_)power_action_reboot${SFX}`);
 // "Power Action: Shutdown" button, found the same way (juju35/ha-nas-card#89).
 const RE_SHUTDOWN = new RegExp(`(?:^|_)power_action_shutdown${SFX}`);
+// "Power Action: Wake Up" (UGREEN integration v2026.05.1+); works even when the NAS is off.
+const RE_WAKE = new RegExp(`(?:^|_)power_action_wake_up${SFX}`);
 const RE_FAN = new RegExp(`(?:^|_)device_fan_(\\d+)${SFX}`);
 const RE_POOL = new RegExp(`(?:^|_)pool_(\\d+)_(label|level|status|total_size|used_size|disk_count)${SFX}`);
 const RE_VOLUME = new RegExp(
@@ -2272,7 +2304,8 @@ const discoverUgreen = (hass, nasId) => {
   const all = ugnasIds(hass);
   const reboots = rebootIds(hass);
   const shutdowns = buttonIds(hass, RE_SHUTDOWN);
-  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}\n${shutdowns.join(",")}`;
+  const wakes = buttonIds(hass, RE_WAKE);
+  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}\n${shutdowns.join(",")}\n${wakes.join(",")}`;
   if (_cache.has(key)) return _cache.get(key);
   if (_cache.size > 8) _cache.clear();
 
@@ -2312,6 +2345,8 @@ const discoverUgreen = (hass, nasId) => {
     if (reboot) nas.scalars.reboot = reboot;
     const shutdown = ugreenReboot(hass, nas, all, shutdowns);
     if (shutdown) nas.scalars.shutdown = shutdown;
+    const wake = ugreenReboot(hass, nas, all, wakes);
+    if (wake) nas.scalars.wake = wake;
     _cache.set(key, nas);
     _lastGood.set(nas.nasId, nas);
     _lastGood.set(nasId || "", nas);
@@ -2934,6 +2969,10 @@ const watchOutside = (card, handler) => {
   };
 };
 
+// show_wake: false always overrides legacy MAC/target settings.
+const wakeEnabled = (config) =>
+  config?.show_wake === true || (config?.show_wake !== false && Boolean(config?.wake_entity || config?.wake_mac));
+
 class NasBase extends HTMLElement {
   constructor() {
     super();
@@ -3017,21 +3056,157 @@ class NasBase extends HTMLElement {
       .catch((err) => console.error("nas-card: button.press failed", err));
   }
 
+  // A configured MAC uses the Home Assistant Wake on LAN integration, regardless of NAS vendor.
+  _wakeMac() {
+    const mac = String(this._config.wake_mac || "").trim();
+    return /^(?:[\da-f]{2}:){5}[\da-f]{2}$/i.test(mac) || /^(?:[\da-f]{2}-){5}[\da-f]{2}$/i.test(mac) ? mac : null;
+  }
+
+  // Wake-up is opt-in. Existing configurations with a MAC or target remain compatible.
+  _wakeEnabled() {
+    return wakeEnabled(this._config);
+  }
+
+  _usableWakeEntity(id) {
+    return /^(button|switch)\.[a-z0-9_]+$/.test(id || "") && this._s(id) && this._s(id).state !== "unavailable";
+  }
+
+  // Match a registered Wake-on-LAN target to this NAS by its MAC address, not by a guessed label.
+  _macWakeEntity(domain) {
+    const mac = this._wakeMac()?.replace(/[^a-f\d]/gi, "").toLowerCase();
+    if (!mac) return null;
+    const entries = this._hass?.entities || {};
+    for (const [id, entry] of Object.entries(entries)) {
+      if (!id.startsWith(`${domain}.`) || !this._usableWakeEntity(id)) continue;
+      const isWake =
+        entry?.platform === "wake_on_lan" ||
+        (domain === "button" && entry?.platform === "fritz" && /(?:^|_)wake_on_lan$/.test(entry.translation_key || id.slice(7)));
+      if (!isWake) continue;
+      const device = this._hass?.devices?.[entry.device_id];
+      const connections = device?.connections || [];
+      if ([...connections].some(([kind, address]) => kind === "mac" && String(address).replace(/[^a-f\d]/gi, "").toLowerCase() === mac)) return id;
+    }
+    return null;
+  }
+
+  // Explicit button first, then the NAS's native UGREEN action, then a matching WOL / FRITZ!Box button.
+  _wakeButton(nas) {
+    const selected = this._config.wake_entity;
+    if (selected?.startsWith("button.") && this._usableWakeEntity(selected)) return selected;
+    if (this._usableWakeEntity(nas.scalars.wake)) return nas.scalars.wake;
+    return this._macWakeEntity("button");
+  }
+
+  // An explicit switch takes priority over auto-discovered buttons.
+  _wakeTarget(nas) {
+    if (!this._wakeEnabled()) return null;
+    const selected = this._config.wake_entity;
+    if (selected?.startsWith("switch.") && this._usableWakeEntity(selected)) return { switch: selected };
+    const button = this._wakeButton(nas);
+    if (button) return { button };
+    const wolSwitch = this._macWakeEntity("switch");
+    if (wolSwitch) return { switch: wolSwitch };
+    const mac = this._wakeMac();
+    if (mac && this._hass?.services?.wake_on_lan?.send_magic_packet) return { mac };
+    return null;
+  }
+
+  _hasWake(nas) {
+    return Boolean(this._wakeTarget(nas));
+  }
+
+  // Find an existing Ping (ICMP) connectivity sensor for this NAS by its host or exact name.
+  // Never use an unrelated Ping sensor (important on dashboards with multiple NAS devices).
+  _autoPing(nas) {
+    const normalized = (value) => String(value || "").toLowerCase().replace(/[^a-z\d]+/g, "_").replace(/^_|_$/g, "");
+    const url = String(this._config.url || nas.info?.url || "");
+    const host = url.match(/^\w+:\/\/([^/:?#]+)/)?.[1];
+    const aliases = new Set([host, nas.info?.name, nas.nasId, this._config.nas, this._config.title].map(normalized).filter((v) => v.length >= 3));
+    if (!aliases.size) return null;
+    let best = null;
+    let bestScore = 0;
+    let tied = false;
+    for (const [id, state] of Object.entries(this._hass?.states || {})) {
+      if (!id.startsWith("binary_sensor.")) continue;
+      const entry = this._hass?.entities?.[id];
+      if (entry?.platform && entry.platform !== "ping") continue;
+      if (!entry?.platform && state.attributes?.device_class !== "connectivity") continue;
+      const device = this._hass?.devices?.[entry?.device_id];
+      const names = [id.slice(14), state.attributes?.friendly_name, device?.name_by_user, device?.name, state.attributes?.host, state.attributes?.ip_address]
+        .map(normalized).filter(Boolean);
+      const score = Math.max(0, ...names.flatMap((name) => [...aliases].map((alias) =>
+        name === alias ? 3 : name === `${alias}_ping` || name === `ping_${alias}` || name === `${alias}_connectivity` ? 2 : 0
+      )));
+      if (score > bestScore) {
+        best = id;
+        bestScore = score;
+        tied = false;
+      } else if (score && score === bestScore) {
+        tied = true;
+      }
+    }
+    return tied ? null : best;
+  }
+
+  // An explicit (existing) sensor wins, otherwise a matching Ping sensor is auto-discovered.
+  _pingEntity(nas) {
+    const requested = this._config.online_entity;
+    if (requested && this._s(requested)) return requested;
+    return this._autoPing(nas);
+  }
+
+  // On/off Ping sensors are authoritative; missing/unknown sensors fall back to NAS telemetry.
+  _powerState(nas) {
+    const ping = this._pingEntity(nas);
+    const state = this._s(ping)?.state;
+    if (state === "on") return "online";
+    if (state === "off") return "offline";
+    const sc = nas.scalars;
+    const monitored = ["cpu_usage", "ram_usage", "sys_temp", "cpu_temp", "runtime", "boot", "lan_up", "lan_down", "server_status"]
+      .map((key) => this._s(sc[key]))
+      .filter(Boolean);
+    if (monitored.some((s) => !NO_VALUE.has(s.state))) return "online";
+    if (monitored.length && monitored.every((s) => s.state === "unavailable")) return "offline";
+    return "unknown";
+  }
+
+  _wake(nas) {
+    const target = this._wakeTarget(nas);
+    if (!target) return;
+    if (target.button) return this._press(target.button);
+    if (target.switch) {
+      Promise.resolve()
+        .then(() => this._hass?.callService("switch", "turn_on", { entity_id: target.switch }))
+        .catch((err) => console.error("nas-card: switch.turn_on failed", err));
+      return;
+    }
+    const data = { mac: target.mac };
+    if (this._config.wake_broadcast?.trim()) data.broadcast_address = this._config.wake_broadcast.trim();
+    Promise.resolve()
+      .then(() => this._hass?.callService("wake_on_lan", "send_magic_packet", data))
+      .catch((err) => console.error("nas-card: Wake-on-LAN failed", err));
+  }
+
   _confirmReboot() {
     return this._confirmPower("reboot");
   }
 
-  // Opens the reboot (or shutdown) confirmation popup; on confirmation, presses the NAS's button.
+  // When offline, the existing reboot button confirms a wake-up instead.
   _confirmPower(kind) {
-    const id = discover(this._hass, this._config.nas).scalars[kind];
-    if (!id || this._s(id)?.state === "unavailable") return;
+    const nas = discover(this._hass, this._config.nas);
+    const offline = this._powerState(nas) === "offline";
+    const wake = kind === "reboot" && offline && this._hasWake(nas);
+    if (kind === "reboot" && offline && !wake) return;
+    const action = wake ? "wake" : kind;
+    const id = nas.scalars[kind];
+    if (!wake && (!id || this._s(id)?.state === "unavailable")) return;
     this._dialog = {
       kind,
-      icon: kind === "shutdown" ? ICONS.power : ICONS.restart,
-      title: this._t(kind),
-      body: this._t(`${kind}_confirm`),
-      ok: this._t(`${kind}_btn`),
-      onOk: () => this._press(id),
+      icon: action === "reboot" ? ICONS.restart : ICONS.power,
+      title: this._t(action),
+      body: this._t(`${action}_confirm`),
+      ok: this._t(`${action}_btn`),
+      onOk: () => (wake ? this._wake(nas) : this._press(id)),
     };
     window.addEventListener("keydown", this._onKey);
     this._update();
@@ -3065,14 +3240,15 @@ class NasBase extends HTMLElement {
     </div>`;
   }
 
-  // Round reboot button at the end of the system facts (full card, zoomed mini card): only when the NAS exposes a
-  // reboot button (UGREEN NAS, Synology DSM). Disabled while it is unavailable (a button never pressed is "unknown": its normal state).
+  // One button serves reboot (online) and Wake-on-LAN (offline); preserves the old behaviour if WOL is unset.
   _rebootBtn(nas) {
     const id = nas.scalars.reboot;
-    if (!id) return "";
-    const label = esc(this._t("reboot"));
-    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
-    return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.restart)}</button>`;
+    const offline = this._powerState(nas) === "offline";
+    const wake = offline && this._hasWake(nas);
+    if (!id && !wake) return "";
+    const label = esc(this._t(offline ? (wake ? "wake" : "wake_missing") : "reboot"));
+    const disabled = !wake && (offline || this._s(id)?.state === "unavailable") ? " disabled" : "";
+    return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(wake ? ICONS.power : ICONS.restart)}</button>`;
   }
 
   // Round shutdown button beside it, when the NAS exposes a shutdown button (UGREEN NAS, Synology DSM) and
@@ -3081,7 +3257,7 @@ class NasBase extends HTMLElement {
     const id = nas.scalars.shutdown;
     if (!id || this._config.show_shutdown === false) return "";
     const label = esc(this._t("shutdown"));
-    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
+    const disabled = this._powerState(nas) === "offline" || this._s(id)?.state === "unavailable" ? " disabled" : "";
     return `<button class="action" data-action="shutdown" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.power)}</button>`;
   }
 
@@ -3196,6 +3372,12 @@ class NasBase extends HTMLElement {
       }
     };
     walk(nas.scalars);
+    const ping = this._pingEntity(nas);
+    if (ping) sig.push(h.states[ping]);
+    const wol = this._wakeTarget(nas);
+    const targetId = wol?.button || wol?.switch || this._config.wake_entity;
+    if (targetId) sig.push(h.states[targetId]);
+    sig.push(h.services?.wake_on_lan?.send_magic_packet);
     walk(nas.fans);
     walk(nas.pools);
     return sig;
@@ -3875,6 +4057,26 @@ class NasEditorBase extends HTMLElement {
     return ["show_title", "show_subtitle", "show_image", ...this.constructor.toggles];
   }
 
+  _wakeTargetOptions() {
+    const options = [{ value: "", label: t(this._hass, this._config, "wake_target_auto") }];
+    const states = this._hass?.states || {};
+    for (const [id, entity] of Object.entries(this._hass?.entities || {})) {
+      if (!this._usableEditorWakeTarget(id, entity, states)) continue;
+      options.push({ value: id, label: states[id]?.attributes?.friendly_name || id });
+    }
+    return [options[0], ...options.slice(1).sort((a, b) => a.label.localeCompare(b.label))];
+  }
+
+  _usableEditorWakeTarget(id, entity, states) {
+    if (!/^(button|switch)\./.test(id) || !states[id] || states[id].state === "unavailable") return false;
+    if (entity?.platform === "wake_on_lan") return true;
+    if (id.startsWith("button.") && entity?.platform === "fritz")
+      return /(?:^|_)wake_on_lan$/.test(entity.translation_key || id.slice(7));
+    if (id.startsWith("button.") && entity?.platform === "ugreen")
+      return /(?:^|_)power_action_wake_up(?:_\d+)?$/.test(id.slice(7));
+    return false;
+  }
+
   _schema() {
     const nasOptions = this._hass ? listNas(this._hass) : [];
     const tr = (k) => t(this._hass, this._config, k);
@@ -3899,6 +4101,13 @@ class NasEditorBase extends HTMLElement {
       },
       { name: "url", selector: { text: { type: "url" } } },
       { name: "brand_url", selector: { text: { type: "url" } } },
+      { name: "show_wake", selector: { boolean: {} } },
+      ...(wakeEnabled(this._config) ? [
+        { name: "wake_entity", selector: { select: { mode: "dropdown", custom_value: true, options: this._wakeTargetOptions() } } },
+        { name: "wake_mac", selector: { text: {} } },
+        { name: "wake_broadcast", selector: { text: {} } },
+      ] : []),
+      { name: "online_entity", selector: { entity: { filter: { domain: "binary_sensor" } } } },
       {
         type: "grid",
         name: "",
@@ -3977,7 +4186,7 @@ class NasEditorBase extends HTMLElement {
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (s) => s.label ?? t(this._hass, this._config, s.name);
-      this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`];
+      this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`] ?? STRINGS.en[`${s.name}_helper`];
       this._form.addEventListener("value-changed", (ev) => {
         ev.stopPropagation();
         const config = { ...ev.detail.value };
@@ -3994,6 +4203,7 @@ class NasEditorBase extends HTMLElement {
       this.appendChild(this._form);
     }
     const data = { ...this._config };
+    if (data.show_wake === undefined) data.show_wake = Boolean(data.wake_mac || data.wake_entity);
     for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
     data.thresholds = Object.fromEntries(
       Object.keys(THRESHOLDS).map((m) => {
