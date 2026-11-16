@@ -62,6 +62,9 @@ const STRINGS = {
     reboot: "Restart the NAS",
     reboot_confirm: "Restart the NAS now? Its shares, apps and services will be unavailable for a few minutes.",
     reboot_btn: "Restart",
+    wake: "Wake the NAS",
+    wake_confirm: "Send a Wake-on-LAN packet to start the NAS?",
+    wake_btn: "Wake up",
     shutdown: "Shut down the NAS",
     shutdown_confirm: "Shut down the NAS now? It stays off until it is switched on again, on the NAS itself or by Wake-on-LAN.",
     shutdown_btn: "Shut down",
@@ -91,6 +94,18 @@ const STRINGS = {
     show_fans: "Show fans",
     show_history: "Show 24 h history",
     show_shutdown: "Shutdown button",
+    show_wake: "Enable Wake-on-LAN",
+    show_wake_helper: "Optional: adds a wake-up action to the restart button while the NAS is offline.",
+    wake_target_auto: "Automatic (by NAS or MAC address)",
+    wake_mac: "Wake-on-LAN MAC address (optional)",
+    wake_mac_helper: "Optional for automatic matching or a send_magic_packet action; not needed when a target entity is selected.",
+    wake_broadcast: "Wake-on-LAN broadcast address (optional)",
+    wake_broadcast_helper: "Leave blank for the default broadcast address (255.255.255.255).",
+    wake_entity: "Wake-on-LAN target (button or switch)",
+    wake_entity_helper: "Select an existing Wake on LAN / FRITZ!Box / NAS entity, or leave on Automatic. Switch targets are switched on only.",
+    wake_missing: "Wake-on-LAN unavailable: select an available target in card settings or enable a compatible Wake-on-LAN action.",
+    online_entity: "NAS online status (optional)",
+    online_entity_helper: "Optional override; a matching Ping sensor is otherwise found automatically, followed by NAS telemetry.",
     show_storage: "Show storage",
     zoom: "Zoom button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -137,6 +152,9 @@ const STRINGS = {
     reboot: "Redémarrer le NAS",
     reboot_confirm: "Redémarrer le NAS maintenant ? Ses partages, applications et services seront indisponibles pendant quelques minutes.",
     reboot_btn: "Redémarrer",
+    wake: "Réveiller le NAS",
+    wake_confirm: "Envoyer un paquet Wake-on-LAN pour démarrer le NAS ?",
+    wake_btn: "Réveiller",
     shutdown: "Éteindre le NAS",
     shutdown_confirm: "Éteindre le NAS maintenant ? Il restera éteint jusqu’à ce qu’on le rallume, sur le NAS lui-même ou par Wake-on-LAN.",
     shutdown_btn: "Éteindre",
@@ -165,6 +183,18 @@ const STRINGS = {
     show_fans: "Afficher les ventilateurs",
     show_history: "Afficher l’historique 24 h",
     show_shutdown: "Bouton d’extinction",
+    show_wake: "Activer Wake-on-LAN",
+    show_wake_helper: "Facultatif : ajoute une action de réveil au bouton de redémarrage lorsque le NAS est hors ligne.",
+    wake_target_auto: "Automatique (par NAS ou adresse MAC)",
+    wake_mac: "Adresse MAC Wake-on-LAN (facultatif)",
+    wake_mac_helper: "Facultatif pour la correspondance automatique ou une action send_magic_packet ; inutile si une entité cible est sélectionnée.",
+    wake_broadcast: "Adresse de diffusion Wake-on-LAN (facultatif)",
+    wake_broadcast_helper: "Laisser vide pour l’adresse de diffusion par défaut (255.255.255.255).",
+    wake_entity: "Cible Wake-on-LAN (bouton ou interrupteur)",
+    wake_entity_helper: "Sélectionner une entité Wake on LAN / FRITZ!Box / NAS existante, ou laisser sur Automatique. Les cibles interrupteur sont uniquement activées.",
+    wake_missing: "Wake-on-LAN indisponible : sélectionner une cible disponible dans les réglages de la carte ou activer une action Wake-on-LAN compatible.",
+    online_entity: "État en ligne du NAS (facultatif)",
+    online_entity_helper: "Remplacement facultatif ; sinon un capteur Ping correspondant est trouvé automatiquement, puis la télémétrie du NAS.",
     show_storage: "Afficher le stockage",
     zoom: "Bouton zoom",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
@@ -211,6 +241,9 @@ const STRINGS = {
     reboot: "NAS neu starten",
     reboot_confirm: "NAS jetzt neu starten? Freigaben, Apps und Dienste sind für einige Minuten nicht erreichbar.",
     reboot_btn: "Neu starten",
+    wake: "NAS einschalten",
+    wake_confirm: "NAS jetzt per Wake-on-LAN einschalten?",
+    wake_btn: "Einschalten",
     shutdown: "NAS herunterfahren",
     shutdown_confirm: "NAS jetzt herunterfahren? Es bleibt aus, bis es wieder eingeschaltet wird – am NAS selbst oder per Wake-on-LAN.",
     shutdown_btn: "Herunterfahren",
@@ -239,6 +272,18 @@ const STRINGS = {
     show_fans: "Lüfter anzeigen",
     show_history: "24-h-Verlauf anzeigen",
     show_shutdown: "Schaltfläche Herunterfahren",
+    show_wake: "Wake-on-LAN aktivieren",
+    show_wake_helper: "Optional: Beim ausgeschalteten NAS bietet der Neustart-Button eine Einschaltfunktion.",
+    wake_target_auto: "Automatisch (über NAS oder MAC-Adresse)",
+    wake_mac: "Wake-on-LAN-MAC-Adresse (optional)",
+    wake_mac_helper: "Optional für die automatische Zuordnung oder einen vorhandenen send_magic_packet-Dienst. Bei ausgewählter Ziel-Entität nicht nötig.",
+    wake_broadcast: "Wake-on-LAN-Broadcast-Adresse (optional)",
+    wake_broadcast_helper: "Leer lassen für die Standardadresse (255.255.255.255).",
+    wake_entity: "Wake-on-LAN-Ziel (Button oder Schalter)",
+    wake_entity_helper: "Vorhandene WOL-, FRITZ!Box- oder NAS-Entität auswählen oder auf Automatisch lassen. Schalter werden nur eingeschaltet.",
+    wake_missing: "Wake-on-LAN nicht verfügbar: in den Karteneinstellungen ein gültiges Ziel auswählen oder eine Einschaltaktion aktivieren.",
+    online_entity: "NAS-Onlinestatus (optional)",
+    online_entity_helper: "Optionale Vorgabe: Passenden Ping-Sensor sonst automatisch erkennen und bei Fehlen NAS-Entitäten auswerten.",
     show_storage: "Speicher anzeigen",
     zoom: "Zoom-Schaltfläche",
     zoom_helper: "Wechselt von der Mini-Karte zur vollständigen Karte und zurück",
@@ -285,6 +330,9 @@ const STRINGS = {
     reboot: "Reiniciar el NAS",
     reboot_confirm: "¿Reiniciar el NAS ahora? Sus carpetas compartidas, aplicaciones y servicios no estarán disponibles durante unos minutos.",
     reboot_btn: "Reiniciar",
+    wake: "Encender el NAS",
+    wake_confirm: "¿Enviar un paquete Wake-on-LAN para iniciar el NAS?",
+    wake_btn: "Encender",
     shutdown: "Apagar el NAS",
     shutdown_confirm: "¿Apagar el NAS ahora? Permanecerá apagado hasta que se vuelva a encender, en el propio NAS o mediante Wake-on-LAN.",
     shutdown_btn: "Apagar",
@@ -313,6 +361,18 @@ const STRINGS = {
     show_fans: "Mostrar los ventiladores",
     show_history: "Mostrar el historial de 24 h",
     show_shutdown: "Botón de apagado",
+    show_wake: "Activar Wake-on-LAN",
+    show_wake_helper: "Opcional: añade una acción de encendido al botón de reinicio cuando el NAS está desconectado.",
+    wake_target_auto: "Automático (por NAS o dirección MAC)",
+    wake_mac: "Dirección MAC de Wake-on-LAN (opcional)",
+    wake_mac_helper: "Opcional para la coincidencia automática o una acción send_magic_packet; no es necesaria si se selecciona una entidad de destino.",
+    wake_broadcast: "Dirección de difusión de Wake-on-LAN (opcional)",
+    wake_broadcast_helper: "Dejar en blanco para la dirección de difusión predeterminada (255.255.255.255).",
+    wake_entity: "Destino de Wake-on-LAN (botón o interruptor)",
+    wake_entity_helper: "Selecciona una entidad Wake on LAN / FRITZ!Box / NAS existente, o deja en Automático. Los destinos de tipo interruptor solo se encienden.",
+    wake_missing: "Wake-on-LAN no disponible: selecciona un destino disponible en los ajustes de la tarjeta o activa una acción Wake-on-LAN compatible.",
+    online_entity: "Estado en línea del NAS (opcional)",
+    online_entity_helper: "Sustitución opcional; de lo contrario se busca automáticamente un sensor Ping correspondiente, seguido de la telemetría del NAS.",
     show_storage: "Mostrar el almacenamiento",
     zoom: "Botón de zoom",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
@@ -359,6 +419,9 @@ const STRINGS = {
     reboot: "Поново покрени NAS",
     reboot_confirm: "Поново покренути NAS сада? Дељене фасцикле, апликације и услуге неће бити доступне неколико минута.",
     reboot_btn: "Поново покрени",
+    wake: "Пробуди NAS",
+    wake_confirm: "Послати пакет за буђење преко мреже да се покрене NAS?",
+    wake_btn: "Пробуди",
     shutdown: "Искључи NAS",
     shutdown_confirm: "Искључити NAS сада? Остаће искључен док се поново не укључи, на самом NAS-у или преко мреже.",
     shutdown_btn: "Искључи",
@@ -387,6 +450,18 @@ const STRINGS = {
     show_fans: "Прикажи вентилаторе",
     show_history: "Прикажи историју за 24 ч",
     show_shutdown: "Дугме за искључивање",
+    show_wake: "Омогући буђење преко мреже",
+    show_wake_helper: "Опционо: додаје радњу буђења на дугме за поновно покретање када је NAS ван мреже.",
+    wake_target_auto: "Аутоматски (преко NAS-а или физичке адресе)",
+    wake_mac: "Физичка адреса за буђење преко мреже (опционо)",
+    wake_mac_helper: "Опционо за аутоматско упаривање или радњу слања магичног пакета; није потребно када је изабран циљни ентитет.",
+    wake_broadcast: "Адреса емитовања за буђење преко мреже (опционо)",
+    wake_broadcast_helper: "Оставити празно за подразумевану адресу емитовања (255.255.255.255).",
+    wake_entity: "Циљ буђења преко мреже (дугме или прекидач)",
+    wake_entity_helper: "Изабрати постојећи ентитет за буђење преко мреже или NAS, или оставити на Аутоматски. Циљеви типа прекидач се само укључују.",
+    wake_missing: "Буђење преко мреже није доступно: изабрати доступан циљ у подешавањима картице или омогућити компатибилну радњу буђења.",
+    online_entity: "Статус доступности NAS-а (опционо)",
+    online_entity_helper: "Опциона замена; у супротном се аутоматски проналази одговарајући сензор доступности, затим телеметрија NAS-а.",
     show_storage: "Прикажи складиште",
     zoom: "Дугме за увећање",
     zoom_helper: "Пребацује мини картицу на пун приказ и назад",
@@ -433,6 +508,9 @@ const STRINGS = {
     reboot: "Ponovo pokreni NAS",
     reboot_confirm: "Ponovo pokrenuti NAS sada? Deljene fascikle, aplikacije i usluge neće biti dostupne nekoliko minuta.",
     reboot_btn: "Ponovo pokreni",
+    wake: "Probudi NAS",
+    wake_confirm: "Poslati Wake-on-LAN paket da se pokrene NAS?",
+    wake_btn: "Probudi",
     shutdown: "Isključi NAS",
     shutdown_confirm: "Isključiti NAS sada? Ostaće isključen dok se ponovo ne uključi, na samom NAS-u ili putem Wake-on-LAN.",
     shutdown_btn: "Isključi",
@@ -461,6 +539,18 @@ const STRINGS = {
     show_fans: "Prikaži ventilatore",
     show_history: "Prikaži istoriju za 24 č",
     show_shutdown: "Dugme za isključivanje",
+    show_wake: "Omogući Wake-on-LAN",
+    show_wake_helper: "Opciono: dodaje radnju buđenja na dugme za ponovno pokretanje kada je NAS van mreže.",
+    wake_target_auto: "Automatski (preko NAS-a ili MAC adrese)",
+    wake_mac: "Wake-on-LAN MAC adresa (opciono)",
+    wake_mac_helper: "Opciono za automatsko uparivanje ili send_magic_packet radnju; nije potrebno kada je izabran ciljni entitet.",
+    wake_broadcast: "Wake-on-LAN adresa emitovanja (opciono)",
+    wake_broadcast_helper: "Ostaviti prazno za podrazumevanu adresu emitovanja (255.255.255.255).",
+    wake_entity: "Wake-on-LAN cilj (dugme ili prekidač)",
+    wake_entity_helper: "Izabrati postojeći Wake on LAN / FRITZ!Box / NAS entitet, ili ostaviti na Automatski. Ciljevi tipa prekidač se samo uključuju.",
+    wake_missing: "Wake-on-LAN nije dostupan: izabrati dostupan cilj u podešavanjima kartice ili omogućiti kompatibilnu Wake-on-LAN radnju.",
+    online_entity: "Status dostupnosti NAS-a (opciono)",
+    online_entity_helper: "Opciona zamena; u suprotnom se automatski pronalazi odgovarajući Ping senzor, zatim telemetrija NAS-a.",
     show_storage: "Prikaži skladište",
     zoom: "Dugme za uvećanje",
     zoom_helper: "Prebacuje mini karticu na pun prikaz i nazad",
@@ -507,6 +597,9 @@ const STRINGS = {
     reboot: "Riavvia il NAS",
     reboot_confirm: "Riavviare il NAS adesso? Cartelle condivise, app e servizi non saranno disponibili per qualche minuto.",
     reboot_btn: "Riavvia",
+    wake: "Accendi il NAS",
+    wake_confirm: "Inviare un pacchetto Wake-on-LAN per avviare il NAS?",
+    wake_btn: "Accendi",
     shutdown: "Spegni il NAS",
     shutdown_confirm: "Spegnere il NAS ora? Resterà spento finché non verrà riacceso, sul NAS stesso o tramite Wake-on-LAN.",
     shutdown_btn: "Spegni",
@@ -535,6 +628,18 @@ const STRINGS = {
     show_fans: "Mostra le ventole",
     show_history: "Mostra lo storico 24 h",
     show_shutdown: "Pulsante di spegnimento",
+    show_wake: "Abilita Wake-on-LAN",
+    show_wake_helper: "Facoltativo: aggiunge un’azione di accensione al pulsante di riavvio quando il NAS è offline.",
+    wake_target_auto: "Automatico (per NAS o indirizzo MAC)",
+    wake_mac: "Indirizzo MAC Wake-on-LAN (facoltativo)",
+    wake_mac_helper: "Facoltativo per la corrispondenza automatica o un’azione send_magic_packet; non necessario se è selezionata un’entità di destinazione.",
+    wake_broadcast: "Indirizzo di broadcast Wake-on-LAN (facoltativo)",
+    wake_broadcast_helper: "Lasciare vuoto per l’indirizzo di broadcast predefinito (255.255.255.255).",
+    wake_entity: "Destinazione Wake-on-LAN (pulsante o interruttore)",
+    wake_entity_helper: "Seleziona un’entità Wake on LAN / FRITZ!Box / NAS esistente, oppure lascia su Automatico. Le destinazioni di tipo interruttore vengono solo accese.",
+    wake_missing: "Wake-on-LAN non disponibile: seleziona una destinazione disponibile nelle impostazioni della scheda o abilita un’azione Wake-on-LAN compatibile.",
+    online_entity: "Stato online del NAS (facoltativo)",
+    online_entity_helper: "Sostituzione facoltativa; altrimenti viene trovato automaticamente un sensore Ping corrispondente, seguito dalla telemetria del NAS.",
     show_storage: "Mostra l'archiviazione",
     zoom: "Pulsante zoom",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
@@ -581,6 +686,9 @@ const STRINGS = {
     reboot: "NAS herstarten",
     reboot_confirm: "NAS nu herstarten? De gedeelde mappen, apps en diensten zijn een paar minuten niet beschikbaar.",
     reboot_btn: "Herstarten",
+    wake: "NAS inschakelen",
+    wake_confirm: "Een Wake-on-LAN-pakket sturen om de NAS te starten?",
+    wake_btn: "Inschakelen",
     shutdown: "NAS uitschakelen",
     shutdown_confirm: "De NAS nu uitschakelen? Hij blijft uit tot hij weer wordt aangezet, op de NAS zelf of via Wake-on-LAN.",
     shutdown_btn: "Uitschakelen",
@@ -609,6 +717,18 @@ const STRINGS = {
     show_fans: "Ventilatoren weergeven",
     show_history: "24-uursgeschiedenis weergeven",
     show_shutdown: "Uitschakelknop",
+    show_wake: "Wake-on-LAN inschakelen",
+    show_wake_helper: "Optioneel: voegt een inschakelactie toe aan de herstartknop wanneer de NAS offline is.",
+    wake_target_auto: "Automatisch (op NAS of MAC-adres)",
+    wake_mac: "Wake-on-LAN-MAC-adres (optioneel)",
+    wake_mac_helper: "Optioneel voor automatische koppeling of een send_magic_packet-actie; niet nodig wanneer een doelentiteit is geselecteerd.",
+    wake_broadcast: "Wake-on-LAN-broadcastadres (optioneel)",
+    wake_broadcast_helper: "Laat leeg voor het standaard broadcastadres (255.255.255.255).",
+    wake_entity: "Wake-on-LAN-doel (knop of schakelaar)",
+    wake_entity_helper: "Selecteer een bestaande Wake on LAN / FRITZ!Box / NAS-entiteit, of laat op Automatisch staan. Schakelaardoelen worden alleen ingeschakeld.",
+    wake_missing: "Wake-on-LAN niet beschikbaar: selecteer een beschikbaar doel in de kaartinstellingen of schakel een compatibele Wake-on-LAN-actie in.",
+    online_entity: "Online-status van de NAS (optioneel)",
+    online_entity_helper: "Optionele overschrijving; anders wordt automatisch een passende Ping-sensor gevonden, gevolgd door NAS-telemetrie.",
     show_storage: "Opslag weergeven",
     zoom: "Zoomknop",
     zoom_helper: "Schakelt de minikaart over naar de volledige kaart en terug",
@@ -655,6 +775,9 @@ const STRINGS = {
     reboot: "Reiniciar o NAS",
     reboot_confirm: "Reiniciar o NAS agora? As pastas partilhadas, aplicações e serviços ficarão indisponíveis durante alguns minutos.",
     reboot_btn: "Reiniciar",
+    wake: "Ligar o NAS",
+    wake_confirm: "Enviar um pacote Wake-on-LAN para iniciar o NAS?",
+    wake_btn: "Ligar",
     shutdown: "Desligar o NAS",
     shutdown_confirm: "Desligar o NAS agora? Fica desligado até voltar a ser ligado, no próprio NAS ou por Wake-on-LAN.",
     shutdown_btn: "Desligar",
@@ -683,6 +806,18 @@ const STRINGS = {
     show_fans: "Mostrar as ventoinhas",
     show_history: "Mostrar o histórico de 24 h",
     show_shutdown: "Botão de desligar",
+    show_wake: "Ativar Wake-on-LAN",
+    show_wake_helper: "Opcional: adiciona uma ação de arranque ao botão de reinício quando o NAS está offline.",
+    wake_target_auto: "Automático (por NAS ou endereço MAC)",
+    wake_mac: "Endereço MAC de Wake-on-LAN (opcional)",
+    wake_mac_helper: "Opcional para a correspondência automática ou uma ação send_magic_packet; não é necessário quando está selecionada uma entidade de destino.",
+    wake_broadcast: "Endereço de difusão de Wake-on-LAN (opcional)",
+    wake_broadcast_helper: "Deixar em branco para o endereço de difusão predefinido (255.255.255.255).",
+    wake_entity: "Destino de Wake-on-LAN (botão ou interruptor)",
+    wake_entity_helper: "Selecione uma entidade Wake on LAN / FRITZ!Box / NAS existente, ou deixe em Automático. Os destinos do tipo interruptor são apenas ligados.",
+    wake_missing: "Wake-on-LAN indisponível: selecione um destino disponível nas definições do cartão ou ative uma ação Wake-on-LAN compatível.",
+    online_entity: "Estado online do NAS (opcional)",
+    online_entity_helper: "Substituição opcional; caso contrário, é encontrado automaticamente um sensor Ping correspondente, seguido da telemetria do NAS.",
     show_storage: "Mostrar o armazenamento",
     zoom: "Botão de zoom",
     zoom_helper: "Alterna o minicartão para o cartão completo e vice-versa",
@@ -729,6 +864,9 @@ const STRINGS = {
     reboot: "Uruchom ponownie NAS",
     reboot_confirm: "Uruchomić teraz ponownie NAS? Udziały, aplikacje i usługi będą niedostępne przez kilka minut.",
     reboot_btn: "Uruchom ponownie",
+    wake: "Wybudź NAS",
+    wake_confirm: "Wysłać pakiet Wake-on-LAN, aby uruchomić NAS?",
+    wake_btn: "Wybudź",
     shutdown: "Wyłącz NAS",
     shutdown_confirm: "Wyłączyć NAS teraz? Pozostanie wyłączony, dopóki nie zostanie ponownie włączony, na samym NAS-ie lub przez Wake-on-LAN.",
     shutdown_btn: "Wyłącz",
@@ -757,6 +895,18 @@ const STRINGS = {
     show_fans: "Pokaż wentylatory",
     show_history: "Pokaż historię z 24 h",
     show_shutdown: "Przycisk wyłączania",
+    show_wake: "Włącz Wake-on-LAN",
+    show_wake_helper: "Opcjonalnie: dodaje akcję wybudzania do przycisku ponownego uruchomienia, gdy NAS jest offline.",
+    wake_target_auto: "Automatycznie (po NAS lub adresie MAC)",
+    wake_mac: "Adres MAC Wake-on-LAN (opcjonalnie)",
+    wake_mac_helper: "Opcjonalny dla automatycznego dopasowania lub akcji send_magic_packet; niepotrzebny, gdy wybrano encję docelową.",
+    wake_broadcast: "Adres rozgłoszeniowy Wake-on-LAN (opcjonalnie)",
+    wake_broadcast_helper: "Pozostaw puste dla domyślnego adresu rozgłoszeniowego (255.255.255.255).",
+    wake_entity: "Cel Wake-on-LAN (przycisk lub przełącznik)",
+    wake_entity_helper: "Wybierz istniejącą encję Wake on LAN / FRITZ!Box / NAS albo pozostaw na Automatycznie. Cele typu przełącznik są tylko włączane.",
+    wake_missing: "Wake-on-LAN niedostępny: wybierz dostępny cel w ustawieniach karty lub włącz zgodną akcję Wake-on-LAN.",
+    online_entity: "Status online NAS (opcjonalnie)",
+    online_entity_helper: "Opcjonalne zastąpienie; w przeciwnym razie automatycznie wyszukiwany jest pasujący czujnik Ping, a następnie telemetria NAS.",
     show_storage: "Pokaż pamięć masową",
     zoom: "Przycisk powiększenia",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
@@ -803,6 +953,9 @@ const STRINGS = {
     reboot: "Repornește NAS-ul",
     reboot_confirm: "Reporniți NAS-ul acum? Partajările, aplicațiile și serviciile vor fi indisponibile câteva minute.",
     reboot_btn: "Repornește",
+    wake: "Pornește NAS-ul",
+    wake_confirm: "Trimiți un pachet Wake-on-LAN pentru a porni NAS-ul?",
+    wake_btn: "Pornește",
     shutdown: "Oprește NAS-ul",
     shutdown_confirm: "Oprești NAS-ul acum? Rămâne oprit până când este pornit din nou, de pe NAS sau prin Wake-on-LAN.",
     shutdown_btn: "Oprește",
@@ -831,6 +984,18 @@ const STRINGS = {
     show_fans: "Afișează ventilatoarele",
     show_history: "Afișează istoricul pe 24 h",
     show_shutdown: "Buton de oprire",
+    show_wake: "Activează Wake-on-LAN",
+    show_wake_helper: "Opțional: adaugă o acțiune de pornire la butonul de repornire când NAS-ul este offline.",
+    wake_target_auto: "Automat (după NAS sau adresa MAC)",
+    wake_mac: "Adresă MAC Wake-on-LAN (opțional)",
+    wake_mac_helper: "Opțional pentru potrivirea automată sau o acțiune send_magic_packet; nu este necesară când este selectată o entitate țintă.",
+    wake_broadcast: "Adresă de difuzare Wake-on-LAN (opțional)",
+    wake_broadcast_helper: "Lasă gol pentru adresa de difuzare implicită (255.255.255.255).",
+    wake_entity: "Țintă Wake-on-LAN (buton sau comutator)",
+    wake_entity_helper: "Selectează o entitate Wake on LAN / FRITZ!Box / NAS existentă sau lasă pe Automat. Țintele de tip comutator sunt doar pornite.",
+    wake_missing: "Wake-on-LAN indisponibil: selectează o țintă disponibilă în setările cardului sau activează o acțiune Wake-on-LAN compatibilă.",
+    online_entity: "Stare online a NAS-ului (opțional)",
+    online_entity_helper: "Înlocuire opțională; altfel, un senzor Ping corespunzător este găsit automat, urmat de telemetria NAS-ului.",
     show_storage: "Afișează stocarea",
     zoom: "Buton de zoom",
     zoom_helper: "Comută minicardul la cardul complet și înapoi",
@@ -877,6 +1042,9 @@ const STRINGS = {
     reboot: "Genstart NAS'en",
     reboot_confirm: "Vil du genstarte NAS'en nu? Delte mapper, apps og tjenester er utilgængelige i et par minutter.",
     reboot_btn: "Genstart",
+    wake: "Tænd NAS'en",
+    wake_confirm: "Sende en Wake-on-LAN-pakke for at starte NAS'en?",
+    wake_btn: "Tænd",
     shutdown: "Sluk NAS'en",
     shutdown_confirm: "Sluk NAS'en nu? Den forbliver slukket, indtil den tændes igen, på selve NAS'en eller via Wake-on-LAN.",
     shutdown_btn: "Sluk",
@@ -905,6 +1073,18 @@ const STRINGS = {
     show_fans: "Vis blæsere",
     show_history: "Vis 24-timers historik",
     show_shutdown: "Sluk-knap",
+    show_wake: "Aktivér Wake-on-LAN",
+    show_wake_helper: "Valgfrit: tilføjer en tænd-handling til genstartsknappen, når NAS'en er offline.",
+    wake_target_auto: "Automatisk (efter NAS eller MAC-adresse)",
+    wake_mac: "Wake-on-LAN-MAC-adresse (valgfrit)",
+    wake_mac_helper: "Valgfri til automatisk matchning eller en send_magic_packet-handling; ikke nødvendig, når en målentitet er valgt.",
+    wake_broadcast: "Wake-on-LAN-broadcastadresse (valgfrit)",
+    wake_broadcast_helper: "Lad stå tom for standardbroadcastadressen (255.255.255.255).",
+    wake_entity: "Wake-on-LAN-mål (knap eller kontakt)",
+    wake_entity_helper: "Vælg en eksisterende Wake on LAN / FRITZ!Box / NAS-entitet, eller lad stå på Automatisk. Mål af typen kontakt tændes kun.",
+    wake_missing: "Wake-on-LAN er ikke tilgængelig: vælg et tilgængeligt mål i kortets indstillinger, eller aktivér en kompatibel Wake-on-LAN-handling.",
+    online_entity: "NAS'ens onlinestatus (valgfrit)",
+    online_entity_helper: "Valgfri tilsidesættelse; ellers findes en matchende Ping-sensor automatisk efterfulgt af NAS-telemetri.",
     show_storage: "Vis lager",
     zoom: "Zoomknap",
     zoom_helper: "Skifter fra minikortet til det fulde kort og tilbage",
@@ -951,6 +1131,9 @@ const STRINGS = {
     reboot: "Starta om NAS:en",
     reboot_confirm: "Vill du starta om NAS:en nu? Delade mappar, appar och tjänster är otillgängliga i några minuter.",
     reboot_btn: "Starta om",
+    wake: "Slå på NAS:en",
+    wake_confirm: "Skicka ett Wake-on-LAN-paket för att starta NAS:en?",
+    wake_btn: "Slå på",
     shutdown: "Stäng av NAS:en",
     shutdown_confirm: "Stänga av NAS:en nu? Den förblir avstängd tills den slås på igen, på själva NAS:en eller via Wake-on-LAN.",
     shutdown_btn: "Stäng av",
@@ -979,6 +1162,18 @@ const STRINGS = {
     show_fans: "Visa fläktar",
     show_history: "Visa 24 h-historik",
     show_shutdown: "Avstängningsknapp",
+    show_wake: "Aktivera Wake-on-LAN",
+    show_wake_helper: "Valfritt: lägger till en påslagningsåtgärd på omstartsknappen när NAS:en är offline.",
+    wake_target_auto: "Automatiskt (via NAS eller MAC-adress)",
+    wake_mac: "Wake-on-LAN-MAC-adress (valfritt)",
+    wake_mac_helper: "Valfri för automatisk matchning eller en send_magic_packet-åtgärd; behövs inte när en målentitet har valts.",
+    wake_broadcast: "Wake-on-LAN-broadcastadress (valfritt)",
+    wake_broadcast_helper: "Lämna tomt för standardbroadcastadressen (255.255.255.255).",
+    wake_entity: "Wake-on-LAN-mål (knapp eller brytare)",
+    wake_entity_helper: "Välj en befintlig Wake on LAN / FRITZ!Box / NAS-entitet, eller lämna på Automatiskt. Mål av typen brytare slås bara på.",
+    wake_missing: "Wake-on-LAN är inte tillgängligt: välj ett tillgängligt mål i kortinställningarna eller aktivera en kompatibel Wake-on-LAN-åtgärd.",
+    online_entity: "NAS:ens onlinestatus (valfritt)",
+    online_entity_helper: "Valfri åsidosättning; annars hittas en matchande Ping-sensor automatiskt, följt av NAS-telemetri.",
     show_storage: "Visa lagring",
     zoom: "Zoomknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
@@ -1025,6 +1220,9 @@ const STRINGS = {
     reboot: "Рестартиране на NAS",
     reboot_confirm: "Да се рестартира ли NAS сега? Споделените папки, приложенията и услугите няма да са достъпни няколко минути.",
     reboot_btn: "Рестартиране",
+    wake: "Включи NAS",
+    wake_confirm: "Да се изпрати ли Wake-on-LAN пакет за стартиране на NAS?",
+    wake_btn: "Включи",
     shutdown: "Изключване на NAS",
     shutdown_confirm: "Да се изключи ли NAS сега? Ще остане изключен, докато не бъде включен отново – от самия NAS или чрез Wake-on-LAN.",
     shutdown_btn: "Изключване",
@@ -1053,6 +1251,18 @@ const STRINGS = {
     show_fans: "Показване на вентилаторите",
     show_history: "Показване на 24-часовата история",
     show_shutdown: "Бутон за изключване",
+    show_wake: "Активиране на Wake-on-LAN",
+    show_wake_helper: "По избор: добавя действие за включване към бутона за рестартиране, когато NAS е офлайн.",
+    wake_target_auto: "Автоматично (по NAS или MAC адрес)",
+    wake_mac: "MAC адрес за Wake-on-LAN (по избор)",
+    wake_mac_helper: "По избор за автоматично съпоставяне или действие send_magic_packet; не е необходим, когато е избран целеви обект.",
+    wake_broadcast: "Broadcast адрес за Wake-on-LAN (по избор)",
+    wake_broadcast_helper: "Оставете празно за подразбиращия се broadcast адрес (255.255.255.255).",
+    wake_entity: "Цел за Wake-on-LAN (бутон или ключ)",
+    wake_entity_helper: "Изберете съществуващ обект Wake on LAN / FRITZ!Box / NAS или оставете на Автоматично. Целите от тип ключ само се включват.",
+    wake_missing: "Wake-on-LAN не е наличен: изберете наличен цел в настройките на картата или активирайте съвместимо действие Wake-on-LAN.",
+    online_entity: "Онлайн състояние на NAS (по избор)",
+    online_entity_helper: "Незадължително заместване; в противен случай автоматично се намира съответстващ Ping сензор, следван от телеметрията на NAS.",
     show_storage: "Показване на хранилището",
     zoom: "Бутон за мащабиране",
     zoom_helper: "Превключва от мини картата към пълната карта и обратно",
@@ -1099,6 +1309,9 @@ const STRINGS = {
     reboot: "Перезагрузить NAS",
     reboot_confirm: "Перезагрузить NAS сейчас? Общие папки, приложения и службы будут недоступны несколько минут.",
     reboot_btn: "Перезагрузить",
+    wake: "Включить NAS",
+    wake_confirm: "Отправить пакет Wake-on-LAN для запуска NAS?",
+    wake_btn: "Включить",
     shutdown: "Выключить NAS",
     shutdown_confirm: "Выключить NAS сейчас? Он останется выключенным, пока его снова не включат — на самом NAS или через Wake-on-LAN.",
     shutdown_btn: "Выключить",
@@ -1127,6 +1340,18 @@ const STRINGS = {
     show_fans: "Показывать вентиляторы",
     show_history: "Показать историю за 24 ч",
     show_shutdown: "Кнопка выключения",
+    show_wake: "Включить Wake-on-LAN",
+    show_wake_helper: "Необязательно: добавляет действие включения к кнопке перезапуска, когда NAS не в сети.",
+    wake_target_auto: "Автоматически (по NAS или MAC-адресу)",
+    wake_mac: "MAC-адрес Wake-on-LAN (необязательно)",
+    wake_mac_helper: "Необязателен для автоматического сопоставления или действия send_magic_packet; не нужен, когда выбрана целевая сущность.",
+    wake_broadcast: "Широковещательный адрес Wake-on-LAN (необязательно)",
+    wake_broadcast_helper: "Оставьте пустым для широковещательного адреса по умолчанию (255.255.255.255).",
+    wake_entity: "Цель Wake-on-LAN (кнопка или переключатель)",
+    wake_entity_helper: "Выберите существующую сущность Wake on LAN / FRITZ!Box / NAS или оставьте «Автоматически». Цели типа переключатель только включаются.",
+    wake_missing: "Wake-on-LAN недоступен: выберите доступную цель в настройках карточки или включите совместимое действие Wake-on-LAN.",
+    online_entity: "Состояние NAS в сети (необязательно)",
+    online_entity_helper: "Необязательное переопределение; иначе автоматически находится подходящий датчик Ping, затем телеметрия NAS.",
     show_storage: "Показывать хранилище",
     zoom: "Кнопка масштаба",
     zoom_helper: "Переключает мини-карточку на полную и обратно",
@@ -1173,6 +1398,9 @@ const STRINGS = {
     reboot: "Перезапустити NAS",
     reboot_confirm: "Перезапустити NAS зараз? Спільні папки, застосунки й служби будуть недоступні кілька хвилин.",
     reboot_btn: "Перезапуск",
+    wake: "Увімкнути NAS",
+    wake_confirm: "Надіслати пакет Wake-on-LAN, щоб запустити NAS?",
+    wake_btn: "Увімкнути",
     shutdown: "Вимкнути NAS",
     shutdown_confirm: "Вимкнути NAS зараз? Він залишиться вимкненим, доки його знову не ввімкнуть — на самому NAS або через Wake-on-LAN.",
     shutdown_btn: "Вимкнути",
@@ -1201,6 +1429,18 @@ const STRINGS = {
     show_fans: "Показувати вентилятори",
     show_history: "Показати історію за 24 год",
     show_shutdown: "Кнопка вимкнення",
+    show_wake: "Увімкнути Wake-on-LAN",
+    show_wake_helper: "Необов’язково: додає дію ввімкнення до кнопки перезапуску, коли NAS не в мережі.",
+    wake_target_auto: "Автоматично (за NAS або MAC-адресою)",
+    wake_mac: "MAC-адреса Wake-on-LAN (необов’язково)",
+    wake_mac_helper: "Необов’язкова для автоматичного зіставлення або дії send_magic_packet; не потрібна, коли вибрано цільову сутність.",
+    wake_broadcast: "Широкомовна адреса Wake-on-LAN (необов’язково)",
+    wake_broadcast_helper: "Залиште порожнім для типової широкомовної адреси (255.255.255.255).",
+    wake_entity: "Ціль Wake-on-LAN (кнопка або перемикач)",
+    wake_entity_helper: "Виберіть наявну сутність Wake on LAN / FRITZ!Box / NAS або залиште «Автоматично». Цілі типу перемикач лише вмикаються.",
+    wake_missing: "Wake-on-LAN недоступний: виберіть доступну ціль у налаштуваннях картки або увімкніть сумісну дію Wake-on-LAN.",
+    online_entity: "Стан NAS у мережі (необов’язково)",
+    online_entity_helper: "Необов’язкове перевизначення; інакше автоматично знаходиться відповідний датчик Ping, потім телеметрія NAS.",
     show_storage: "Показувати сховище",
     zoom: "Кнопка масштабу",
     zoom_helper: "Перемикає міні-картку на повну картку й назад",
@@ -1247,6 +1487,9 @@ const STRINGS = {
     reboot: "NAS újraindítása",
     reboot_confirm: "Újraindítja most a NAS-t? A megosztások, alkalmazások és szolgáltatások néhány percig nem lesznek elérhetők.",
     reboot_btn: "Újraindítás",
+    wake: "NAS bekapcsolása",
+    wake_confirm: "Küldjön Wake-on-LAN csomagot a NAS elindításához?",
+    wake_btn: "Bekapcsolás",
     shutdown: "NAS leállítása",
     shutdown_confirm: "Leállítja most a NAS-t? Kikapcsolva marad, amíg újra be nem kapcsolják, magán a NAS-on vagy Wake-on-LAN-nal.",
     shutdown_btn: "Leállítás",
@@ -1275,6 +1518,18 @@ const STRINGS = {
     show_fans: "Ventilátorok megjelenítése",
     show_history: "24 órás előzmények megjelenítése",
     show_shutdown: "Leállítás gomb",
+    show_wake: "Wake-on-LAN engedélyezése",
+    show_wake_helper: "Opcionális: bekapcsolási műveletet ad az újraindítás gombhoz, amikor a NAS offline.",
+    wake_target_auto: "Automatikus (NAS vagy MAC-cím alapján)",
+    wake_mac: "Wake-on-LAN MAC-cím (opcionális)",
+    wake_mac_helper: "Opcionális az automatikus párosításhoz vagy egy send_magic_packet művelethez; nem szükséges, ha célentitás van kiválasztva.",
+    wake_broadcast: "Wake-on-LAN broadcast-cím (opcionális)",
+    wake_broadcast_helper: "Hagyja üresen az alapértelmezett broadcast-címhez (255.255.255.255).",
+    wake_entity: "Wake-on-LAN cél (gomb vagy kapcsoló)",
+    wake_entity_helper: "Válasszon meglévő Wake on LAN / FRITZ!Box / NAS entitást, vagy hagyja Automatikuson. A kapcsoló típusú célok csak bekapcsolódnak.",
+    wake_missing: "A Wake-on-LAN nem érhető el: válasszon elérhető célt a kártya beállításaiban, vagy engedélyezzen kompatibilis Wake-on-LAN műveletet.",
+    online_entity: "A NAS online állapota (opcionális)",
+    online_entity_helper: "Opcionális felülbírálás; egyébként automatikusan megtalál egy megfelelő Ping érzékelőt, majd a NAS telemetriáját.",
     show_storage: "Tárhely megjelenítése",
     zoom: "Nagyítás gomb",
     zoom_helper: "A mini kártyáról a teljes kártyára vált és vissza",
@@ -1321,6 +1576,9 @@ const STRINGS = {
     reboot: "Reštartovať NAS",
     reboot_confirm: "Reštartovať NAS teraz? Zdieľané priečinky, aplikácie a služby budú na niekoľko minút nedostupné.",
     reboot_btn: "Reštartovať",
+    wake: "Zapnúť NAS",
+    wake_confirm: "Odoslať paket Wake-on-LAN na spustenie NAS?",
+    wake_btn: "Zapnúť",
     shutdown: "Vypnúť NAS",
     shutdown_confirm: "Vypnúť NAS teraz? Zostane vypnutý, kým ho znova nezapnete, priamo na NAS alebo cez Wake-on-LAN.",
     shutdown_btn: "Vypnúť",
@@ -1349,6 +1607,18 @@ const STRINGS = {
     show_fans: "Zobraziť ventilátory",
     show_history: "Zobraziť 24 h históriu",
     show_shutdown: "Tlačidlo vypnutia",
+    show_wake: "Povoliť Wake-on-LAN",
+    show_wake_helper: "Voliteľné: pridá akciu zapnutia k tlačidlu reštartu, keď je NAS offline.",
+    wake_target_auto: "Automaticky (podľa NAS alebo MAC adresy)",
+    wake_mac: "MAC adresa Wake-on-LAN (voliteľné)",
+    wake_mac_helper: "Voliteľná pre automatické priradenie alebo akciu send_magic_packet; nie je potrebná, keď je vybraná cieľová entita.",
+    wake_broadcast: "Broadcast adresa Wake-on-LAN (voliteľné)",
+    wake_broadcast_helper: "Nechajte prázdne pre predvolenú broadcast adresu (255.255.255.255).",
+    wake_entity: "Cieľ Wake-on-LAN (tlačidlo alebo prepínač)",
+    wake_entity_helper: "Vyberte existujúcu entitu Wake on LAN / FRITZ!Box / NAS alebo nechajte na Automaticky. Ciele typu prepínač sa iba zapínajú.",
+    wake_missing: "Wake-on-LAN nie je dostupný: vyberte dostupný cieľ v nastaveniach karty alebo povoľte kompatibilnú akciu Wake-on-LAN.",
+    online_entity: "Stav NAS online (voliteľné)",
+    online_entity_helper: "Voliteľné prepísanie; inak sa automaticky nájde zodpovedajúci Ping senzor, potom telemetria NAS.",
     show_storage: "Zobraziť úložisko",
     zoom: "Tlačidlo priblíženia",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
@@ -1395,6 +1665,9 @@ const STRINGS = {
     reboot: "Restartovat NAS",
     reboot_confirm: "Restartovat NAS nyní? Sdílené složky, aplikace a služby budou na několik minut nedostupné.",
     reboot_btn: "Restartovat",
+    wake: "Zapnout NAS",
+    wake_confirm: "Odeslat paket Wake-on-LAN pro spuštění NAS?",
+    wake_btn: "Zapnout",
     shutdown: "Vypnout NAS",
     shutdown_confirm: "Vypnout NAS nyní? Zůstane vypnutý, dokud jej znovu nezapnete, přímo na NAS nebo přes Wake-on-LAN.",
     shutdown_btn: "Vypnout",
@@ -1423,6 +1696,18 @@ const STRINGS = {
     show_fans: "Zobrazit ventilátory",
     show_history: "Zobrazit 24h historii",
     show_shutdown: "Tlačítko vypnutí",
+    show_wake: "Povolit Wake-on-LAN",
+    show_wake_helper: "Volitelné: přidá akci zapnutí k tlačítku restartu, když je NAS offline.",
+    wake_target_auto: "Automaticky (podle NAS nebo MAC adresy)",
+    wake_mac: "MAC adresa Wake-on-LAN (volitelné)",
+    wake_mac_helper: "Volitelná pro automatické párování nebo akci send_magic_packet; není potřeba, když je vybrána cílová entita.",
+    wake_broadcast: "Broadcast adresa Wake-on-LAN (volitelné)",
+    wake_broadcast_helper: "Ponechte prázdné pro výchozí broadcast adresu (255.255.255.255).",
+    wake_entity: "Cíl Wake-on-LAN (tlačítko nebo přepínač)",
+    wake_entity_helper: "Vyberte existující entitu Wake on LAN / FRITZ!Box / NAS nebo ponechte na Automaticky. Cíle typu přepínač se pouze zapínají.",
+    wake_missing: "Wake-on-LAN není dostupný: vyberte dostupný cíl v nastavení karty nebo povolte kompatibilní akci Wake-on-LAN.",
+    online_entity: "Stav NAS online (volitelné)",
+    online_entity_helper: "Volitelné přepsání; jinak se automaticky najde odpovídající Ping senzor, poté telemetrie NAS.",
     show_storage: "Zobrazit úložiště",
     zoom: "Tlačítko přiblížení",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
@@ -1469,6 +1754,9 @@ const STRINGS = {
     reboot: "Znova zaženi NAS",
     reboot_confirm: "Želite zdaj znova zagnati NAS? Skupne mape, aplikacije in storitve bodo za nekaj minut nedosegljive.",
     reboot_btn: "Znova zaženi",
+    wake: "Vklopi NAS",
+    wake_confirm: "Pošljem paket Wake-on-LAN za zagon NAS-a?",
+    wake_btn: "Vklopi",
     shutdown: "Zaustavi NAS",
     shutdown_confirm: "Zaustavim NAS zdaj? Ostal bo izklopljen, dokler ga ne vklopite znova, na samem NAS-u ali prek Wake-on-LAN.",
     shutdown_btn: "Zaustavi",
@@ -1497,6 +1785,18 @@ const STRINGS = {
     show_fans: "Prikaži ventilatorje",
     show_history: "Prikaži 24-urno zgodovino",
     show_shutdown: "Gumb za zaustavitev",
+    show_wake: "Omogoči Wake-on-LAN",
+    show_wake_helper: "Izbirno: gumbu za ponovni zagon doda dejanje vklopa, ko je NAS brez povezave.",
+    wake_target_auto: "Samodejno (po NAS ali naslovu MAC)",
+    wake_mac: "Naslov MAC za Wake-on-LAN (izbirno)",
+    wake_mac_helper: "Izbirno za samodejno ujemanje ali dejanje send_magic_packet; ni potrebno, ko je izbrana ciljna entiteta.",
+    wake_broadcast: "Oddajni naslov za Wake-on-LAN (izbirno)",
+    wake_broadcast_helper: "Pustite prazno za privzeti oddajni naslov (255.255.255.255).",
+    wake_entity: "Cilj Wake-on-LAN (gumb ali stikalo)",
+    wake_entity_helper: "Izberite obstoječo entiteto Wake on LAN / FRITZ!Box / NAS ali pustite na Samodejno. Cilji vrste stikalo se samo vklopijo.",
+    wake_missing: "Wake-on-LAN ni na voljo: izberite razpoložljiv cilj v nastavitvah kartice ali omogočite združljivo dejanje Wake-on-LAN.",
+    online_entity: "Stanje povezave NAS (izbirno)",
+    online_entity_helper: "Izbirna prednastavitev; sicer se samodejno poišče ustrezen senzor Ping, nato telemetrija NAS.",
     show_storage: "Prikaži shrambo",
     zoom: "Gumb za povečavo",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
@@ -1543,6 +1843,9 @@ const STRINGS = {
     reboot: "Restartēt NAS",
     reboot_confirm: "Restartēt NAS tagad? Koplietotās mapes, lietotnes un pakalpojumi dažas minūtes nebūs pieejami.",
     reboot_btn: "Restartēt",
+    wake: "Ieslēgt NAS",
+    wake_confirm: "Nosūtīt Wake-on-LAN paketi, lai startētu NAS?",
+    wake_btn: "Ieslēgt",
     shutdown: "Izslēgt NAS",
     shutdown_confirm: "Izslēgt NAS tagad? Tas paliks izslēgts, līdz to atkal ieslēgs – pašā NAS vai ar Wake-on-LAN.",
     shutdown_btn: "Izslēgt",
@@ -1571,6 +1874,18 @@ const STRINGS = {
     show_fans: "Rādīt ventilatorus",
     show_history: "Rādīt 24 h vēsturi",
     show_shutdown: "Izslēgšanas poga",
+    show_wake: "Iespējot Wake-on-LAN",
+    show_wake_helper: "Neobligāti: pievieno ieslēgšanas darbību restartēšanas pogai, kad NAS ir bezsaistē.",
+    wake_target_auto: "Automātiski (pēc NAS vai MAC adreses)",
+    wake_mac: "Wake-on-LAN MAC adrese (neobligāti)",
+    wake_mac_helper: "Neobligāta automātiskai saskaņošanai vai send_magic_packet darbībai; nav nepieciešama, ja ir atlasīta mērķa entītija.",
+    wake_broadcast: "Wake-on-LAN broadcast adrese (neobligāti)",
+    wake_broadcast_helper: "Atstājiet tukšu noklusējuma broadcast adresei (255.255.255.255).",
+    wake_entity: "Wake-on-LAN mērķis (poga vai slēdzis)",
+    wake_entity_helper: "Atlasiet esošu Wake on LAN / FRITZ!Box / NAS entītiju vai atstājiet uz Automātiski. Slēdža tipa mērķi tiek tikai ieslēgti.",
+    wake_missing: "Wake-on-LAN nav pieejams: atlasiet pieejamu mērķi kartes iestatījumos vai iespējojiet saderīgu Wake-on-LAN darbību.",
+    online_entity: "NAS tiešsaistes statuss (neobligāti)",
+    online_entity_helper: "Neobligāta aizstāšana; pretējā gadījumā automātiski tiek atrasts atbilstošs Ping sensors, pēc tam NAS telemetrija.",
     show_storage: "Rādīt krātuvi",
     zoom: "Tālummaiņas poga",
     zoom_helper: "Pārslēdz mini karti uz pilno karti un atpakaļ",
@@ -1617,6 +1932,9 @@ const STRINGS = {
     reboot: "Επανεκκίνηση του NAS",
     reboot_confirm: "Επανεκκίνηση του NAS τώρα; Οι κοινόχρηστοι φάκελοι, οι εφαρμογές και οι υπηρεσίες δεν θα είναι διαθέσιμα για λίγα λεπτά.",
     reboot_btn: "Επανεκκίνηση",
+    wake: "Ενεργοποίηση του NAS",
+    wake_confirm: "Αποστολή πακέτου Wake-on-LAN για εκκίνηση του NAS;",
+    wake_btn: "Ενεργοποίηση",
     shutdown: "Τερματισμός NAS",
     shutdown_confirm: "Τερματισμός του NAS τώρα; Θα παραμείνει κλειστό μέχρι να ενεργοποιηθεί ξανά, από το ίδιο το NAS ή μέσω Wake-on-LAN.",
     shutdown_btn: "Τερματισμός",
@@ -1645,6 +1963,18 @@ const STRINGS = {
     show_fans: "Εμφάνιση ανεμιστήρων",
     show_history: "Εμφάνιση ιστορικού 24 ωρών",
     show_shutdown: "Κουμπί τερματισμού",
+    show_wake: "Ενεργοποίηση Wake-on-LAN",
+    show_wake_helper: "Προαιρετικό: προσθέτει μια ενέργεια ενεργοποίησης στο κουμπί επανεκκίνησης όταν το NAS είναι εκτός σύνδεσης.",
+    wake_target_auto: "Αυτόματα (ανά NAS ή διεύθυνση MAC)",
+    wake_mac: "Διεύθυνση MAC Wake-on-LAN (προαιρετικό)",
+    wake_mac_helper: "Προαιρετική για αυτόματη αντιστοίχιση ή ενέργεια send_magic_packet· δεν χρειάζεται όταν έχει επιλεγεί οντότητα προορισμού.",
+    wake_broadcast: "Διεύθυνση broadcast Wake-on-LAN (προαιρετικό)",
+    wake_broadcast_helper: "Αφήστε κενό για την προεπιλεγμένη διεύθυνση broadcast (255.255.255.255).",
+    wake_entity: "Προορισμός Wake-on-LAN (κουμπί ή διακόπτης)",
+    wake_entity_helper: "Επιλέξτε μια υπάρχουσα οντότητα Wake on LAN / FRITZ!Box / NAS ή αφήστε το στο Αυτόματα. Οι προορισμοί τύπου διακόπτη μόνο ενεργοποιούνται.",
+    wake_missing: "Το Wake-on-LAN δεν είναι διαθέσιμο: επιλέξτε έναν διαθέσιμο προορισμό στις ρυθμίσεις της κάρτας ή ενεργοποιήστε μια συμβατή ενέργεια Wake-on-LAN.",
+    online_entity: "Κατάσταση σύνδεσης του NAS (προαιρετικό)",
+    online_entity_helper: "Προαιρετική παράκαμψη· διαφορετικά εντοπίζεται αυτόματα ένας αντίστοιχος αισθητήρας Ping, ακολουθούμενος από την τηλεμετρία του NAS.",
     show_storage: "Εμφάνιση χώρου αποθήκευσης",
     zoom: "Κουμπί μεγέθυνσης",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και αντίστροφα",
@@ -2200,6 +2530,8 @@ const SCALAR_RE = Object.entries(SCALARS).map(([k, key]) => [k, new RegExp(`(?:^
 const RE_REBOOT = new RegExp(`(?:^|_)power_action_reboot${SFX}`);
 // "Power Action: Shutdown" button, found the same way (juju35/ha-nas-card#89).
 const RE_SHUTDOWN = new RegExp(`(?:^|_)power_action_shutdown${SFX}`);
+// "Power Action: Wake Up" (UGREEN integration v2026.05.1+); works even when the NAS is off.
+const RE_WAKE = new RegExp(`(?:^|_)power_action_wake_up${SFX}`);
 const RE_FAN = new RegExp(`(?:^|_)device_fan_(\\d+)${SFX}`);
 const RE_POOL = new RegExp(`(?:^|_)pool_(\\d+)_(label|level|status|total_size|used_size|disk_count)${SFX}`);
 const RE_VOLUME = new RegExp(
@@ -2272,7 +2604,8 @@ const discoverUgreen = (hass, nasId) => {
   const all = ugnasIds(hass);
   const reboots = rebootIds(hass);
   const shutdowns = buttonIds(hass, RE_SHUTDOWN);
-  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}\n${shutdowns.join(",")}`;
+  const wakes = buttonIds(hass, RE_WAKE);
+  const key = `${nasId || ""}\n${all.join(",")}\n${reboots.join(",")}\n${shutdowns.join(",")}\n${wakes.join(",")}`;
   if (_cache.has(key)) return _cache.get(key);
   if (_cache.size > 8) _cache.clear();
 
@@ -2312,6 +2645,8 @@ const discoverUgreen = (hass, nasId) => {
     if (reboot) nas.scalars.reboot = reboot;
     const shutdown = ugreenReboot(hass, nas, all, shutdowns);
     if (shutdown) nas.scalars.shutdown = shutdown;
+    const wake = ugreenReboot(hass, nas, all, wakes);
+    if (wake) nas.scalars.wake = wake;
     _cache.set(key, nas);
     _lastGood.set(nas.nasId, nas);
     _lastGood.set(nasId || "", nas);
@@ -2934,6 +3269,10 @@ const watchOutside = (card, handler) => {
   };
 };
 
+// show_wake: false always overrides legacy MAC/target settings.
+const wakeEnabled = (config) =>
+  config?.show_wake === true || (config?.show_wake !== false && Boolean(config?.wake_entity || config?.wake_mac));
+
 class NasBase extends HTMLElement {
   constructor() {
     super();
@@ -3017,21 +3356,157 @@ class NasBase extends HTMLElement {
       .catch((err) => console.error("nas-card: button.press failed", err));
   }
 
+  // A configured MAC uses the Home Assistant Wake on LAN integration, regardless of NAS vendor.
+  _wakeMac() {
+    const mac = String(this._config.wake_mac || "").trim();
+    return /^(?:[\da-f]{2}:){5}[\da-f]{2}$/i.test(mac) || /^(?:[\da-f]{2}-){5}[\da-f]{2}$/i.test(mac) ? mac : null;
+  }
+
+  // Wake-up is opt-in. Existing configurations with a MAC or target remain compatible.
+  _wakeEnabled() {
+    return wakeEnabled(this._config);
+  }
+
+  _usableWakeEntity(id) {
+    return /^(button|switch)\.[a-z0-9_]+$/.test(id || "") && this._s(id) && this._s(id).state !== "unavailable";
+  }
+
+  // Match a registered Wake-on-LAN target to this NAS by its MAC address, not by a guessed label.
+  _macWakeEntity(domain) {
+    const mac = this._wakeMac()?.replace(/[^a-f\d]/gi, "").toLowerCase();
+    if (!mac) return null;
+    const entries = this._hass?.entities || {};
+    for (const [id, entry] of Object.entries(entries)) {
+      if (!id.startsWith(`${domain}.`) || !this._usableWakeEntity(id)) continue;
+      const isWake =
+        entry?.platform === "wake_on_lan" ||
+        (domain === "button" && entry?.platform === "fritz" && /(?:^|_)wake_on_lan$/.test(entry.translation_key || id.slice(7)));
+      if (!isWake) continue;
+      const device = this._hass?.devices?.[entry.device_id];
+      const connections = device?.connections || [];
+      if ([...connections].some(([kind, address]) => kind === "mac" && String(address).replace(/[^a-f\d]/gi, "").toLowerCase() === mac)) return id;
+    }
+    return null;
+  }
+
+  // Explicit button first, then the NAS's native UGREEN action, then a matching WOL / FRITZ!Box button.
+  _wakeButton(nas) {
+    const selected = this._config.wake_entity;
+    if (selected?.startsWith("button.") && this._usableWakeEntity(selected)) return selected;
+    if (this._usableWakeEntity(nas.scalars.wake)) return nas.scalars.wake;
+    return this._macWakeEntity("button");
+  }
+
+  // An explicit switch takes priority over auto-discovered buttons.
+  _wakeTarget(nas) {
+    if (!this._wakeEnabled()) return null;
+    const selected = this._config.wake_entity;
+    if (selected?.startsWith("switch.") && this._usableWakeEntity(selected)) return { switch: selected };
+    const button = this._wakeButton(nas);
+    if (button) return { button };
+    const wolSwitch = this._macWakeEntity("switch");
+    if (wolSwitch) return { switch: wolSwitch };
+    const mac = this._wakeMac();
+    if (mac && this._hass?.services?.wake_on_lan?.send_magic_packet) return { mac };
+    return null;
+  }
+
+  _hasWake(nas) {
+    return Boolean(this._wakeTarget(nas));
+  }
+
+  // Find an existing Ping (ICMP) connectivity sensor for this NAS by its host or exact name.
+  // Never use an unrelated Ping sensor (important on dashboards with multiple NAS devices).
+  _autoPing(nas) {
+    const normalized = (value) => String(value || "").toLowerCase().replace(/[^a-z\d]+/g, "_").replace(/^_|_$/g, "");
+    const url = String(this._config.url || nas.info?.url || "");
+    const host = url.match(/^\w+:\/\/([^/:?#]+)/)?.[1];
+    const aliases = new Set([host, nas.info?.name, nas.nasId, this._config.nas, this._config.title].map(normalized).filter((v) => v.length >= 3));
+    if (!aliases.size) return null;
+    let best = null;
+    let bestScore = 0;
+    let tied = false;
+    for (const [id, state] of Object.entries(this._hass?.states || {})) {
+      if (!id.startsWith("binary_sensor.")) continue;
+      const entry = this._hass?.entities?.[id];
+      if (entry?.platform && entry.platform !== "ping") continue;
+      if (!entry?.platform && state.attributes?.device_class !== "connectivity") continue;
+      const device = this._hass?.devices?.[entry?.device_id];
+      const names = [id.slice(14), state.attributes?.friendly_name, device?.name_by_user, device?.name, state.attributes?.host, state.attributes?.ip_address]
+        .map(normalized).filter(Boolean);
+      const score = Math.max(0, ...names.flatMap((name) => [...aliases].map((alias) =>
+        name === alias ? 3 : name === `${alias}_ping` || name === `ping_${alias}` || name === `${alias}_connectivity` ? 2 : 0
+      )));
+      if (score > bestScore) {
+        best = id;
+        bestScore = score;
+        tied = false;
+      } else if (score && score === bestScore) {
+        tied = true;
+      }
+    }
+    return tied ? null : best;
+  }
+
+  // An explicit (existing) sensor wins, otherwise a matching Ping sensor is auto-discovered.
+  _pingEntity(nas) {
+    const requested = this._config.online_entity;
+    if (requested && this._s(requested)) return requested;
+    return this._autoPing(nas);
+  }
+
+  // On/off Ping sensors are authoritative; missing/unknown sensors fall back to NAS telemetry.
+  _powerState(nas) {
+    const ping = this._pingEntity(nas);
+    const state = this._s(ping)?.state;
+    if (state === "on") return "online";
+    if (state === "off") return "offline";
+    const sc = nas.scalars;
+    const monitored = ["cpu_usage", "ram_usage", "sys_temp", "cpu_temp", "runtime", "boot", "lan_up", "lan_down", "server_status"]
+      .map((key) => this._s(sc[key]))
+      .filter(Boolean);
+    if (monitored.some((s) => !NO_VALUE.has(s.state))) return "online";
+    if (monitored.length && monitored.every((s) => s.state === "unavailable")) return "offline";
+    return "unknown";
+  }
+
+  _wake(nas) {
+    const target = this._wakeTarget(nas);
+    if (!target) return;
+    if (target.button) return this._press(target.button);
+    if (target.switch) {
+      Promise.resolve()
+        .then(() => this._hass?.callService("switch", "turn_on", { entity_id: target.switch }))
+        .catch((err) => console.error("nas-card: switch.turn_on failed", err));
+      return;
+    }
+    const data = { mac: target.mac };
+    if (this._config.wake_broadcast?.trim()) data.broadcast_address = this._config.wake_broadcast.trim();
+    Promise.resolve()
+      .then(() => this._hass?.callService("wake_on_lan", "send_magic_packet", data))
+      .catch((err) => console.error("nas-card: Wake-on-LAN failed", err));
+  }
+
   _confirmReboot() {
     return this._confirmPower("reboot");
   }
 
-  // Opens the reboot (or shutdown) confirmation popup; on confirmation, presses the NAS's button.
+  // When offline, the existing reboot button confirms a wake-up instead.
   _confirmPower(kind) {
-    const id = discover(this._hass, this._config.nas).scalars[kind];
-    if (!id || this._s(id)?.state === "unavailable") return;
+    const nas = discover(this._hass, this._config.nas);
+    const offline = this._powerState(nas) === "offline";
+    const wake = kind === "reboot" && offline && this._hasWake(nas);
+    if (kind === "reboot" && offline && !wake) return;
+    const action = wake ? "wake" : kind;
+    const id = nas.scalars[kind];
+    if (!wake && (!id || this._s(id)?.state === "unavailable")) return;
     this._dialog = {
       kind,
-      icon: kind === "shutdown" ? ICONS.power : ICONS.restart,
-      title: this._t(kind),
-      body: this._t(`${kind}_confirm`),
-      ok: this._t(`${kind}_btn`),
-      onOk: () => this._press(id),
+      icon: action === "reboot" ? ICONS.restart : ICONS.power,
+      title: this._t(action),
+      body: this._t(`${action}_confirm`),
+      ok: this._t(`${action}_btn`),
+      onOk: () => (wake ? this._wake(nas) : this._press(id)),
     };
     window.addEventListener("keydown", this._onKey);
     this._update();
@@ -3065,14 +3540,18 @@ class NasBase extends HTMLElement {
     </div>`;
   }
 
-  // Round reboot button at the end of the system facts (full card, zoomed mini card): only when the NAS exposes a
-  // reboot button (UGREEN NAS, Synology DSM). Disabled while it is unavailable (a button never pressed is "unknown": its normal state).
+  // One button serves reboot (online) and Wake-on-LAN (offline); preserves the old behaviour if WOL is unset.
   _rebootBtn(nas) {
     const id = nas.scalars.reboot;
-    if (!id) return "";
-    const label = esc(this._t("reboot"));
-    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
-    return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.restart)}</button>`;
+    const offline = this._powerState(nas) === "offline";
+    const wake = offline && this._hasWake(nas);
+    if (!id && !wake) return "";
+    // The "Wake-on-LAN unavailable" hint only appears when WOL is enabled but no target is usable;
+    // a card without Wake-on-LAN keeps the plain restart button, as before.
+    const wakeHint = offline && !wake && this._wakeEnabled();
+    const label = esc(this._t(wake ? "wake" : wakeHint ? "wake_missing" : "reboot"));
+    const disabled = !wake && (offline || this._s(id)?.state === "unavailable") ? " disabled" : "";
+    return `<button class="action" data-action="reboot" title="${label}" aria-label="${label}"${disabled}>${svgIcon(wake ? ICONS.power : ICONS.restart)}</button>`;
   }
 
   // Round shutdown button beside it, when the NAS exposes a shutdown button (UGREEN NAS, Synology DSM) and
@@ -3081,7 +3560,7 @@ class NasBase extends HTMLElement {
     const id = nas.scalars.shutdown;
     if (!id || this._config.show_shutdown === false) return "";
     const label = esc(this._t("shutdown"));
-    const disabled = this._s(id)?.state === "unavailable" ? " disabled" : "";
+    const disabled = this._powerState(nas) === "offline" || this._s(id)?.state === "unavailable" ? " disabled" : "";
     return `<button class="action" data-action="shutdown" title="${label}" aria-label="${label}"${disabled}>${svgIcon(ICONS.power)}</button>`;
   }
 
@@ -3196,6 +3675,12 @@ class NasBase extends HTMLElement {
       }
     };
     walk(nas.scalars);
+    const ping = this._pingEntity(nas);
+    if (ping) sig.push(h.states[ping]);
+    const wol = this._wakeTarget(nas);
+    const targetId = wol?.button || wol?.switch || this._config.wake_entity;
+    if (targetId) sig.push(h.states[targetId]);
+    sig.push(h.services?.wake_on_lan?.send_magic_packet);
     walk(nas.fans);
     walk(nas.pools);
     return sig;
@@ -3875,6 +4360,26 @@ class NasEditorBase extends HTMLElement {
     return ["show_title", "show_subtitle", "show_image", ...this.constructor.toggles];
   }
 
+  _wakeTargetOptions() {
+    const options = [{ value: "", label: t(this._hass, this._config, "wake_target_auto") }];
+    const states = this._hass?.states || {};
+    for (const [id, entity] of Object.entries(this._hass?.entities || {})) {
+      if (!this._usableEditorWakeTarget(id, entity, states)) continue;
+      options.push({ value: id, label: states[id]?.attributes?.friendly_name || id });
+    }
+    return [options[0], ...options.slice(1).sort((a, b) => a.label.localeCompare(b.label))];
+  }
+
+  _usableEditorWakeTarget(id, entity, states) {
+    if (!/^(button|switch)\./.test(id) || !states[id] || states[id].state === "unavailable") return false;
+    if (entity?.platform === "wake_on_lan") return true;
+    if (id.startsWith("button.") && entity?.platform === "fritz")
+      return /(?:^|_)wake_on_lan$/.test(entity.translation_key || id.slice(7));
+    if (id.startsWith("button.") && entity?.platform === "ugreen")
+      return /(?:^|_)power_action_wake_up(?:_\d+)?$/.test(id.slice(7));
+    return false;
+  }
+
   _schema() {
     const nasOptions = this._hass ? listNas(this._hass) : [];
     const tr = (k) => t(this._hass, this._config, k);
@@ -3899,6 +4404,13 @@ class NasEditorBase extends HTMLElement {
       },
       { name: "url", selector: { text: { type: "url" } } },
       { name: "brand_url", selector: { text: { type: "url" } } },
+      { name: "show_wake", selector: { boolean: {} } },
+      ...(wakeEnabled(this._config) ? [
+        { name: "wake_entity", selector: { select: { mode: "dropdown", custom_value: true, options: this._wakeTargetOptions() } } },
+        { name: "wake_mac", selector: { text: {} } },
+        { name: "wake_broadcast", selector: { text: {} } },
+      ] : []),
+      { name: "online_entity", selector: { entity: { filter: { domain: "binary_sensor" } } } },
       {
         type: "grid",
         name: "",
@@ -3977,7 +4489,7 @@ class NasEditorBase extends HTMLElement {
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (s) => s.label ?? t(this._hass, this._config, s.name);
-      this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`];
+      this._form.computeHelper = (s) => STRINGS[lang(this._hass, this._config)][`${s.name}_helper`] ?? STRINGS.en[`${s.name}_helper`];
       this._form.addEventListener("value-changed", (ev) => {
         ev.stopPropagation();
         const config = { ...ev.detail.value };
@@ -3994,6 +4506,7 @@ class NasEditorBase extends HTMLElement {
       this.appendChild(this._form);
     }
     const data = { ...this._config };
+    if (data.show_wake === undefined) data.show_wake = Boolean(data.wake_mac || data.wake_entity);
     for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
     data.thresholds = Object.fromEntries(
       Object.keys(THRESHOLDS).map((m) => {

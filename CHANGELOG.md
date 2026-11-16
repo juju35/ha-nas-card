@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.26.0 - 2026-11-16
+
+### Features
+- **Wake-on-LAN** ([#95](https://github.com/juju35/ha-nas-card/pull/95), by @CHLINDE): optional wake-up for an offline NAS. When the NAS is offline, the restart button sends a Wake-on-LAN packet instead — using a Wake on LAN / FRITZ!Box / NAS target selected in the editor, one auto-matched by MAC, or a `wake_on_lan.send_magic_packet` action. Off by default (`show_wake`); the power state comes from a Ping sensor (auto-discovered or `online_entity`), with NAS telemetry as a fallback.
+
 ## 1.25.1 - 2026-11-14
 
 ### Fixes
