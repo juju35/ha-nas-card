@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.27.0 - 2026-11-17
+
+### Features
+- **Illustrated header** on both cards (90 px): the card's own NAS drawing for the model (UGREEN, Synology, QNAP, ASUSTOR — model detection and the `image` option unchanged), drawn big on a server-room wall with a concrete ground strip, the title and the round status icon with its brand badge on the left. The network cable flows and the drive LEDs blink in the status colour (green, orange on a warning or a RAID task, red on a degraded RAID, grey and dimmed when offline), with an alert mark on a problem; the header icon follows the same status. Night version after sunset (`sun.sun`) or in dark mode, forced with `illustration_theme: day | night`; `illustration: false` keeps the classic header. Honours `prefers-reduced-motion`; SVG ids are unique per card. Both options are in the visual editor of both cards, translated in every language.
+
 ## 1.26.0 - 2026-11-16
 
 ### Features

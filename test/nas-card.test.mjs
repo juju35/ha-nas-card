@@ -246,7 +246,9 @@ test("the mini card zoom button switches to the full card content and back", asy
   // Everything the full card shows: gauges, network, volumes, disks and fans, then the button at the far right.
   for (const cls of ["gauges", "net", "vol clickable", "disks", "fans"]) assert.match(el.html, new RegExp(`class="${cls}`));
   assert.doesNotMatch(el.html, /class="metric/);
-  assert.equal(el.html.replace(/<button class="zoom"[\s\S]*?<\/button>/, ""), full._render());
+  // The illustration's SVG ids carry each card's own suffix: compared without it.
+  const noUid = (h) => h.replace(/(id="|url\(#)([\w-]+?)-\d+(?=[")])/g, "$1$2");
+  assert.equal(noUid(el.html.replace(/<button class="zoom"[\s\S]*?<\/button>/, "")), noUid(full._render()));
   assert.match(el.html, /<button class="zoom" title="Back to the compact view">/);
   assert.equal(el.getCardSize(), full.getCardSize());
   assert.deepEqual({ ...el.getGridOptions() }, { ...full.getGridOptions() });
@@ -866,7 +868,9 @@ test("an offline UGREEN NAS keeps its last known name, model and labels instead 
     assert.match(html, /class="name">ugreen-nas</, Card);
     assert.match(html, /<span>DXP480T Plus<\/span>/, Card);
     // The picture of the model, not the generic fallback.
-    assert.equal(html.match(/<img class="nas" src="([^"]*)"/)?.[1], live.match(/<img class="nas" src="([^"]*)"/)?.[1], Card);
+    const art = (h) => h.match(/<svg class="nas-art"[^>]*>[\s\S]*?<\/svg>/)?.[0];
+    assert.ok(art(live), Card);
+    assert.equal(art(html), art(live), Card);
   }
 });
 
@@ -2320,4 +2324,92 @@ test("Wake-on-LAN: matching a Home Assistant WOL button by MAC without a manuall
   };
   const nas = discover(el._hass, "");
   assert.equal(el._wakeTarget(nas).button, matching);
+});
+
+test("illustrated header: the card's NAS drawing on a 90 px banner, classic header with illustration: false", async () => {
+  // A fresh copy of the mock states: earlier tests change some of the shared ones.
+  const { mocks } = await import("../scripts/mock-states.mjs?illustration");
+  const { BANNER_STYLE, nasSvg, NasCard, NasMiniCard } = load("nas-card.js", ["BANNER_STYLE", "nasSvg", "NasCard", "NasMiniCard"]);
+  const render = (Card, hass, config = {}) => {
+    const el = new Card();
+    el._config = config;
+    el._hass = { ...hass, language: "en" };
+    return el._render();
+  };
+  for (const Card of [NasCard, NasMiniCard]) {
+    const html = render(Card, mocks.synology);
+    assert.match(html, /<div class="header banner st-ok">/);
+    assert.match(html, /<div class="ground"><\/div>/);
+    // The drawing of the reported model (DS923+: a 4-bay Synology tower), its LEDs coloured by the stylesheet.
+    const vb = nasSvg("DS923+", "synology").match(/viewBox="([^"]+)"/)[1];
+    assert.match(html, new RegExp(`<svg class="nas-art" viewBox="${vb}"`));
+    assert.match(html, /class="led" fill="#43c463"/);
+    // The brand badge stays on the icon.
+    assert.match(html, /<span class="logo ok" aria-hidden="true"><svg [\s\S]*?<span class="badge"><img src="data:image\/png/);
+    const classic = render(Card, mocks.synology, { illustration: false });
+    assert.doesNotMatch(classic, /banner/);
+    assert.match(classic, /<img class="nas" src="data:image\/svg\+xml,/);
+  }
+  assert.match(BANNER_STYLE, /\.header\.banner \{[^}]*height: 90px/);
+  assert.match(BANNER_STYLE, /prefers-reduced-motion: reduce/);
+  // The image option still picks the model drawn.
+  const vb = nasSvg("RS2423+", "synology").match(/viewBox="([^"]+)"/)[1];
+  assert.match(render(NasCard, mocks.synology, { image: "RS2423+" }), new RegExp(`<svg class="nas-art" viewBox="${vb}"`));
+  // A picture given by URL keeps its file.
+  assert.match(render(NasCard, mocks.synology, { image: "/local/nas.png" }), /<image class="nas-art" href="\/local\/nas\.png"/);
+});
+
+test("illustrated header: night follows illustration_theme, then sun.sun, then the dark theme", async () => {
+  // A fresh copy of the mock states: earlier tests change some of the shared ones.
+  const { mocks } = await import("../scripts/mock-states.mjs?illustration");
+  const { NasCard } = load("nas-card.js", ["NasCard"]);
+  const night = (config, extra = {}) => {
+    const el = new NasCard();
+    el._config = config;
+    el._hass = { ...mocks.ugreen, ...extra, states: { ...mocks.ugreen.states, ...(extra.states || {}) }, language: "en" };
+    return /class="header banner [^"]*night/.test(el._render());
+  };
+  const sun = (state) => ({ states: { "sun.sun": { entity_id: "sun.sun", state, attributes: {} } } });
+  assert.equal(night({}), false);
+  assert.equal(night({}, { themes: { darkMode: true } }), true);
+  assert.equal(night({}, sun("below_horizon")), true);
+  assert.equal(night({}, { ...sun("above_horizon"), themes: { darkMode: true } }), false);
+  assert.equal(night({ illustration_theme: "night" }, sun("above_horizon")), true);
+  assert.equal(night({ illustration_theme: "day" }, sun("below_horizon")), false);
+});
+
+test("illustrated header: the icon and the illustration follow the status; SVG ids are unique per card", async () => {
+  // A fresh copy of the mock states: earlier tests change some of the shared ones.
+  const { mocks } = await import("../scripts/mock-states.mjs?illustration");
+  const { NasCard } = load("nas-card.js", ["NasCard"]);
+  const render = (states = {}) => {
+    const el = new NasCard();
+    el._config = {};
+    el._hass = { ...mocks.synology, states: { ...mocks.synology.states, ...states }, language: "en" };
+    return el._render();
+  };
+  const set = (id, state) => ({ [id]: { ...mocks.synology.states[id], state } });
+  const st = (html) => [html.match(/class="header banner st-(\w+)/)?.[1], html.match(/<span class="logo (\w+)"/)?.[1]];
+  assert.deepEqual(st(render()), ["ok", "ok"]);
+  const warn = render(set("binary_sensor.diskstation_security_status", "on"));
+  assert.deepEqual(st(warn), ["warn", "warn"]);
+  assert.match(warn, /<g class="alert">/);
+  const offline = Object.fromEntries(Object.keys(mocks.synology.states).filter((id) => !id.startsWith("button.")).map((id) => [id, { ...mocks.synology.states[id], state: "unavailable" }]));
+  assert.deepEqual(st(render(offline)), ["na", "na"]);
+  const ids = (html) => [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+  const a = ids(render());
+  const b = ids(render());
+  assert.ok(a.length);
+  assert.equal(a.filter((id) => b.includes(id)).length, 0);
+});
+
+test("the editor offers the illustration toggle and its theme, auto left out of the YAML", () => {
+  const ed = new NasCardEditor();
+  ed._config = {};
+  const flat = (s) => s.flatMap((x) => (x.schema ? flat(x.schema) : [x]));
+  const names = flat(ed._schema()).map((x) => x.name);
+  assert.ok(names.includes("illustration") && names.includes("illustration_theme"));
+  ed._config = { illustration: false };
+  assert.ok(!flat(ed._schema()).some((x) => x.name === "illustration_theme"));
+  for (const lang of Object.keys(STRINGS)) for (const k of ["illustration", "illustration_theme", "theme_auto", "theme_day", "theme_night"]) assert.ok(STRINGS[lang][k], `${lang}.${k}`);
 });

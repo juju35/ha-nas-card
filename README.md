@@ -48,7 +48,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
 - Detail button on the mini card (top right): it switches the mini card to the full card's content and back; a click anywhere outside the card brings the compact view back
 - Click any value to open its Home Assistant history (more-info dialog)
-- Round NAS icon next to the NAS name, in the status color (green when the NAS is normal, orange on a warning, grey when the status is unavailable), with the brand logo (UGREEN, Synology, QNAP or ASUSTOR) as a badge: a click opens the brand's website
+- Illustrated header (both cards, 90 px): the NAS drawing of its model, drawn big on a server-room wall with a concrete strip at the bottom; the network cable flows and the drive LEDs blink in the status colour (green, orange on a warning or a RAID task, red on a degraded RAID, grey and dimmed when the NAS is offline), with an alert mark on a problem. Night version after sunset (`sun.sun`) or in dark mode, forced with `illustration_theme`; `illustration: false` brings back the classic header. Animations stop with the system's reduced-motion setting
+- Round NAS icon next to the NAS name, in the status color (green when the NAS is normal, orange on a warning, red on a degraded RAID, grey when the NAS is offline or the status is unavailable), with the brand logo (UGREEN, Synology, QNAP or ASUSTOR) as a badge: a click opens the brand's website
 - Click the NAS picture to open the NAS web interface (UGOS, DSM, QTS), found automatically from Home Assistant for UGREEN and Synology; both addresses can be changed in the visual editor
 - Drawn NAS picture that follows the model: 43 models drawn across the three brands — towers by bay count, all-flash DXP480T, rackmounts (see [Screenshots](#screenshots)) — or your own picture
 - Visual editor in the dashboard UI for both cards (no YAML needed), with the pictures listed by brand
@@ -125,6 +126,8 @@ type: custom:nas-mini-card
 type: custom:nas-card
 nas: ugreen_nas
 title: My NAS
+illustration: true
+illustration_theme: auto
 show_image: true
 image: DXP4800 Plus
 url: http://192.168.1.10:9999
@@ -147,6 +150,7 @@ language: fr
 type: custom:nas-mini-card
 nas: ugreen_nas
 title: My NAS
+illustration: true
 show_image: true
 image: DS923+
 show_storage: true
@@ -163,6 +167,8 @@ language: fr
 | `title` | both | NAS name | Card title |
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the subtitle under the title |
+| `illustration` | both | `true` | Illustrated header: the NAS drawing on a server-room scene, animated with the status. `false` keeps the classic header (icon, title, picture) |
+| `illustration_theme` | both | `auto` | Illustration theme: `auto` (night when `sun.sun` is below the horizon, else Home Assistant's dark mode), `day` or `night` |
 | `show_image` | both | `true` | Show the NAS picture |
 | `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`… — see the [drawn models](#screenshots)) or an image URL (e.g. `/local/my-nas.png`). By default the picture follows the model reported by the integration; an unknown model of a known family is drawn from its bay count |
 | `url` | both | Device configuration URL | Web interface of the NAS, opened by a click on the NAS picture. By default the configuration URL of the NAS device in Home Assistant (the « Visit » link of the device page), set by the UGREEN NAS and Synology DSM integrations; the QNAP and ASUSTOR integrations have none, so set it for a QNAP or ASUSTOR NAS (e.g. `http://192.168.1.10:8080`) |
@@ -354,7 +360,7 @@ Temperatures are shown in the unit of their sensor, which follows your Home Assi
 
 ### Narrow cards
 
-The full card fits down to 9 columns of a sections view (about 234 px on a phone), the mini card down to 6 columns (about 156 px on a phone). On narrow cards, the NAS picture is hidden (below about 340 px on the full card, 220 px on the mini card) so that the name keeps its room, the volume details move under their bar and the mini card drops the uptime from its footer, then puts its upload rate under the download rate. Below about 200 px, the status pill shrinks to its colored dot (its text stays in its tooltip) and the mini card rows keep their icon, bar and value (the label stays in their tooltip). In a container sized by its content (a grid `auto` column, an inline-block wrapper), the cards take a width of 400 px instead of collapsing.
+The full card fits down to 9 columns of a sections view (about 234 px on a phone), the mini card down to 6 columns (about 156 px on a phone). On narrow cards, the NAS picture is hidden (the illustrated header keeps its wall without the scene below about 300 px; the classic header hides the picture below about 340 px on the full card, 220 px on the mini card) so that the name keeps its room, the volume details move under their bar and the mini card drops the uptime from its footer, then puts its upload rate under the download rate. Below about 200 px, the status pill shrinks to its colored dot (its text stays in its tooltip) and the mini card rows keep their icon, bar and value (the label stays in their tooltip). In a container sized by its content (a grid `auto` column, an inline-block wrapper), the cards take a width of 400 px instead of collapsing.
 
 ## Development
 

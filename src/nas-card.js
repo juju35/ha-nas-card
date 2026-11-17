@@ -82,6 +82,11 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP or ASUSTOR device)",
     title: "Title (optional, defaults to the NAS name)",
     show_image: "Show NAS picture",
+    illustration: "Animated illustration",
+    illustration_theme: "Illustration theme",
+    theme_auto: "Automatic (sun)",
+    theme_day: "Day",
+    theme_night: "Night",
     show_title: "Show title",
     show_subtitle: "Show subtitle",
     image: "NAS picture (model or image URL)",
@@ -171,6 +176,11 @@ const STRINGS = {
     nas: "NAS (appareil UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Titre (facultatif, nom du NAS par défaut)",
     show_image: "Afficher l'illustration du NAS",
+    illustration: "Illustration animée",
+    illustration_theme: "Thème de l’illustration",
+    theme_auto: "Automatique (soleil)",
+    theme_day: "Jour",
+    theme_night: "Nuit",
     show_title: "Afficher le titre",
     show_subtitle: "Afficher le sous-titre",
     image: "Illustration du NAS (modèle ou URL d'image)",
@@ -260,6 +270,11 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology-DSM-, QNAP- oder ASUSTOR-Gerät)",
     title: "Titel (optional, standardmäßig der NAS-Name)",
     show_image: "NAS-Bild anzeigen",
+    illustration: "Animierte Illustration",
+    illustration_theme: "Thema der Illustration",
+    theme_auto: "Automatisch (Sonne)",
+    theme_day: "Tag",
+    theme_night: "Nacht",
     show_title: "Titel anzeigen",
     show_subtitle: "Untertitel anzeigen",
     image: "NAS-Bild (Modell oder Bild-URL)",
@@ -349,6 +364,11 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Título (opcional, por defecto el nombre del NAS)",
     show_image: "Mostrar la imagen del NAS",
+    illustration: "Ilustración animada",
+    illustration_theme: "Tema de la ilustración",
+    theme_auto: "Automático (sol)",
+    theme_day: "Día",
+    theme_night: "Noche",
     show_title: "Mostrar el título",
     show_subtitle: "Mostrar el subtítulo",
     image: "Imagen del NAS (modelo o URL de imagen)",
@@ -438,6 +458,11 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP или ASUSTOR уређај)",
     title: "Наслов (опционо, подразумевано је назив NAS-а)",
     show_image: "Прикажи слику NAS-а",
+    illustration: "Анимирана илустрација",
+    illustration_theme: "Тема илустрације",
+    theme_auto: "Аутоматски (сунце)",
+    theme_day: "Дан",
+    theme_night: "Ноћ",
     show_title: "Прикажи наслов",
     show_subtitle: "Прикажи поднаслов",
     image: "Слика NAS-а (модел или URL слике)",
@@ -527,6 +552,11 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP ili ASUSTOR uređaj)",
     title: "Naslov (opciono, podrazumevano je naziv NAS-a)",
     show_image: "Prikaži sliku NAS-a",
+    illustration: "Animirana ilustracija",
+    illustration_theme: "Tema ilustracije",
+    theme_auto: "Automatski (sunce)",
+    theme_day: "Dan",
+    theme_night: "Noć",
     show_title: "Prikaži naslov",
     show_subtitle: "Prikaži podnaslov",
     image: "Slika NAS-a (model ili URL slike)",
@@ -616,6 +646,11 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP o ASUSTOR)",
     title: "Titolo (facoltativo, per impostazione predefinita il nome del NAS)",
     show_image: "Mostra l'immagine del NAS",
+    illustration: "Illustrazione animata",
+    illustration_theme: "Tema dell’illustrazione",
+    theme_auto: "Automatico (sole)",
+    theme_day: "Giorno",
+    theme_night: "Notte",
     show_title: "Mostra il titolo",
     show_subtitle: "Mostra il sottotitolo",
     image: "Immagine del NAS (modello o URL dell'immagine)",
@@ -705,6 +740,11 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- of ASUSTOR-apparaat)",
     title: "Titel (optioneel, standaard de naam van de NAS)",
     show_image: "Afbeelding van de NAS weergeven",
+    illustration: "Geanimeerde illustratie",
+    illustration_theme: "Thema van de illustratie",
+    theme_auto: "Automatisch (zon)",
+    theme_day: "Dag",
+    theme_night: "Nacht",
     show_title: "Titel tonen",
     show_subtitle: "Ondertitel tonen",
     image: "Afbeelding van de NAS (model of afbeeldings-URL)",
@@ -794,6 +834,11 @@ const STRINGS = {
     nas: "NAS (dispositivo UGREEN, Synology DSM, QNAP ou ASUSTOR)",
     title: "Título (opcional, por predefinição o nome do NAS)",
     show_image: "Mostrar a imagem do NAS",
+    illustration: "Ilustração animada",
+    illustration_theme: "Tema da ilustração",
+    theme_auto: "Automático (sol)",
+    theme_day: "Dia",
+    theme_night: "Noite",
     show_title: "Mostrar o título",
     show_subtitle: "Mostrar o subtítulo",
     image: "Imagem do NAS (modelo ou URL da imagem)",
@@ -883,6 +928,11 @@ const STRINGS = {
     nas: "NAS (urządzenie UGREEN, Synology DSM, QNAP lub ASUSTOR)",
     title: "Tytuł (opcjonalny, domyślnie nazwa NAS)",
     show_image: "Pokaż obraz NAS",
+    illustration: "Animowana ilustracja",
+    illustration_theme: "Motyw ilustracji",
+    theme_auto: "Automatycznie (słońce)",
+    theme_day: "Dzień",
+    theme_night: "Noc",
     show_title: "Pokaż tytuł",
     show_subtitle: "Pokaż podtytuł",
     image: "Obraz NAS (model lub URL obrazu)",
@@ -972,6 +1022,11 @@ const STRINGS = {
     nas: "NAS (dispozitiv UGREEN, Synology DSM, QNAP sau ASUSTOR)",
     title: "Titlu (opțional, implicit numele NAS-ului)",
     show_image: "Afișează imaginea NAS-ului",
+    illustration: "Ilustrație animată",
+    illustration_theme: "Tema ilustrației",
+    theme_auto: "Automat (soare)",
+    theme_day: "Zi",
+    theme_night: "Noapte",
     show_title: "Afișează titlul",
     show_subtitle: "Afișează subtitlul",
     image: "Imaginea NAS-ului (model sau URL de imagine)",
@@ -1061,6 +1116,11 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhed)",
     title: "Titel (valgfri, som standard NAS'ens navn)",
     show_image: "Vis billede af NAS'en",
+    illustration: "Animeret illustration",
+    illustration_theme: "Illustrationens tema",
+    theme_auto: "Automatisk (sol)",
+    theme_day: "Dag",
+    theme_night: "Nat",
     show_title: "Vis titel",
     show_subtitle: "Vis undertitel",
     image: "Billede af NAS'en (model eller billed-URL)",
@@ -1150,6 +1210,11 @@ const STRINGS = {
     nas: "NAS (UGREEN-, Synology DSM-, QNAP- eller ASUSTOR-enhet)",
     title: "Titel (valfri, NAS-enhetens namn som standard)",
     show_image: "Visa bild av NAS-enheten",
+    illustration: "Animerad illustration",
+    illustration_theme: "Illustrationens tema",
+    theme_auto: "Automatiskt (sol)",
+    theme_day: "Dag",
+    theme_night: "Natt",
     show_title: "Visa rubrik",
     show_subtitle: "Visa underrubrik",
     image: "Bild av NAS-enheten (modell eller bild-URL)",
@@ -1239,6 +1304,11 @@ const STRINGS = {
     nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заглавие (по избор, по подразбиране името на NAS)",
     show_image: "Показване на изображение на NAS",
+    illustration: "Анимирана илюстрация",
+    illustration_theme: "Тема на илюстрацията",
+    theme_auto: "Автоматично (слънце)",
+    theme_day: "Ден",
+    theme_night: "Нощ",
     show_title: "Показване на заглавието",
     show_subtitle: "Показване на подзаглавието",
     image: "Изображение на NAS (модел или URL на изображение)",
@@ -1328,6 +1398,11 @@ const STRINGS = {
     nas: "NAS (устройство UGREEN, Synology DSM, QNAP или ASUSTOR)",
     title: "Заголовок (необязательно, по умолчанию имя NAS)",
     show_image: "Показывать изображение NAS",
+    illustration: "Анимированная иллюстрация",
+    illustration_theme: "Тема иллюстрации",
+    theme_auto: "Автоматически (солнце)",
+    theme_day: "День",
+    theme_night: "Ночь",
     show_title: "Показывать заголовок",
     show_subtitle: "Показывать подзаголовок",
     image: "Изображение NAS (модель или URL изображения)",
@@ -1417,6 +1492,11 @@ const STRINGS = {
     nas: "NAS (пристрій UGREEN, Synology DSM, QNAP або ASUSTOR)",
     title: "Заголовок (необов'язково, за замовчуванням назва NAS)",
     show_image: "Показувати зображення NAS",
+    illustration: "Анімована ілюстрація",
+    illustration_theme: "Тема ілюстрації",
+    theme_auto: "Автоматично (сонце)",
+    theme_day: "День",
+    theme_night: "Ніч",
     show_title: "Показувати заголовок",
     show_subtitle: "Показувати підзаголовок",
     image: "Зображення NAS (модель або URL зображення)",
@@ -1506,6 +1586,11 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP vagy ASUSTOR eszköz)",
     title: "Cím (nem kötelező, alapértelmezés szerint a NAS neve)",
     show_image: "NAS képének megjelenítése",
+    illustration: "Animált illusztráció",
+    illustration_theme: "Az illusztráció témája",
+    theme_auto: "Automatikus (nap)",
+    theme_day: "Nappal",
+    theme_night: "Éjszaka",
     show_title: "Cím megjelenítése",
     show_subtitle: "Alcím megjelenítése",
     image: "NAS képe (modell vagy kép URL-je)",
@@ -1595,6 +1680,11 @@ const STRINGS = {
     nas: "NAS (zariadenie UGREEN, Synology DSM, QNAP alebo ASUSTOR)",
     title: "Názov (voliteľný, predvolene názov NAS)",
     show_image: "Zobraziť obrázok NAS",
+    illustration: "Animovaná ilustrácia",
+    illustration_theme: "Téma ilustrácie",
+    theme_auto: "Automaticky (slnko)",
+    theme_day: "Deň",
+    theme_night: "Noc",
     show_title: "Zobraziť názov",
     show_subtitle: "Zobraziť podnázov",
     image: "Obrázok NAS (model alebo URL obrázka)",
@@ -1684,6 +1774,11 @@ const STRINGS = {
     nas: "NAS (zařízení UGREEN, Synology DSM, QNAP nebo ASUSTOR)",
     title: "Název (volitelný, výchozí je název NAS)",
     show_image: "Zobrazit obrázek NAS",
+    illustration: "Animovaná ilustrace",
+    illustration_theme: "Motiv ilustrace",
+    theme_auto: "Automaticky (slunce)",
+    theme_day: "Den",
+    theme_night: "Noc",
     show_title: "Zobrazit název",
     show_subtitle: "Zobrazit podnázev",
     image: "Obrázek NAS (model nebo URL obrázku)",
@@ -1773,6 +1868,11 @@ const STRINGS = {
     nas: "NAS (naprava UGREEN, Synology DSM, QNAP ali ASUSTOR)",
     title: "Naslov (neobvezno, privzeto ime NAS)",
     show_image: "Prikaži sliko NAS",
+    illustration: "Animirana ilustracija",
+    illustration_theme: "Tema ilustracije",
+    theme_auto: "Samodejno (sonce)",
+    theme_day: "Dan",
+    theme_night: "Noč",
     show_title: "Prikaži naslov",
     show_subtitle: "Prikaži podnaslov",
     image: "Slika NAS (model ali URL slike)",
@@ -1862,6 +1962,11 @@ const STRINGS = {
     nas: "NAS (UGREEN, Synology DSM, QNAP vai ASUSTOR ierīce)",
     title: "Nosaukums (neobligāts, pēc noklusējuma NAS nosaukums)",
     show_image: "Rādīt NAS attēlu",
+    illustration: "Animēta ilustrācija",
+    illustration_theme: "Ilustrācijas motīvs",
+    theme_auto: "Automātiski (saule)",
+    theme_day: "Diena",
+    theme_night: "Nakts",
     show_title: "Rādīt virsrakstu",
     show_subtitle: "Rādīt apakšvirsrakstu",
     image: "NAS attēls (modelis vai attēla URL)",
@@ -1951,6 +2056,11 @@ const STRINGS = {
     nas: "NAS (συσκευή UGREEN, Synology DSM, QNAP ή ASUSTOR)",
     title: "Τίτλος (προαιρετικός, από προεπιλογή το όνομα του NAS)",
     show_image: "Εμφάνιση εικόνας του NAS",
+    illustration: "Κινούμενη εικονογράφηση",
+    illustration_theme: "Θέμα εικονογράφησης",
+    theme_auto: "Αυτόματα (ήλιος)",
+    theme_day: "Ημέρα",
+    theme_night: "Νύχτα",
     show_title: "Εμφάνιση τίτλου",
     show_subtitle: "Εμφάνιση υπότιτλου",
     image: "Εικόνα του NAS (μοντέλο ή URL εικόνας)",
@@ -2497,6 +2607,51 @@ const brandBadge = (brand) =>
   }</span>`;
 const headerIcon = (cls, brand) =>
   `<span class="logo ${cls}" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${NAS_ICON}"/></svg>${brand ? brandBadge(brand) : ""}</span>`;
+
+// ---------------------------------------------------------------------------
+// Illustrated header: the NAS drawing of the card, big, on a server-room wall, a concrete strip at the bottom.
+// ---------------------------------------------------------------------------
+
+// Night picture: forced by illustration_theme, else the sun below the horizon, else Home Assistant's dark mode.
+const nasIsNight = (hass, config) => {
+  const theme = config?.illustration_theme;
+  if (theme === "night") return true;
+  if (theme === "day") return false;
+  const sun = hass?.states?.["sun.sun"];
+  if (sun && !["unavailable", "unknown"].includes(String(sun.state))) return sun.state === "below_horizon";
+  return !!hass?.themes?.darkMode;
+};
+// The scene is 200 × 80; the NAS stands on the strip at its right, as big as its box allows (a tower up to 52 high,
+// a flat or rackmount model up to 140 wide).
+const NAS_ART_BOX = { right: 194, w: 140, h: 52 };
+// The card's drawing inlined in the scene, so its drive LEDs take the status colour: its ids get the card's suffix
+// (several cards on a page never share a gradient), its green LEDs the class the stylesheet colours and blinks.
+const nasArt = (svg, uid) => {
+  const [, , vw, vh] = (svg.match(/viewBox="([^"]+)"/)?.[1] ?? "0 0 100 100").split(/\s+/).map(Number);
+  const k = Math.min(NAS_ART_BOX.w / vw, NAS_ART_BOX.h / vh);
+  const w = +(vw * k).toFixed(1), h = +(vh * k).toFixed(1);
+  const body = svg
+    .replace(/\bid="([^"]+)"/g, `id="$1-${uid}"`)
+    .replace(/url\(#([^)]+)\)/g, `url(#$1-${uid})`)
+    .replace(/fill="#43c463"/g, 'class="led" fill="#43c463"')
+    .replace(/^<svg\b[^>]*?viewBox="([^"]+)"[^>]*>/, (_m, vb) => `<svg class="nas-art" viewBox="${vb}" x="${NAS_ART_BOX.right - w}" y="${80 - h}" width="${w}" height="${h}">`);
+  return { body, x: NAS_ART_BOX.right - w, y: 80 - h, w };
+};
+// A picture given as a URL keeps its own file, fitted in the same box.
+const nasArtImage = (href) => ({
+  body: `<image class="nas-art" href="${esc(href)}" x="${NAS_ART_BOX.right - NAS_ART_BOX.w}" y="${80 - NAS_ART_BOX.h}" width="${NAS_ART_BOX.w}" height="${NAS_ART_BOX.h}" preserveAspectRatio="xMaxYMax meet"/>`,
+  x: NAS_ART_BOX.right - NAS_ART_BOX.w / 2, y: 80 - NAS_ART_BOX.h, w: NAS_ART_BOX.w / 2,
+});
+// The wall's network: a data cable coming down from the cable tray into a small switch, then along the wall to the
+// NAS (flowing while it is online), the switch's LEDs and an alert mark at the NAS's top left corner (clear of the zoom button) in the status colour.
+const nasScene = (uid, art, state) => {
+  const end = art ? Math.max(60, art.x + 6) : 120;
+  const alert = art && (state === "warn" || state === "crit")
+    ? `<g class="alert"><circle cx="${(art.x + 2).toFixed(1)}" cy="${(art.y - 1).toFixed(1)}" r="5" fill="var(--led)" stroke="#fff" stroke-width="1"/><rect x="${(art.x + 1.4).toFixed(1)}" y="${(art.y - 4).toFixed(1)}" width="1.2" height="3.6" rx=".6" fill="#fff"/><circle cx="${(art.x + 2).toFixed(1)}" cy="${(art.y + 1.4).toFixed(1)}" r=".75" fill="#fff"/></g>`
+    : "";
+  return `<svg class="scene" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMax meet" aria-hidden="true"><defs><radialGradient id="nas-glow-${uid}"><stop offset="0" class="glow-c glow-in"/><stop offset="1" class="glow-c" stop-opacity="0"/></radialGradient></defs><ellipse cx="${art ? (art.x + art.w / 2).toFixed(1) : 150}" cy="50" rx="62" ry="34" fill="url(#nas-glow-${uid})"/><path class="wire" d="M10 8 V40"/><path class="flow" d="M10 8 V40"/><path class="wire" d="M29 36 V75 H${end.toFixed(1)}"/><path class="flow" d="M29 36 V75 H${end.toFixed(1)}"/><rect class="box" x="18" y="20" width="22" height="16" rx="2"/><circle class="led" cx="24" cy="28" r="1.4"/><circle class="led" cx="29" cy="28" r="1.4"/><circle class="led" cx="34" cy="28" r="1.4"/>${art ? `<g class="device">${art.body}</g>` : ""}${alert}</svg>`;
+};
+let _nasUid = 0;
 
 // ---------------------------------------------------------------------------
 // Entity discovery
@@ -3175,6 +3330,66 @@ const BASE_STYLE = `
   .chip.upd .icon { width: 14px; height: 14px; color: inherit; }
 `;
 
+// The illustrated header (illustration: true, the default), 90 px on both cards: the title over the server-room
+// wall at the left, the scene (200 × 80, the NAS at its right) drawn at the banner's height to the right edge,
+// the concrete strip edge to edge at the bottom. Day and night walls; the status colours the icon, the drive LEDs,
+// the switch LEDs and the glow.
+const BANNER_STYLE = `
+  .header.banner { display: block; position: relative; height: 90px; padding: 0; overflow: hidden; --g: 10px;
+    --wall: #e7eaee; --line: #d6dbe1; --tray: #c4cbd3; --box: #fff; --box-edge: #c4cbd3; --wire: #b9c0c8; --flow: #2f80ed; --glow: #fff;
+    color: #17222e;
+    background: linear-gradient(var(--tray), var(--tray)) 0 6.5px / 100% 3px no-repeat,
+      repeating-linear-gradient(to bottom, transparent 0 19.6px, var(--line) 19.6px 20.4px), var(--wall); }
+  .header.banner.night { --wall: #232a36; --line: #2e3746; --tray: #3a4456; --box: #2e3746; --box-edge: #455066; --wire: #3d4759;
+    --flow: #5b9cff; --glow: var(--led); color: #fff; }
+  .banner.st-ok { --led: #43c463; } .banner.st-warn { --led: #f5a623; } .banner.st-crit { --led: #e53935; } .banner.st-na { --led: #8a929c; }
+  .banner .scene, .banner > .nas-link { position: absolute; right: 0; bottom: var(--g); height: calc(100% - var(--g)); width: min(200px, 62%); }
+  .banner > .nas-link { display: block; border-radius: 0; max-width: none; }
+  .banner > .nas-link > .scene { position: static; display: block; width: 100%; height: 100%; }
+  .banner .glow-c { stop-color: var(--glow); }
+  .banner .glow-in { stop-opacity: .55; }
+  .banner.night .glow-in { stop-opacity: .16; }
+  .banner.st-na .glow-in { stop-opacity: .3; }
+  .banner.night.st-na .glow-in { stop-opacity: 0; }
+  .banner .wire { fill: none; stroke: var(--wire); stroke-width: 1.6; }
+  .banner .flow { fill: none; stroke: var(--flow); stroke-width: 1.6; stroke-dasharray: 3 4; animation: nas-flow 1s linear infinite; }
+  .banner.st-na .flow { display: none; }
+  .banner .box { fill: var(--box); stroke: var(--box-edge); }
+  .banner .led { fill: var(--led); }
+  .banner.st-ok .led { animation: nas-blink 1.6s steps(2) infinite; }
+  .banner.st-ok .led:nth-of-type(2n) { animation-delay: .5s; }
+  .banner.st-warn .led { animation: nas-blink 1s steps(2) infinite; }
+  .banner.st-crit .led { animation: nas-blink .5s steps(2) infinite; }
+  .banner .alert { animation: nas-pulse 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .banner.night .device { filter: brightness(.88); }
+  .banner.st-na .device { filter: saturate(.35) brightness(.85); opacity: .85; }
+  .banner.night.st-na .device { filter: saturate(.35) brightness(.6); }
+  @keyframes nas-blink { 50% { opacity: .25; } }
+  @keyframes nas-flow { to { stroke-dashoffset: -14; } }
+  @keyframes nas-pulse { 50% { transform: scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) { .banner .flow, .banner .led, .banner .alert { animation: none; } }
+  .banner .head { position: absolute; z-index: 1; left: 0; top: 0; bottom: var(--g); right: min(200px, 62%); display: flex; align-items: center;
+                  gap: 10px; padding: 0 6px 0 12px; min-width: 0; }
+  .banner .brand-link, .banner .logo { align-self: center; }
+  .banner .logo { background: rgba(255,255,255,.62); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c, var(--nas-ok)) 28%, transparent); }
+  .banner.night .logo { background: rgba(255,255,255,.12); color: color-mix(in srgb, var(--c, var(--nas-ok)) 78%, #fff);
+                        box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+  .banner .logo .badge { box-shadow: 0 0 0 1px rgba(13,42,69,.16), 0 1px 3px rgba(13,42,69,.18); }
+  .banner .titles { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .banner .titles > .name, .banner .titles > .sub { align-self: stretch; }
+  .banner .sub { color: #46566a; line-height: 16px; max-height: 16px; }
+  .banner.night .sub { color: rgba(255,255,255,.78); }
+  .banner .titles > .chip { align-self: flex-start; margin: 3px 0 0; max-width: 100%; }
+  .banner.night .chip { background: rgba(10,20,40,.5); color: color-mix(in srgb, var(--c, var(--nas-ok)) 45%, #fff); }
+  .banner .zoom { position: absolute; z-index: 2; top: 4px; right: 4px; margin: 0; color: #10283f; background: rgba(255,255,255,.55); }
+  .banner.night .zoom { color: #fff; background: rgba(10,20,40,.45); }
+  .banner .ground { position: absolute; left: 0; right: 0; bottom: 0; height: var(--g); background: #9aa1a9; box-shadow: inset 0 2px 0 #b5bbc2; }
+  .banner.night .ground { background: #2c323b; box-shadow: inset 0 2px 0 #3a424e; }
+  .banner ~ .content { padding-top: 12px; }
+  /* Narrow card: no room for the scene beside the text, the wall alone stays. */
+  @container (max-width: 300px) { .banner .scene, .banner > .nas-link { display: none; } .banner .head { right: 34px; } }
+`;
+
 // In-card confirmation popup, at the top of the card so it stays in view when the card is long.
 const DIALOG_STYLE = `
   .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center;
@@ -3279,6 +3494,7 @@ class NasBase extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._html = "";
     this._dialog = null;
+    this._uid = ++_nasUid;
     this.shadowRoot.addEventListener("click", (ev) => {
       // Just closed: the rest of a double click on the popup's button does nothing (nor folds the mini card).
       if (!this._dialog && Date.now() - (this._dialogClosedAt ?? 0) < CONFIRM_GUARD_MS) {
@@ -3661,7 +3877,7 @@ class NasBase extends HTMLElement {
   // rediscovered when an entity or a device changes) and the states of the NAS entities.
   _signature() {
     const h = this._hass;
-    const sig = [h.language, h.locale?.language, h.themes?.darkMode, h.entities, h.devices];
+    const sig = [h.language, h.locale?.language, h.themes?.darkMode, h.entities, h.devices, h.states?.["sun.sun"]?.state];
     const nas = discover(h, this._config.nas);
     sig.push(nas);
     if (!nas.nasId) return sig;
@@ -3696,6 +3912,30 @@ class NasBase extends HTMLElement {
     }
   }
 
+  // The worst RAID that is not healthy (degraded, rebuilding…), or null.
+  _worstRaid(nas) {
+    const raids = new Map();
+    for (const pool of Object.values(nas.pools))
+      for (const vol of Object.values(pool.volumes)) {
+        const id = raidEntity(nas, pool, vol);
+        if (id && !raids.has(id)) raids.set(id, { id, rs: raidState(this._s(id)), level: this._text(pool.level)?.toUpperCase() });
+      }
+    const rank = { crit: 2, warn: 1 };
+    return [...raids.values()].filter((r) => r.rs && rank[r.rs.cls]).sort((a, b) => rank[b.rs.cls] - rank[a.rs.cls])[0] ?? null;
+  }
+
+  // State of the header icon and of the illustration: ok, warn (status problem or degraded RAID), crit (failed
+  // RAID) or na (offline, no value).
+  _headerState(nas, status) {
+    if (this._powerState(nas) === "offline") return "na";
+    let st = status ? this._statusClass(nas, status) : "ok";
+    if (st === "na") return st;
+    const raid = this._worstRaid(nas)?.rs.cls;
+    if (raid === "crit") st = "crit";
+    else if (raid === "warn" && st === "ok") st = "warn";
+    return st;
+  }
+
   _header(nas) {
     const sc = nas.scalars;
     const c = this._config;
@@ -3711,9 +3951,9 @@ class NasBase extends HTMLElement {
     const os = version ? `UGOS ${version}` : osVersion(nas.info?.version, nas.brand);
     // The compact mini card shares its header with the NAS picture: the model alone, the OS version zoomed in.
     const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
-    return `
-      <div class="header">
-        ${this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", headerIcon(status ? this._statusClass(nas, status) : "na", nas.brand))}
+    const state = this._headerState(nas, status);
+    const icon = this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", headerIcon(state, nas.brand));
+    const titles = `
         <div class="titles">
           <div class="name">${esc(name)}</div>
           <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
@@ -3724,15 +3964,28 @@ class NasBase extends HTMLElement {
                 )}" aria-label="${esc(statusText)}"><span class="dot"></span><span class="txt">${esc(statusText)}</span></span>`
               : ""
           }
-        </div>
+        </div>`;
+    const href = webUrl(c.url) || deviceUrl(this._hass, nas);
+    if (c.illustration !== false) {
+      // The illustrated header: the card's drawing of the model (or the picture given by URL) on the scene.
+      let art = null;
+      if (c.show_image !== false)
+        art = /^(https?:|\/|data:)/.test(c.image || "") ? nasArtImage(c.image) : nasArt(nasSvg(c.image || model, nas.brand), this._uid);
+      const scene = nasScene(this._uid, art, state);
+      return `
+      <div class="header banner st-${state}${nasIsNight(this._hass, c) ? " night" : ""}">
+        ${art ? this._link(href, this._t("open_nas"), "nas-link", scene) : scene}
+        <div class="head">${icon}${titles}</div>
+        <div class="ground"></div>
+        ${this._zoomButton()}
+      </div>${this._dialogHtml()}`;
+    }
+    return `
+      <div class="header">
+        ${icon}${titles}
         ${
           c.show_image !== false
-            ? this._link(
-                webUrl(c.url) || deviceUrl(this._hass, nas),
-                this._t("open_nas"),
-                "nas-link",
-                `<img class="nas" src="${esc(nasPicture(c.image, model, nas.brand))}" alt="${esc(model || "NAS")}">`
-              )
+            ? this._link(href, this._t("open_nas"), "nas-link", `<img class="nas" src="${esc(nasPicture(c.image, model, nas.brand))}" alt="${esc(model || "NAS")}">`)
             : ""
         }
         ${this._zoomButton()}
@@ -3872,7 +4125,7 @@ class NasCard extends NasBase {
     if (c.show_volumes !== false) parts.push(this._volumes(nas));
     if (c.show_disks !== false) parts.push(this._disks(nas));
     if (c.show_fans !== false) parts.push(this._fans(nas));
-    return `<style>${BASE_STYLE}${FULL_STYLE}${NET_STYLE}</style>
+    return `<style>${BASE_STYLE}${FULL_STYLE}${NET_STYLE}${this._config.illustration === false ? "" : BANNER_STYLE}</style>
       <ha-card>
         ${this._header(nas)}
         <div class="content">${parts.filter(Boolean).join("")}</div>
@@ -4280,16 +4533,9 @@ class NasMiniCard extends NasCard {
       );
     }
     // A RAID that is not healthy (degraded, rebuilding…): the worst one, in its colour, opening its entity.
-    const raids = new Map();
-    for (const pool of Object.values(nas.pools))
-      for (const vol of Object.values(pool.volumes)) {
-        const id = raidEntity(nas, pool, vol);
-        if (id && !raids.has(id)) raids.set(id, { id, rs: raidState(this._s(id)), level: this._text(pool.level)?.toUpperCase() });
-      }
-    const rank = { crit: 2, warn: 1 };
-    const bad = [...raids.values()].filter((r) => r.rs && rank[r.rs.cls]).sort((a, b) => rank[b.rs.cls] - rank[a.rs.cls]);
-    if (bad.length) {
-      const r = bad[0];
+    const worst = this._worstRaid(nas);
+    if (worst) {
+      const r = worst;
       const text = esc(`${r.level || "RAID"} · ${this._raidText(r.rs)}`);
       foot.push(
         `<span class="clickable raid ${r.rs.cls}" role="button" tabindex="0" data-key="raid" data-entity="${r.id}" title="${text}" aria-label="${text}"><span class="dot"></span>&nbsp;<span class="txt">${text}</span></span>`
@@ -4313,7 +4559,7 @@ class NasMiniCard extends NasCard {
       );
     }
     if (runtime !== null) foot.push(`<span data-key="uptime">${svgIcon(ICONS.timer)}${fmtUptime(runtime, this._hass, this._config)}</span>`);
-    return `<style>${BASE_STYLE}${MINI_STYLE}${NET_STYLE}</style>
+    return `<style>${BASE_STYLE}${MINI_STYLE}${NET_STYLE}${this._config.illustration === false ? "" : BANNER_STYLE}</style>
       <ha-card>
         ${this._header(nas)}
         <div class="content">
@@ -4357,7 +4603,7 @@ class NasEditorBase extends HTMLElement {
 
   // Boolean options, all on by default.
   _toggles() {
-    return ["show_title", "show_subtitle", "show_image", ...this.constructor.toggles];
+    return ["illustration", "show_title", "show_subtitle", "show_image", ...this.constructor.toggles];
   }
 
   _wakeTargetOptions() {
@@ -4415,12 +4661,21 @@ class NasEditorBase extends HTMLElement {
         type: "grid",
         name: "",
         schema: [
+          { name: "illustration", selector: { boolean: {} } },
           { name: "show_title", selector: { boolean: {} } },
           { name: "show_subtitle", selector: { boolean: {} } },
           { name: "show_image", selector: { boolean: {} } },
           ...this.constructor.toggles.map((name) => ({ name, selector: { boolean: {} } })),
         ],
       },
+      ...(this._config?.illustration === false
+        ? []
+        : [
+            {
+              name: "illustration_theme",
+              selector: { select: { mode: "dropdown", options: ["auto", "day", "night"].map((v) => ({ value: v, label: tr(`theme_${v}`) })) } },
+            },
+          ]),
       this._thresholdsSchema(),
       {
         name: "language",
@@ -4496,6 +4751,7 @@ class NasEditorBase extends HTMLElement {
         for (const [k, v] of Object.entries(config)) {
           // Keep the YAML minimal: drop empty values and toggles left at their default (true).
           if (v === "" || v === undefined || v === null || (this._toggles().includes(k) && v === true)) delete config[k];
+          else if (k === "illustration_theme" && v === "auto") delete config[k];
         }
         const th = pruneThresholds(config.thresholds);
         if (th) config.thresholds = th;
@@ -4508,6 +4764,7 @@ class NasEditorBase extends HTMLElement {
     const data = { ...this._config };
     if (data.show_wake === undefined) data.show_wake = Boolean(data.wake_mac || data.wake_entity);
     for (const name of this._toggles()) if (data[name] === undefined) data[name] = true;
+    if (!data.illustration_theme) data.illustration_theme = "auto";
     data.thresholds = Object.fromEntries(
       Object.keys(THRESHOLDS).map((m) => {
         const [warning, critical] = thresholds(this._config, m);
