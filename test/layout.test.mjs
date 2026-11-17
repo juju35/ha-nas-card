@@ -67,7 +67,7 @@ const measure = async (cases) => {
           .map((n) => n.className?.baseVal ?? n.className);
         const name = sr.querySelector(".name");
         const ch = parseFloat(getComputedStyle(name).fontSize) * 0.5; // a narrow character
-        const chip = sr.querySelector(".titles > .chip");
+        const chip = sr.querySelector(".titles .chip");
         // A text cut by its box (ellipsis or overflow): the width of its text against the width of its box.
         const cut = (n) => n && shown(n) && textWidth(n) > rect(n).width + 0.5;
         const chipTxt = chip?.querySelector(".txt");
@@ -79,7 +79,8 @@ const measure = async (cases) => {
           values: [...sr.querySelectorAll(".metric .v, .gauge .val b, .tile .v, .disk .temp, .vol .detail span")].filter(cut).map((n) => n.textContent),
           nameWidth: rect(name).width,
           nameMin: 4 * ch,
-          chipRatio: chip && shown(chip) ? rect(chip).width / rect(sr.querySelector(".titles")).width : 0,
+          // Share of the title row the pill takes, when it sits on it (a pill on a line of its own leaves the title whole).
+          chipRatio: chip && shown(chip) && rect(chip).top < rect(name).bottom ? rect(chip).width / rect(sr.querySelector(".titles")).width : 0,
         };
         if (c.headerOnly) return r;
         r.grows = [...sr.querySelectorAll(".vol .grow")].map((n) => rect(n).width);

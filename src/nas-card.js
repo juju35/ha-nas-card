@@ -3257,7 +3257,7 @@ const BASE_STYLE = `
   :host { --nas-accent: #00b46e; --nas-ok: var(--success-color, #43a047); --nas-warn: var(--warning-color, #ffa600); --nas-crit: var(--error-color, #db4437);
           --nas-na: var(--disabled-text-color, #9e9e9e); }
   /* The card is the container of the width queries below (narrow header, volume rows, mini card footer). */
-  ha-card { overflow: hidden; position: relative; container-type: inline-size; }
+  ha-card { overflow: hidden; position: relative; container-type: inline-size; container-name: nas-card; }
   /* A size container has no width of its own content: in a parent that sizes to its content (inline-block,
      grid auto column: button-card, layout-card) the card would fall to a few pixels. This empty, zero-height
      grid gives the card a natural (max-content) width of 400 px without any minimum (its min-content width
@@ -3290,7 +3290,7 @@ const BASE_STYLE = `
   .titles > .sub { grid-column: 1 / -1; }
   .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
                     overflow: hidden; box-sizing: border-box; }
-  @container (max-width: 200px) { .chip .txt { display: none; } }
+  @container nas-card (max-width: 200px) { .chip .txt { display: none; } }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; border-radius: 50%; display: grid; place-items: center;
           color: var(--c, var(--nas-ok)); background: color-mix(in srgb, var(--c, var(--nas-ok)) 16%, transparent); }
   .logo svg { width: 24px; height: 24px; fill: currentColor; }
@@ -3381,15 +3381,42 @@ const BANNER_STYLE = `
   .banner .titles > .name, .banner .titles > .sub { align-self: stretch; }
   .banner .sub { color: #46566a; line-height: 16px; max-height: 16px; }
   .banner.night .sub { color: rgba(255,255,255,.78); }
-  .banner .titles > .chip { align-self: flex-start; margin: 3px 0 0; max-width: 100%; }
-  .banner.night .chip { background: rgba(10,20,40,.5); color: color-mix(in srgb, var(--c, var(--nas-ok)) 45%, #fff); }
-  .banner .zoom { position: absolute; z-index: 2; top: 4px; right: 4px; margin: 0; color: #10283f; background: rgba(255,255,255,.55); }
-  .banner.night .zoom { color: #fff; background: rgba(10,20,40,.45); }
+  /* Title row: the name, then the status pill right after it (the name gives way first, down to four characters).
+     When the row is too narrow for both, the pill takes a line of its own under the subtitle; on the narrowest
+     cards only its dot stays (its label in its title and for screen readers). */
+  .banner .titles { flex: 1 1 0; min-width: 0; container: nas-titles / inline-size; }
+  .banner .trow { display: flex; align-items: center; gap: 8px; min-width: 0; align-self: stretch; }
+  .banner .trow > .name { flex: 0 1 auto; min-width: 4ch; }
+  .banner .chip { flex: none; max-width: 51%; line-height: 16px; white-space: nowrap; overflow: hidden; box-sizing: border-box;
+                  background: color-mix(in srgb, var(--c, var(--nas-ok)) 18%, rgba(255,255,255,.78));
+                  color: color-mix(in srgb, var(--c, var(--nas-ok)) 45%, #0d2a45); }
+  .banner.night .chip { background: color-mix(in srgb, var(--c, var(--nas-ok)) 30%, rgba(8,18,38,.55));
+                        color: color-mix(in srgb, var(--c, var(--nas-ok)) 35%, #ffffff); }
+  .banner .chip .dot { width: 7px; height: 7px; }
+  @container nas-titles (max-width: 210px) {
+    .banner .trow { display: contents; }
+    .banner .titles > .sub { order: 1; }
+    .banner .trow > .chip { order: 2; align-self: flex-start; max-width: 100%; margin-top: 2px; }
+  }
+  @container nas-card (max-width: 260px) {
+    .banner .trow { display: contents; }
+    .banner .titles > .sub { order: 1; }
+    .banner .trow > .chip { order: 2; align-self: flex-start; max-width: 100%; margin-top: 2px; }
+  }
+  @container nas-card (max-width: 200px) {
+    .banner .chip { padding: 0; width: 16px; height: 16px; justify-content: center; }
+  }
+  /* Detail button (mini card): a small frosted round button in the banner's top right corner. */
+  .banner .zoom { position: absolute; z-index: 2; top: 5px; right: 5px; margin: 0; width: 24px; height: 24px; color: #33506b;
+                  background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); backdrop-filter: blur(4px); }
+  .banner.night .zoom { color: #fff; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .banner .zoom:hover { background: rgba(255,255,255,.75); color: #33506b; }
+  .banner.night .zoom:hover { background: rgba(255,255,255,.22); color: #fff; }
   .banner .ground { position: absolute; left: 0; right: 0; bottom: 0; height: var(--g); background: #9aa1a9; box-shadow: inset 0 2px 0 #b5bbc2; }
   .banner.night .ground { background: #2c323b; box-shadow: inset 0 2px 0 #3a424e; }
   .banner ~ .content { padding-top: 12px; }
   /* Narrow card: no room for the scene beside the text, the wall alone stays. */
-  @container (max-width: 300px) { .banner .scene, .banner > .nas-link { display: none; } .banner .head { right: 0; } }
+  @container (max-width: 300px) { .banner .scene, .banner > .nas-link { display: none; } .banner .head { right: 0; } .banner:has(> .zoom) .head { padding-right: 34px; } }
 `;
 
 // In-card confirmation popup, at the top of the card so it stays in view when the card is long.
@@ -3955,18 +3982,15 @@ class NasBase extends HTMLElement {
     const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
     const state = this._headerState(nas, status);
     const icon = this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", headerIcon(state, nas.brand));
+    const chip = status
+      ? `<span class="chip clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
+          messageText || statusText
+        )}" aria-label="${esc(statusText)}"><span class="dot"></span><span class="txt">${esc(statusText)}</span></span>`
+      : "";
+    const nameHtml = `<div class="name">${esc(name)}</div>`;
+    const subHtml = `<div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>`;
     const titles = `
-        <div class="titles">
-          <div class="name">${esc(name)}</div>
-          <div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>
-          ${
-            status
-              ? `<span class="chip clickable ${this._statusClass(nas, status)}" role="button" tabindex="0" data-entity="${status.entity_id}" title="${esc(
-                  messageText || statusText
-                )}" aria-label="${esc(statusText)}"><span class="dot"></span><span class="txt">${esc(statusText)}</span></span>`
-              : ""
-          }
-        </div>`;
+        <div class="titles">${nameHtml}${subHtml}${chip}</div>`;
     const href = webUrl(c.url) || deviceUrl(this._hass, nas);
     if (c.illustration !== false) {
       // The illustrated header: the card's drawing of the model (or the picture given by URL) on the scene.
@@ -3977,7 +4001,7 @@ class NasBase extends HTMLElement {
       return `
       <div class="header banner st-${state}${nasIsNight(this._hass, c) ? " night" : ""}">
         ${art ? this._link(href, this._t("open_nas"), "nas-link", scene) : scene}
-        <div class="head">${icon}${titles}</div>
+        <div class="head">${icon}<div class="titles"><div class="trow">${nameHtml}${chip}</div>${subHtml}</div></div>
         <div class="ground"></div>
         ${this._zoomButton()}
       </div>${this._dialogHtml()}`;
