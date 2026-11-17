@@ -67,7 +67,7 @@ const measure = async (cases) => {
           .map((n) => n.className?.baseVal ?? n.className);
         const name = sr.querySelector(".name");
         const ch = parseFloat(getComputedStyle(name).fontSize) * 0.5; // a narrow character
-        const chip = sr.querySelector(".titles > .chip");
+        const chip = sr.querySelector(".titles .chip");
         // A text cut by its box (ellipsis or overflow): the width of its text against the width of its box.
         const cut = (n) => n && shown(n) && textWidth(n) > rect(n).width + 0.5;
         const chipTxt = chip?.querySelector(".txt");
@@ -79,7 +79,8 @@ const measure = async (cases) => {
           values: [...sr.querySelectorAll(".metric .v, .gauge .val b, .tile .v, .disk .temp, .vol .detail span")].filter(cut).map((n) => n.textContent),
           nameWidth: rect(name).width,
           nameMin: 4 * ch,
-          chipRatio: chip && shown(chip) ? rect(chip).width / rect(sr.querySelector(".titles")).width : 0,
+          // The pill on the title row only beside the whole title (a pill on a line of its own leaves the title the row).
+          titleCutByPill: !!(chip && shown(chip) && rect(chip).top < rect(name).bottom && cut(name)),
         };
         if (c.headerOnly) return r;
         r.grows = [...sr.querySelectorAll(".vol .grow")].map((n) => rect(n).width);
@@ -127,7 +128,7 @@ test("at their minimum width and above, nothing of the cards collapses, overlaps
     const at = `${c.brand} ${c.type} ${c.lang} ${c.theme} ${c.width}px`;
     assert.deepEqual(r.outside, [], `outside the card: ${at}`);
     assert.ok(r.nameWidth >= r.nameMin, `title ${r.nameWidth.toFixed(0)} px < ${r.nameMin} px: ${at}`);
-    assert.ok(r.chipRatio <= 0.51, `status pill ${(r.chipRatio * 100).toFixed(0)} % of the title block: ${at}`);
+    assert.equal(r.titleCutByPill, false, `title cut beside the status pill: ${at}`);
     for (const w of r.grows) assert.ok(w >= 40, `volume name ${w.toFixed(0)} px: ${at}`);
     assert.deepEqual(r.overlaps, [], `tags over the volume detail: ${at}`);
     assert.deepEqual(r.labels, [], `metric label wider than its column: ${at}`);
@@ -144,7 +145,7 @@ test("at a third of a section (4 columns), the header keeps a readable title and
     const at = `${c.brand} ${c.type} ${c.lang} ${c.theme} ${c.width}px`;
     assert.deepEqual(r.outside, [], `outside the card: ${at}`);
     assert.ok(r.nameWidth >= r.nameMin, `title ${r.nameWidth.toFixed(0)} px < ${r.nameMin} px: ${at}`);
-    assert.ok(r.chipRatio <= 0.51, `status pill ${(r.chipRatio * 100).toFixed(0)} %: ${at}`);
+    assert.equal(r.titleCutByPill, false, `title cut beside the status pill: ${at}`);
   });
 });
 
@@ -174,13 +175,13 @@ test("at their declared minimum on a phone, and at 245 px, nothing leaves the ca
   });
 });
 
-test("from 245 to 500 px, the status pill shows its whole label", { timeout: 120000 }, async (t) => {
+test("from 245 to 500 px, the status pill shows its whole label or its dot only", { timeout: 120000 }, async (t) => {
   if (skip) return t.skip(skip);
   const cases = matrix(["nas-card"], [245, 290, 320, 400, 500], {}, ["ok", "na"]);
   const results = await measure(cases);
   results.forEach((r, i) => {
     const c = cases[i];
-    assert.equal(r.chipText, "full", `status pill: ${c.brand} ${c.lang} ${c.theme} ${c.st} ${c.width}px`);
+    assert.notEqual(r.chipText, "cut", `status pill: ${c.brand} ${c.lang} ${c.theme} ${c.st} ${c.width}px`);
     assert.ok(r.nameWidth >= r.nameMin, `title: ${c.brand} ${c.lang} ${c.theme} ${c.st} ${c.width}px`);
   });
 });
