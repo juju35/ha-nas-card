@@ -6,6 +6,9 @@
 - **Illustrated header** on both cards (90 px): the card's own NAS drawing for the model (UGREEN, Synology, QNAP, ASUSTOR — model detection and the `image` option unchanged), drawn big on a server-room wall with a concrete ground strip, the title and the round status icon with its brand badge on the left. The network cable flows and the drive LEDs blink in the status colour (green, orange on a warning or a RAID task, red on a degraded RAID, grey and dimmed when offline), with an alert mark on a problem; the header icon follows the same status. Night version after sunset (`sun.sun`) or in dark mode, forced with `illustration_theme: day | night`; `illustration: false` keeps the classic header. Honours `prefers-reduced-motion`; SVG ids are unique per card. Both options are in the visual editor of both cards, translated in every language.
 - **Status pill on the title row** of the illustrated header, on both cards, compact mini card included: right after the name, the subtitle (model, OS version) under it; when the row is too narrow the pill takes a line of its own under the subtitle, and on the narrowest cards only its dot stays. The mini card's detail button is a small frosted round button in the banner's top right corner.
 
+### Fixes
+- Night picture with the dark theme even while the sun is up (`illustration_theme: auto`): the header is night when `sun.sun` is below the horizon or Home Assistant's theme is dark; `day` / `night` still force it.
+
 ## 1.26.0 - 2026-11-16
 
 ### Features

@@ -2612,13 +2612,14 @@ const headerIcon = (cls, brand) =>
 // Illustrated header: the NAS drawing of the card, big, on a server-room wall, a concrete strip at the bottom.
 // ---------------------------------------------------------------------------
 
-// Night picture: forced by illustration_theme, else the sun below the horizon, else Home Assistant's dark mode.
+// Night picture: forced by illustration_theme, else the sun below the horizon OR Home Assistant's dark mode (the dark
+// theme wins even while the sun is up; with no usable sun.sun the dark mode alone decides).
 const nasIsNight = (hass, config) => {
   const theme = config?.illustration_theme;
   if (theme === "night") return true;
   if (theme === "day") return false;
   const sun = hass?.states?.["sun.sun"];
-  if (sun && !["unavailable", "unknown"].includes(String(sun.state))) return sun.state === "below_horizon";
+  if (sun && !["unavailable", "unknown"].includes(String(sun.state))) return sun.state === "below_horizon" || !!hass?.themes?.darkMode;
   return !!hass?.themes?.darkMode;
 };
 // The scene is 200 × 80; the NAS stands on the strip at its right, as big as its box allows (a tower up to 52 high,

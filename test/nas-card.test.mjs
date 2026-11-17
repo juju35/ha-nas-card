@@ -2360,7 +2360,7 @@ test("illustrated header: the card's NAS drawing on a 90 px banner, classic head
   assert.match(render(NasCard, mocks.synology, { image: "/local/nas.png" }), /<image class="nas-art" href="\/local\/nas\.png"/);
 });
 
-test("illustrated header: night follows illustration_theme, then sun.sun, then the dark theme", async () => {
+test("illustrated header: night follows illustration_theme, else sun.sun below the horizon or the dark theme", async () => {
   // A fresh copy of the mock states: earlier tests change some of the shared ones.
   const { mocks } = await import("../scripts/mock-states.mjs?illustration");
   const { NasCard } = load("nas-card.js", ["NasCard"]);
@@ -2374,7 +2374,9 @@ test("illustrated header: night follows illustration_theme, then sun.sun, then t
   assert.equal(night({}), false);
   assert.equal(night({}, { themes: { darkMode: true } }), true);
   assert.equal(night({}, sun("below_horizon")), true);
-  assert.equal(night({}, { ...sun("above_horizon"), themes: { darkMode: true } }), false);
+  assert.equal(night({}, { ...sun("above_horizon"), themes: { darkMode: true } }), true);
+  assert.equal(night({}, { ...sun("above_horizon"), themes: { darkMode: false } }), false);
+  assert.equal(night({ illustration_theme: "day" }, { ...sun("above_horizon"), themes: { darkMode: true } }), false);
   assert.equal(night({ illustration_theme: "night" }, sun("above_horizon")), true);
   assert.equal(night({ illustration_theme: "day" }, sun("below_horizon")), false);
 });

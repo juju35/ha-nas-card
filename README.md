@@ -168,7 +168,7 @@ language: fr
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the subtitle under the title |
 | `illustration` | both | `true` | Illustrated header: the NAS drawing on a server-room scene, animated with the status. `false` keeps the classic header (icon, title, picture) |
-| `illustration_theme` | both | `auto` | Illustration theme: `auto` (night when `sun.sun` is below the horizon, else Home Assistant's dark mode), `day` or `night` |
+| `illustration_theme` | both | `auto` | Illustration theme: `auto` (night when `sun.sun` is below the horizon or with Home Assistant's dark mode, even with the sun up), `day` or `night` |
 | `show_image` | both | `true` | Show the NAS picture |
 | `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`… — see the [drawn models](#screenshots)) or an image URL (e.g. `/local/my-nas.png`). By default the picture follows the model reported by the integration; an unknown model of a known family is drawn from its bay count |
 | `url` | both | Device configuration URL | Web interface of the NAS, opened by a click on the NAS picture. By default the configuration URL of the NAS device in Home Assistant (the « Visit » link of the device page), set by the UGREEN NAS and Synology DSM integrations; the QNAP and ASUSTOR integrations have none, so set it for a QNAP or ASUSTOR NAS (e.g. `http://192.168.1.10:8080`) |
