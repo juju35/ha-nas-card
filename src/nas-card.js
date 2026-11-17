@@ -4069,8 +4069,9 @@ const FULL_STYLE = `
   .section-title .icon { width: 16px; height: 16px; }
   .gauges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .gauge { display: flex; flex-direction: column; align-items: center; position: relative; isolation: isolate; border-radius: 10px; overflow: hidden; }
-  /* 24 h curve of the CPU and RAM gauges, behind the whole gauge (0 % at its bottom, 100 % at its top). */
-  .gauge .spark { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  /* 24 h curve of the CPU and RAM gauges in its own 24 px band under the ring and the label, never behind the text. */
+  .gauge:has(> .spark) { padding-bottom: 28px; }
+  .gauge .spark { position: absolute; inset: auto 0 0; width: 100%; height: 24px; z-index: -1; pointer-events: none; }
   .ring { width: 60px; height: 60px; transform: rotate(-90deg); }
   .ring circle { fill: none; stroke-width: 6; }
   .ring .track { stroke: var(--divider-color, rgba(127,127,127,.25)); }
@@ -4380,7 +4381,9 @@ const NET_STYLE = `
   .tile { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px;
           background: var(--secondary-background-color, rgba(127,127,127,.08)); position: relative; overflow: hidden; }
   .tile > :not(.spark) { position: relative; }
-  .tile .spark { position: absolute; left: 0; bottom: 0; width: 100%; height: 55%; pointer-events: none; }
+  /* 24 h curve in its own 24 px band under the icon and the text, never behind them. */
+  .tile:has(> .spark) { padding-bottom: 30px; }
+  .tile .spark { position: absolute; inset: auto 0 0; width: 100%; height: 24px; pointer-events: none; }
   .spark-a { fill: color-mix(in srgb, var(--c) 12%, transparent); }
   .spark-l { fill: none; stroke: color-mix(in srgb, var(--c) 50%, transparent); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
   .tile .icon { color: var(--c, var(--nas-accent)); }
@@ -4406,9 +4409,9 @@ const MINI_STYLE = `
   .metric > span:first-of-type { white-space: nowrap; }
   .metric .icon { color: var(--secondary-text-color); }
   .metric .v { text-align: right; font-weight: 500; }
-  /* 24 h curve of the CPU and RAM rows, behind the whole row. */
+  /* 24 h curve of the CPU and RAM rows, behind the bar only: it never crosses the label or the value. */
   .metric { position: relative; isolation: isolate; }
-  .metric .spark { position: absolute; inset: -2px -4px; width: calc(100% + 8px); height: calc(100% + 4px); z-index: -1; pointer-events: none; }
+  .metric .spark { position: absolute; grid-area: 1 / 3 / 2 / 4; inset: -3px 0; width: 100%; height: calc(100% + 6px); z-index: -1; pointer-events: none; }
   /* The items wrap rather than truncate the status when they do not fit on one line. */
   .foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
   .foot span { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
@@ -4428,6 +4431,7 @@ const MINI_STYLE = `
     .metrics { grid-template-columns: 18px minmax(0, 1fr) auto; }
     .metric { grid-template-columns: 18px minmax(0, 1fr) auto; grid-template-columns: subgrid; position: relative; }
     .metric > span:first-of-type { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .metric .spark { grid-area: 1 / 2 / 2 / 3; }
   }
 `;
 

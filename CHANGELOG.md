@@ -8,6 +8,7 @@
 
 ### Fixes
 - Night picture with the dark theme even while the sun is up (`illustration_theme: auto`): the header is night when `sun.sun` is below the horizon or Home Assistant's theme is dark; `day` / `night` still force it.
+- The 24 h sparklines no longer run under the text: the CPU and RAM gauges and the download / upload tiles draw theirs in a 24 px band of their own under the ring, label ("RAM · 23.6 / 59.6 GiB") or rate, and the mini card's CPU and RAM rows behind the bar only, clear of the label and the value.
 
 ## 1.26.0 - 2026-11-16
 
