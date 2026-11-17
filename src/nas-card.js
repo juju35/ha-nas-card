@@ -3336,6 +3336,8 @@ const BASE_STYLE = `
 // the switch LEDs and the glow.
 const BANNER_STYLE = `
   .header.banner { display: block; position: relative; height: 90px; padding: 0; overflow: hidden; --g: 10px;
+                  /* The NAS art gives way first, so that the title and the whole status pill fit beside it. */
+                  --art-w: clamp(96px, calc(100% - 240px), min(200px, 62%));
     --wall: #e7eaee; --line: #d6dbe1; --tray: #c4cbd3; --box: #fff; --box-edge: #c4cbd3; --wire: #b9c0c8; --flow: #2f80ed; --glow: #fff;
     color: #17222e;
     background: linear-gradient(var(--tray), var(--tray)) 0 6.5px / 100% 3px no-repeat,
@@ -3343,7 +3345,7 @@ const BANNER_STYLE = `
   .header.banner.night { --wall: #232a36; --line: #2e3746; --tray: #3a4456; --box: #2e3746; --box-edge: #455066; --wire: #3d4759;
     --flow: #5b9cff; --glow: var(--led); color: #fff; }
   .banner.st-ok { --led: #43c463; } .banner.st-warn { --led: #f5a623; } .banner.st-crit { --led: #e53935; } .banner.st-na { --led: #8a929c; }
-  .banner .scene, .banner > .nas-link { position: absolute; right: 0; bottom: var(--g); height: calc(100% - var(--g)); width: min(200px, 62%); }
+  .banner .scene, .banner > .nas-link { position: absolute; right: 0; bottom: var(--g); height: calc(100% - var(--g)); width: var(--art-w); }
   .banner > .nas-link { display: block; border-radius: 0; max-width: none; }
   .banner > .nas-link > .scene { position: static; display: block; width: 100%; height: 100%; }
   .banner .glow-c { stop-color: var(--glow); }
@@ -3368,7 +3370,7 @@ const BANNER_STYLE = `
   @keyframes nas-flow { to { stroke-dashoffset: -14; } }
   @keyframes nas-pulse { 50% { transform: scale(1.15); } }
   @media (prefers-reduced-motion: reduce) { .banner .flow, .banner .led, .banner .alert { animation: none; } }
-  .banner .head { position: absolute; z-index: 1; left: 0; top: 0; bottom: var(--g); right: min(200px, 62%); display: flex; align-items: center;
+  .banner .head { position: absolute; z-index: 1; left: 0; top: 0; bottom: var(--g); right: var(--art-w); display: flex; align-items: center;
                   gap: 10px; padding: 0 6px 0 12px; min-width: 0; }
   .banner .brand-link, .banner .logo { align-self: center; }
   .banner .logo { background: rgba(255,255,255,.62); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c, var(--nas-ok)) 28%, transparent); }
@@ -3387,7 +3389,7 @@ const BANNER_STYLE = `
   .banner.night .ground { background: #2c323b; box-shadow: inset 0 2px 0 #3a424e; }
   .banner ~ .content { padding-top: 12px; }
   /* Narrow card: no room for the scene beside the text, the wall alone stays. */
-  @container (max-width: 300px) { .banner .scene, .banner > .nas-link { display: none; } .banner .head { right: 34px; } }
+  @container (max-width: 300px) { .banner .scene, .banner > .nas-link { display: none; } .banner .head { right: 0; } }
 `;
 
 // In-card confirmation popup, at the top of the card so it stays in view when the card is long.
