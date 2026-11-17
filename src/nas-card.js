@@ -3239,6 +3239,12 @@ const patchChildren = (cur, next) => {
   });
   while (cur.childNodes.length > fresh.length) cur.removeChild(cur.lastChild);
 };
+// The whole width of an element's text, in fractional pixels, even when it is cut with an ellipsis.
+const textWidth = (el) => {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  return Math.max(el.scrollWidth, range.getBoundingClientRect().width);
+};
 const morph = (root, html) => {
   const tpl = document.createElement("template");
   tpl.innerHTML = html;
@@ -3281,16 +3287,21 @@ const BASE_STYLE = `
   .bar > div { height: 100%; border-radius: 3px; background: var(--c, var(--nas-accent)); transition: width .6s ease; }
   @media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
   .header { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px; }
-  /* The status pill sits right of the title, centred on the title line; the subtitle runs under it too, so the
-     model and the OS version keep the header's whole width.
-     The pill keeps its whole label as long as the title keeps a few characters (the first column's minimum):
-     only then does it truncate its text, and on a very narrow card it shows its dot alone. */
-  .titles { flex: 1 1 0; min-width: 0; display: grid; grid-template-columns: minmax(48px, 1fr) auto; }
-  :host([hide-title]) .titles > .name, :host([hide-subtitle]) .titles > .sub { display: none; }
-  .titles > .name { grid-column: 1; }
-  .titles > .sub { grid-column: 1 / -1; }
-  .titles > .chip { grid-area: 1 / 2; align-self: center; margin-left: 10px; white-space: nowrap; min-width: 0; max-width: 100%;
-                    overflow: hidden; box-sizing: border-box; }
+  /* Title row (both headers): the name, then the status pill right after it, only when the whole name and the whole
+     label fit there (measured by the card, see _fitPill); else the pill takes a line of its own under the subtitle,
+     and when even that does not fit, only its dot stays (its label in its title and for screen readers). */
+  .titles { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .titles > .name, .titles > .sub { align-self: stretch; }
+  :host([hide-title]) .titles .name, :host([hide-subtitle]) .titles > .sub { display: none; }
+  .trow { display: flex; align-items: center; gap: 8px; min-width: 0; align-self: stretch; }
+  .trow > .name { flex: 0 1 auto; min-width: 4ch; }
+  .trow > .chip { flex: none; white-space: nowrap; max-width: none; overflow: hidden; box-sizing: border-box; }
+  .titles.below .trow { display: contents; }
+  .titles.below .trow > .name { align-self: stretch; }
+  .titles.below > .sub { order: 1; }
+  .titles.below .trow > .chip { order: 2; align-self: flex-start; max-width: 100%; margin-top: 2px; }
+  .titles.dot-only .chip { padding: 0; width: 16px; height: 16px; justify-content: center; }
+  .titles.dot-only .chip .txt { display: none; }
   @container nas-card (max-width: 200px) { .chip .txt { display: none; } }
   .logo { height: 40px; width: 40px; flex: none; align-self: flex-start; border-radius: 50%; display: grid; place-items: center;
           color: var(--c, var(--nas-ok)); background: color-mix(in srgb, var(--c, var(--nas-ok)) 16%, transparent); }
@@ -3382,28 +3393,14 @@ const BANNER_STYLE = `
   .banner .titles > .name, .banner .titles > .sub { align-self: stretch; }
   .banner .sub { color: #46566a; line-height: 16px; max-height: 16px; }
   .banner.night .sub { color: rgba(255,255,255,.78); }
-  /* Title row: the name, then the status pill right after it (the name gives way first, down to four characters).
-     When the row is too narrow for both, the pill takes a line of its own under the subtitle; on the narrowest
-     cards only its dot stays (its label in its title and for screen readers). */
-  .banner .titles { flex: 1 1 0; min-width: 0; container: nas-titles / inline-size; }
-  .banner .trow { display: flex; align-items: center; gap: 8px; min-width: 0; align-self: stretch; }
-  .banner .trow > .name { flex: 0 1 auto; min-width: 4ch; }
-  .banner .chip { flex: none; max-width: 51%; line-height: 16px; white-space: nowrap; overflow: hidden; box-sizing: border-box;
+  .banner .titles { flex: 1 1 0; min-width: 0; }
+  .banner .trow > .chip { display: inline-flex; }
+  .banner .chip { line-height: 16px;
                   background: color-mix(in srgb, var(--c, var(--nas-ok)) 18%, rgba(255,255,255,.78));
                   color: color-mix(in srgb, var(--c, var(--nas-ok)) 45%, #0d2a45); }
   .banner.night .chip { background: color-mix(in srgb, var(--c, var(--nas-ok)) 30%, rgba(8,18,38,.55));
                         color: color-mix(in srgb, var(--c, var(--nas-ok)) 35%, #ffffff); }
   .banner .chip .dot { width: 7px; height: 7px; }
-  @container nas-titles (max-width: 210px) {
-    .banner .trow { display: contents; }
-    .banner .titles > .sub { order: 1; }
-    .banner .trow > .chip { order: 2; align-self: flex-start; max-width: 100%; margin-top: 2px; }
-  }
-  @container nas-card (max-width: 260px) {
-    .banner .trow { display: contents; }
-    .banner .titles > .sub { order: 1; }
-    .banner .trow > .chip { order: 2; align-self: flex-start; max-width: 100%; margin-top: 2px; }
-  }
   @container nas-card (max-width: 200px) {
     .banner .chip { padding: 0; width: 16px; height: 16px; justify-content: center; }
   }
@@ -3582,12 +3579,26 @@ class NasBase extends HTMLElement {
 
   connectedCallback() {
     (this._onDialogOutsideWatch ??= watchOutside(this, (ev) => this._onDialogOutside(ev))).on();
+    // A new width (or the web font loaded): the status pill is fitted again, in the next frame.
+    if (typeof ResizeObserver === "function") {
+      this._resize ??= new ResizeObserver((entries) => {
+        const w = Math.round(entries.at(-1).contentRect.width);
+        if (w === this._fitWidth) return;
+        this._fitWidth = w;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = requestAnimationFrame(() => this._fitPill());
+      });
+      this._resize.observe(this);
+    }
+    document.fonts?.ready?.then(() => this._fitPill());
     // Back on the page after leaving it: rendered again in its default state.
     this._update?.();
   }
 
   disconnectedCallback() {
     this._onDialogOutsideWatch?.off();
+    this._resize?.disconnect();
+    this._fitWidth = null;
     // Left (another dashboard view, a conditional card hidden): back to the default state, so that the card does
     // not come back unfolded or with its popup open.
     this._dialog = null;
@@ -3940,6 +3951,40 @@ class NasBase extends HTMLElement {
       this._html = html;
       morph(this.shadowRoot, html);
     }
+    this._fitPill();
+  }
+
+  // The status pill goes right after the title only when the whole title and the whole label fit there; otherwise it
+  // takes a line of its own under the subtitle (.titles.below, the subtitle on one line). When the label does not fit
+  // that line either, or the banner has no room for the three lines above its strip, the pill keeps its dot only
+  // (.titles.dot-only, back beside the title when the dot fits there). Measured after render, in every language.
+  _fitPill() {
+    for (const t of this.shadowRoot?.querySelectorAll?.(".titles") || []) {
+      const chip = t.querySelector(".trow > .chip");
+      t.classList.remove("below", "dot-only");
+      if (!chip?.getBoundingClientRect || !chip.getClientRects().length) continue;
+      const row = chip.parentElement;
+      const name = row.querySelector(".name");
+      const fits = () => {
+        const shown = name && getComputedStyle(name).display !== "none";
+        const title = shown ? textWidth(name) + (parseFloat(getComputedStyle(row).columnGap) || 0) : 0;
+        return title + chip.getBoundingClientRect().width <= row.getBoundingClientRect().width + 0.5;
+      };
+      if (fits()) continue;
+      t.classList.add("below");
+      const sub = t.querySelector(".sub");
+      if (sub) sub.title = sub.textContent.trim();
+      const text = chip.querySelector(".txt");
+      const banner = t.closest(".banner");
+      const tb = t.getBoundingClientRect();
+      const bb = banner?.getBoundingClientRect();
+      const ground = banner ? parseFloat(getComputedStyle(banner).getPropertyValue("--g")) || 0 : 0;
+      const tall = !!bb && (tb.top < bb.top - 0.5 || tb.bottom > bb.bottom - ground + 0.5);
+      if (!tall && !(text && text.scrollWidth > text.clientWidth + 0.5)) continue;
+      t.classList.add("dot-only");
+      t.classList.remove("below");
+      if (!fits()) t.classList.add("below");
+    }
   }
 
   // The worst RAID that is not healthy (degraded, rebuilding…), or null.
@@ -3991,7 +4036,7 @@ class NasBase extends HTMLElement {
     const nameHtml = `<div class="name">${esc(name)}</div>`;
     const subHtml = `<div class="sub"><div class="parts">${sub.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>`;
     const titles = `
-        <div class="titles">${nameHtml}${subHtml}${chip}</div>`;
+        <div class="titles"><div class="trow">${nameHtml}${chip}</div>${subHtml}</div>`;
     const href = webUrl(c.url) || deviceUrl(this._hass, nas);
     if (c.illustration !== false) {
       // The illustrated header: the card's drawing of the model (or the picture given by URL) on the scene.
@@ -4002,7 +4047,7 @@ class NasBase extends HTMLElement {
       return `
       <div class="header banner st-${state}${nasIsNight(this._hass, c) ? " night" : ""}">
         ${art ? this._link(href, this._t("open_nas"), "nas-link", scene) : scene}
-        <div class="head">${icon}<div class="titles"><div class="trow">${nameHtml}${chip}</div>${subHtml}</div></div>
+        <div class="head">${icon}${titles}</div>
         <div class="ground"></div>
         ${this._zoomButton()}
       </div>${this._dialogHtml()}`;
@@ -4399,7 +4444,7 @@ const MINI_STYLE = `
   .nas { height: 44px; width: auto; flex: none; max-width: 35%; object-fit: contain; }
   .nas-link { max-width: 35%; }
   /* The status shows in the footer. */
-  .titles > .chip { display: none; }
+  .trow > .chip { display: none; }
   .name { font-size: 16px; }
   .content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
   /* One label column for all the rows, as wide as the longest label (subgrid); without subgrid, the fixed columns. */

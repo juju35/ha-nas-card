@@ -1129,7 +1129,7 @@ const rule = (css, sel) => {
 };
 const containerRules = (css) => [...css.matchAll(/@container[^{]*\{((?:[^{}]*\{[^}]*\})*)\s*\}/g)].map((m) => m[1]).join(" ");
 
-test("narrow header: the title truncates but keeps a few characters, the status pill shrinks, buttons never do", () => {
+test("narrow header: the title truncates but keeps a few characters, the status pill moves under the subtitle, buttons never do", () => {
   const { BASE_STYLE, FULL_STYLE, MINI_STYLE } = styles();
   assert.match(rule(BASE_STYLE, "ha-card"), /container-type: inline-size/);
   const titles = rule(BASE_STYLE, ".titles");
@@ -1139,12 +1139,14 @@ test("narrow header: the title truncates but keeps a few characters, the status 
   const name = rule(BASE_STYLE, ".name");
   assert.match(name, /text-overflow: ellipsis/);
   assert.match(name, /min-width: \d+(\.\d+)?ch/);
-  // The pill sits in the second column of the titles grid, at its whole width (auto) as long as the title keeps
-  // its minimum (first column), and it shrinks (min-width: 0) rather than push the title out.
-  assert.match(titles, /grid-template-columns: minmax\(\d+px, 1fr\) auto/);
-  const chip = rule(BASE_STYLE, ".titles > .chip");
-  assert.match(chip, /min-width: 0/);
+  // The pill sits right after the title, at its whole width; the card measures whether the whole title fits beside
+  // it (else the pill goes under the subtitle, .titles.below), and keeps only its dot when its label still does not fit.
+  assert.match(rule(BASE_STYLE, ".trow"), /display: flex/);
+  const chip = rule(BASE_STYLE, ".trow > .chip");
+  assert.match(chip, /flex: none/);
   assert.match(chip, /overflow: hidden/);
+  assert.match(rule(BASE_STYLE, ".titles.below .trow"), /display: contents/);
+  assert.match(rule(BASE_STYLE, ".titles.dot-only .chip .txt"), /display: none/);
   assert.match(rule(BASE_STYLE, ".chip .txt"), /text-overflow: ellipsis/);
   // Below the threshold, the pill only shows its dot.
   assert.match(containerRules(BASE_STYLE), /\.chip \.txt\s*\{[^}]*display: none/);
