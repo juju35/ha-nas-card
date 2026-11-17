@@ -84,7 +84,7 @@ const STRINGS = {
     show_image: "Show NAS picture",
     illustration: "Animated illustration",
     illustration_theme: "Illustration theme",
-    theme_auto: "Automatic (sun or dark theme)",
+    theme_auto: "Automatic: night with a dark theme, day with a light theme",
     theme_day: "Day",
     theme_night: "Night",
     show_title: "Show title",
@@ -178,7 +178,7 @@ const STRINGS = {
     show_image: "Afficher l'illustration du NAS",
     illustration: "Illustration animée",
     illustration_theme: "Thème de l’illustration",
-    theme_auto: "Automatique (soleil ou thème sombre)",
+    theme_auto: "Automatique : nuit avec un thème sombre, jour avec un thème clair",
     theme_day: "Jour",
     theme_night: "Nuit",
     show_title: "Afficher le titre",
@@ -272,7 +272,7 @@ const STRINGS = {
     show_image: "NAS-Bild anzeigen",
     illustration: "Animierte Illustration",
     illustration_theme: "Thema der Illustration",
-    theme_auto: "Automatisch (Sonne oder dunkles Design)",
+    theme_auto: "Automatisch: Nacht bei dunklem Thema, Tag bei hellem Thema",
     theme_day: "Tag",
     theme_night: "Nacht",
     show_title: "Titel anzeigen",
@@ -366,7 +366,7 @@ const STRINGS = {
     show_image: "Mostrar la imagen del NAS",
     illustration: "Ilustración animada",
     illustration_theme: "Tema de la ilustración",
-    theme_auto: "Automático (sol o tema oscuro)",
+    theme_auto: "Automático: noche con un tema oscuro, día con un tema claro",
     theme_day: "Día",
     theme_night: "Noche",
     show_title: "Mostrar el título",
@@ -460,7 +460,7 @@ const STRINGS = {
     show_image: "Прикажи слику NAS-а",
     illustration: "Анимирана илустрација",
     illustration_theme: "Тема илустрације",
-    theme_auto: "Аутоматски (сунце или тамна тема)",
+    theme_auto: "Аутоматски: ноћ уз тамну тему, дан уз светлу тему",
     theme_day: "Дан",
     theme_night: "Ноћ",
     show_title: "Прикажи наслов",
@@ -554,7 +554,7 @@ const STRINGS = {
     show_image: "Prikaži sliku NAS-a",
     illustration: "Animirana ilustracija",
     illustration_theme: "Tema ilustracije",
-    theme_auto: "Automatski (sunce ili tamna tema)",
+    theme_auto: "Automatski: noć uz tamnu temu, dan uz svetlu temu",
     theme_day: "Dan",
     theme_night: "Noć",
     show_title: "Prikaži naslov",
@@ -648,7 +648,7 @@ const STRINGS = {
     show_image: "Mostra l'immagine del NAS",
     illustration: "Illustrazione animata",
     illustration_theme: "Tema dell’illustrazione",
-    theme_auto: "Automatico (sole o tema scuro)",
+    theme_auto: "Automatico: notte con un tema scuro, giorno con un tema chiaro",
     theme_day: "Giorno",
     theme_night: "Notte",
     show_title: "Mostra il titolo",
@@ -742,7 +742,7 @@ const STRINGS = {
     show_image: "Afbeelding van de NAS weergeven",
     illustration: "Geanimeerde illustratie",
     illustration_theme: "Thema van de illustratie",
-    theme_auto: "Automatisch (zon of donker thema)",
+    theme_auto: "Automatisch: nacht met een donker thema, dag met een licht thema",
     theme_day: "Dag",
     theme_night: "Nacht",
     show_title: "Titel tonen",
@@ -836,7 +836,7 @@ const STRINGS = {
     show_image: "Mostrar a imagem do NAS",
     illustration: "Ilustração animada",
     illustration_theme: "Tema da ilustração",
-    theme_auto: "Automático (sol ou tema escuro)",
+    theme_auto: "Automático: noite com um tema escuro, dia com um tema claro",
     theme_day: "Dia",
     theme_night: "Noite",
     show_title: "Mostrar o título",
@@ -930,7 +930,7 @@ const STRINGS = {
     show_image: "Pokaż obraz NAS",
     illustration: "Animowana ilustracja",
     illustration_theme: "Motyw ilustracji",
-    theme_auto: "Automatycznie (słońce lub ciemny motyw)",
+    theme_auto: "Automatycznie: noc przy ciemnym motywie, dzień przy jasnym motywie",
     theme_day: "Dzień",
     theme_night: "Noc",
     show_title: "Pokaż tytuł",
@@ -1024,7 +1024,7 @@ const STRINGS = {
     show_image: "Afișează imaginea NAS-ului",
     illustration: "Ilustrație animată",
     illustration_theme: "Tema ilustrației",
-    theme_auto: "Automat (soare sau temă întunecată)",
+    theme_auto: "Automat: noapte cu o temă întunecată, zi cu o temă luminoasă",
     theme_day: "Zi",
     theme_night: "Noapte",
     show_title: "Afișează titlul",
@@ -1118,7 +1118,7 @@ const STRINGS = {
     show_image: "Vis billede af NAS'en",
     illustration: "Animeret illustration",
     illustration_theme: "Illustrationens tema",
-    theme_auto: "Automatisk (sol eller mørkt tema)",
+    theme_auto: "Automatisk: nat med et mørkt tema, dag med et lyst tema",
     theme_day: "Dag",
     theme_night: "Nat",
     show_title: "Vis titel",
@@ -1212,7 +1212,7 @@ const STRINGS = {
     show_image: "Visa bild av NAS-enheten",
     illustration: "Animerad illustration",
     illustration_theme: "Illustrationens tema",
-    theme_auto: "Automatiskt (sol eller mörkt tema)",
+    theme_auto: "Automatiskt: natt med ett mörkt tema, dag med ett ljust tema",
     theme_day: "Dag",
     theme_night: "Natt",
     show_title: "Visa rubrik",
@@ -1306,7 +1306,7 @@ const STRINGS = {
     show_image: "Показване на изображение на NAS",
     illustration: "Анимирана илюстрация",
     illustration_theme: "Тема на илюстрацията",
-    theme_auto: "Автоматично (слънце или тъмна тема)",
+    theme_auto: "Автоматично: нощ с тъмна тема, ден със светла тема",
     theme_day: "Ден",
     theme_night: "Нощ",
     show_title: "Показване на заглавието",
@@ -1400,7 +1400,7 @@ const STRINGS = {
     show_image: "Показывать изображение NAS",
     illustration: "Анимированная иллюстрация",
     illustration_theme: "Тема иллюстрации",
-    theme_auto: "Автоматически (солнце или тёмная тема)",
+    theme_auto: "Автоматически: ночь при тёмной теме, день при светлой теме",
     theme_day: "День",
     theme_night: "Ночь",
     show_title: "Показывать заголовок",
@@ -1494,7 +1494,7 @@ const STRINGS = {
     show_image: "Показувати зображення NAS",
     illustration: "Анімована ілюстрація",
     illustration_theme: "Тема ілюстрації",
-    theme_auto: "Автоматично (сонце або темна тема)",
+    theme_auto: "Автоматично: ніч з темною темою, день зі світлою темою",
     theme_day: "День",
     theme_night: "Ніч",
     show_title: "Показувати заголовок",
@@ -1588,7 +1588,7 @@ const STRINGS = {
     show_image: "NAS képének megjelenítése",
     illustration: "Animált illusztráció",
     illustration_theme: "Az illusztráció témája",
-    theme_auto: "Automatikus (nap vagy sötét téma)",
+    theme_auto: "Automatikus: éjszaka sötét témával, nappal világos témával",
     theme_day: "Nappal",
     theme_night: "Éjszaka",
     show_title: "Cím megjelenítése",
@@ -1682,7 +1682,7 @@ const STRINGS = {
     show_image: "Zobraziť obrázok NAS",
     illustration: "Animovaná ilustrácia",
     illustration_theme: "Téma ilustrácie",
-    theme_auto: "Automaticky (slnko alebo tmavá téma)",
+    theme_auto: "Automaticky: noc s tmavou témou, deň so svetlou témou",
     theme_day: "Deň",
     theme_night: "Noc",
     show_title: "Zobraziť názov",
@@ -1776,7 +1776,7 @@ const STRINGS = {
     show_image: "Zobrazit obrázek NAS",
     illustration: "Animovaná ilustrace",
     illustration_theme: "Motiv ilustrace",
-    theme_auto: "Automaticky (slunce nebo tmavý motiv)",
+    theme_auto: "Automaticky: noc s tmavým motivem, den se světlým motivem",
     theme_day: "Den",
     theme_night: "Noc",
     show_title: "Zobrazit název",
@@ -1870,7 +1870,7 @@ const STRINGS = {
     show_image: "Prikaži sliko NAS",
     illustration: "Animirana ilustracija",
     illustration_theme: "Tema ilustracije",
-    theme_auto: "Samodejno (sonce ali temna tema)",
+    theme_auto: "Samodejno: noč s temno temo, dan s svetlo temo",
     theme_day: "Dan",
     theme_night: "Noč",
     show_title: "Prikaži naslov",
@@ -1964,7 +1964,7 @@ const STRINGS = {
     show_image: "Rādīt NAS attēlu",
     illustration: "Animēta ilustrācija",
     illustration_theme: "Ilustrācijas motīvs",
-    theme_auto: "Automātiski (saule vai tumšā tēma)",
+    theme_auto: "Automātiski: nakts ar tumšu tēmu, diena ar gaišu tēmu",
     theme_day: "Diena",
     theme_night: "Nakts",
     show_title: "Rādīt virsrakstu",
@@ -2058,7 +2058,7 @@ const STRINGS = {
     show_image: "Εμφάνιση εικόνας του NAS",
     illustration: "Κινούμενη εικονογράφηση",
     illustration_theme: "Θέμα εικονογράφησης",
-    theme_auto: "Αυτόματα (ήλιος ή σκοτεινό θέμα)",
+    theme_auto: "Αυτόματο: νύχτα με σκούρο θέμα, μέρα με ανοιχτό θέμα",
     theme_day: "Ημέρα",
     theme_night: "Νύχτα",
     show_title: "Εμφάνιση τίτλου",
@@ -2612,14 +2612,12 @@ const headerIcon = (cls, brand) =>
 // Illustrated header: the NAS drawing of the card, big, on a server-room wall, a concrete strip at the bottom.
 // ---------------------------------------------------------------------------
 
-// Night picture: forced by illustration_theme, else the sun below the horizon OR Home Assistant's dark mode (the dark
-// theme wins even while the sun is up; with no usable sun.sun the dark mode alone decides).
+// Night picture: forced by illustration_theme, else Home Assistant's dark mode alone (a light theme keeps the day
+// picture after sunset).
 const nasIsNight = (hass, config) => {
   const theme = config?.illustration_theme;
   if (theme === "night") return true;
   if (theme === "day") return false;
-  const sun = hass?.states?.["sun.sun"];
-  if (sun && !["unavailable", "unknown"].includes(String(sun.state))) return sun.state === "below_horizon" || !!hass?.themes?.darkMode;
   return !!hass?.themes?.darkMode;
 };
 // The scene is 200 × 80; the NAS stands on the strip at its right, as big as its box allows (a tower up to 52 high,
@@ -3918,7 +3916,7 @@ class NasBase extends HTMLElement {
   // rediscovered when an entity or a device changes) and the states of the NAS entities.
   _signature() {
     const h = this._hass;
-    const sig = [h.language, h.locale?.language, h.themes?.darkMode, h.entities, h.devices, h.states?.["sun.sun"]?.state];
+    const sig = [h.language, h.locale?.language, h.themes?.darkMode, h.entities, h.devices];
     const nas = discover(h, this._config.nas);
     sig.push(nas);
     if (!nas.nasId) return sig;
