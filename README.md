@@ -333,7 +333,7 @@ The picture is drawn from the model reported by the integration, so a renamed NA
 
 ### Units
 
-Sizes and rates follow Home Assistant's units: `kB`, `MB`, `GB` and `TB` (and `kB/s`, `MB/s`…) are decimal (powers of 1000), `KiB`, `MiB`, `GiB` and `TiB` (and `KiB/s`, `MiB/s`…) are binary (powers of 1024), whatever unit you choose for a sensor in Home Assistant. The cards display decimal units, so a volume reported as `6.62 TB` reads `6.62 TB` on the card too.
+Sizes and rates follow Home Assistant's units: `kB`, `MB`, `GB` and `TB` (and `kB/s`, `MB/s`…) are decimal (powers of 1000), `KiB`, `MiB`, `GiB` and `TiB` (and `KiB/s`, `MiB/s`…) are binary (powers of 1024), whatever unit you choose for a sensor in Home Assistant. The cards display sizes in binary units like the other ha-* cards (`KiB`, `MiB`, `GiB`, `TiB`: 2 decimals under 10, 1 under 100, none above), so a volume reported as `6.62 TB` reads `6.02 TiB`; rates stay decimal (`kB/s`, `MB/s`).
 
 ### Thresholds
 

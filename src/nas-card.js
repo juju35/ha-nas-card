@@ -2133,8 +2133,8 @@ const num = (s) => {
 };
 
 // Data sizes follow Home Assistant's UnitOfInformation: kB/MB/GB/TB/PB are decimal (powers of 1000) and
-// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use decimal units,
-// so a sensor reported in GB or TB reads the same on the card as in Home Assistant.
+// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use the ha-* cards'
+// convention: powers of 1024 with binary prefixes (a 6.62 TB volume reads 6.02 TiB).
 const UNIT_FACTORS = {
   b: 1, kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12, pb: 1e15,
   kib: 1024, mib: 1024 ** 2, gib: 1024 ** 3, tib: 1024 ** 4, pib: 1024 ** 5,
@@ -2151,22 +2151,11 @@ const toBytes = (s) => {
 const fmtNum = (v, loc, max, min = 0) =>
   new Intl.NumberFormat(loc || "en", { minimumFractionDigits: min, maximumFractionDigits: max }).format(v);
 
+// Sizes (volumes, disks, RAM) in powers of 1024 with binary prefixes (KiB, MiB, GiB), like the other ha-* cards: up to
+// 2 decimals under 10, 1 under 100, none above ("3.8 GiB", "980 MiB", "6.02 TiB").
 const fmtBytes = (b, loc) => {
   if (b === null || b === undefined) return "—";
-  const units = ["B", "kB", "MB", "GB", "TB", "PB"];
-  let i = 0;
-  while (b >= 1000 && i < units.length - 1) {
-    b /= 1000;
-    i++;
-  }
-  return `${fmtNum(b, loc, b >= 100 || i === 0 ? 0 : b >= 10 ? 1 : 2)} ${units[i]}`;
-};
-
-// RAM sizes in powers of 1024 with binary prefixes (KiB, MiB, GiB), like the other ha-* cards: up to 2 decimals
-// under 10, 1 under 100, none above ("3.8 GiB", "980 MiB").
-const fmtRam = (b, loc) => {
-  if (b === null || b === undefined) return "—";
-  const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+  const units = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
   let i = 0;
   while (b >= 1024 && i < units.length - 1) {
     b /= 1024;
@@ -2178,8 +2167,8 @@ const fmtRam = (b, loc) => {
 // "used / total" for the RAM gauge: the used figure drops its unit only when both share it
 // ("1.5 / 2 GiB", but "800 MiB / 2 GiB").
 const ramPair = (used, total, loc) => {
-  const u = fmtRam(used, loc);
-  const tot = fmtRam(total, loc);
+  const u = fmtBytes(used, loc);
+  const tot = fmtBytes(total, loc);
   const [uv, uu] = u.split(" ");
   return uu === tot.split(" ")[1] ? `${uv} / ${tot}` : `${u} / ${tot}`;
 };
