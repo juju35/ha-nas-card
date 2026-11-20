@@ -3,6 +3,7 @@
 ## 1.27.2 - 2026-11-20
 
 ### Fixes
+- The status pill is placed from the card's first frame: it was measured before Home Assistant's `<ha-card>` had laid out its content (0 px wide), so for a frame it showed on the wrong line (under the title, or beside it when it belongs under it), sometimes changing the card's height, before jumping to its place. It is now fitted once the card is drawn.
 - The frosted expand / collapse button of the illustrated header keeps its blur on Safari before 18 (WebKit prefix).
 - A status pill measurement still pending when the card leaves the page is cancelled.
 - The 24 h curves keep their place while the statistics load: the card has its final height from the first render instead of growing by 24 px (mini) / 52 px (full) when they arrive, which moved the page under it.

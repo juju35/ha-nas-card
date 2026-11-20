@@ -3961,6 +3961,16 @@ class NasBase extends HTMLElement {
   // that line either, or the banner has no room for the three lines above its strip, the pill keeps its dot only
   // (.titles.dot-only, back beside the title when the dot fits there). Measured after render, in every language.
   _fitPill() {
+    // Home Assistant's <ha-card> (a Lit element) shows its content only from its first update, a microtask after it
+    // is connected: measured before, everything is 0 px wide and the pill lands on the wrong line. Fitted then.
+    const haCard = this.shadowRoot?.querySelector?.("ha-card");
+    if (haCard && haCard.hasUpdated === false) {
+      this._pillWait ??= (haCard.updateComplete?.then ? haCard.updateComplete : new Promise((r) => requestAnimationFrame(r))).then(() => {
+        this._pillWait = null;
+        this._fitPill();
+      });
+      return;
+    }
     for (const t of this.shadowRoot?.querySelectorAll?.(".titles") || []) {
       const chip = t.querySelector(".trow > .chip");
       t.classList.remove("below", "dot-only");
