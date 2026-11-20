@@ -3593,11 +3593,24 @@ class NasBase extends HTMLElement {
       this._resize.observe(this);
     }
     document.fonts?.ready?.then(() => this._fitPill());
+    // The 24 h curves are fetched again every HIST_REFRESH even when no sensor of the card changes (a render only
+    // happens on a new state), so that they do not grow old on a quiet NAS.
+    if (typeof setInterval === "function") {
+      clearInterval(this._histTimer);
+      this._histTimer = setInterval(() => this._histTick(), HIST_REFRESH);
+    }
     // Back on the page after leaving it: rendered again in its default state.
     this._update?.();
   }
 
+  // Timer of the 24 h curves: renders again (which fetches the statistics anew) once they are older than HIST_REFRESH.
+  _histTick() {
+    if (this._histKey && this._hass && Date.now() - this._histAt > HIST_REFRESH) this._update?.();
+  }
+
   disconnectedCallback() {
+    if (this._histTimer) clearInterval(this._histTimer);
+    this._histTimer = null;
     this._onDialogOutsideWatch?.off();
     this._resize?.disconnect();
     this._fitWidth = null;

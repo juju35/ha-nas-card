@@ -127,3 +127,23 @@ test("history: the sparkline boxes are reserved while the statistics load, dropp
     assert.doesNotMatch(failing.el.html, /class="spark"/);
   }
 });
+
+test("history: the curves are fetched again by the timer once they are 5 minutes old, without any state change", async () => {
+  const { el, calls } = mount(NasCard, {});
+  el._update();
+  await tick();
+  assert.equal(calls.length, 1);
+  el._histTick();
+  el._update();
+  assert.equal(calls.length, 1, "fresh curves are not fetched again");
+  const realUpdate = el._update;
+  let renders = 0;
+  el._update = () => {
+    renders++;
+    realUpdate();
+  };
+  el._histAt = Date.now() - 5 * 60000 - 1;
+  el._histTick();
+  assert.equal(renders, 1);
+  assert.equal(calls.length, 2);
+});
