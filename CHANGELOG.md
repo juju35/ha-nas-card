@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.27.2 - 2026-11-20
+
+### Fixes
+- The frosted expand / collapse button of the illustrated header keeps its blur on Safari before 18 (WebKit prefix).
+- A status pill measurement still pending when the card leaves the page is cancelled.
+
+### Maintenance
+- Tests: the coverage of the card source is now measured (`node --test --experimental-test-coverage`).
+
 ## 1.27.1 - 2026-11-18
 
 ### Fixes
