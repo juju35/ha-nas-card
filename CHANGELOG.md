@@ -5,6 +5,7 @@
 ### Fixes
 - The frosted expand / collapse button of the illustrated header keeps its blur on Safari before 18 (WebKit prefix).
 - A status pill measurement still pending when the card leaves the page is cancelled.
+- The 24 h curves keep their place while the statistics load: the card has its final height from the first render instead of growing by 24 px (mini) / 52 px (full) when they arrive, which moved the page under it.
 
 ### Maintenance
 - Tests: the coverage of the card source is now measured (`node --test --experimental-test-coverage`).

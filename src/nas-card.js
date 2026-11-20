@@ -3446,7 +3446,11 @@ const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "
 const HIST_REFRESH = 5 * 60000;
 const HIST_PERIOD = 5 * 60000;
 const HIST_WINDOW = 864e5;
+// While the first history answer is on its way: the sparkline's box without a curve, so the card has its final height
+// from the first render and does not grow (moving the page under it) when the statistics arrive.
+const HIST_WAIT = Object.freeze([]);
 function spark(points, now = Date.now(), max = 0) {
+  if (points === HIST_WAIT) return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"></svg>`;
   if (!points || points.length < 2) return "";
   const peak = max || Math.max(...points.map((p) => p.v)) || 1;
   const from = now - HIST_WINDOW;
@@ -4296,6 +4300,9 @@ class NasCard extends NasBase {
   _history(ids) {
     const key = ids.join(",");
     if (key && this._hass.callWS && (this._histKey !== key || Date.now() - this._histAt > HIST_REFRESH)) {
+      // Other series: until their first answer (or failure), the curves already known stay and the new ones keep
+      // their box (HIST_WAIT).
+      if (this._histKey !== key) this._histWait = true;
       this._histKey = key;
       this._histAt = Date.now();
       this._hass
@@ -4308,15 +4315,21 @@ class NasCard extends NasBase {
         })
         .then((r) => {
           if (this._histKey !== key) return;
+          this._histWait = false;
           this._hist = Object.fromEntries(ids.map((id) => [id, histPoints(r?.[id])]));
           this._update();
         })
         // No statistics (sensor without state_class, recorder off): try again in a minute, no sparkline meanwhile.
         .catch(() => {
           this._histAt = Date.now() - HIST_REFRESH + 60000;
+          if (this._histKey !== key || !this._histWait) return;
+          this._histWait = false;
+          this._update();
         });
     }
-    return this._histKey === key ? this._hist : null;
+    if (this._histKey !== key) return null;
+    if (!this._histWait) return this._hist;
+    return Object.fromEntries(ids.map((id) => [id, this._hist?.[id] ?? HIST_WAIT]));
   }
 
   _raidText(rs) {
