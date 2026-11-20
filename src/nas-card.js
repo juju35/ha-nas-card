@@ -2133,8 +2133,8 @@ const num = (s) => {
 };
 
 // Data sizes follow Home Assistant's UnitOfInformation: kB/MB/GB/TB/PB are decimal (powers of 1000) and
-// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use decimal units,
-// so a sensor reported in GB or TB reads the same on the card as in Home Assistant.
+// KiB/MiB/GiB/TiB/PiB binary (powers of 1024), as the frontend converts them. Displayed sizes use the ha-* cards'
+// convention: powers of 1024 with binary prefixes (a 6.62 TB volume reads 6.02 TiB).
 const UNIT_FACTORS = {
   b: 1, kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12, pb: 1e15,
   kib: 1024, mib: 1024 ** 2, gib: 1024 ** 3, tib: 1024 ** 4, pib: 1024 ** 5,
@@ -2151,22 +2151,11 @@ const toBytes = (s) => {
 const fmtNum = (v, loc, max, min = 0) =>
   new Intl.NumberFormat(loc || "en", { minimumFractionDigits: min, maximumFractionDigits: max }).format(v);
 
+// Sizes (volumes, disks, RAM) in powers of 1024 with binary prefixes (KiB, MiB, GiB), like the other ha-* cards: up to
+// 2 decimals under 10, 1 under 100, none above ("3.8 GiB", "980 MiB", "6.02 TiB").
 const fmtBytes = (b, loc) => {
   if (b === null || b === undefined) return "—";
-  const units = ["B", "kB", "MB", "GB", "TB", "PB"];
-  let i = 0;
-  while (b >= 1000 && i < units.length - 1) {
-    b /= 1000;
-    i++;
-  }
-  return `${fmtNum(b, loc, b >= 100 || i === 0 ? 0 : b >= 10 ? 1 : 2)} ${units[i]}`;
-};
-
-// RAM sizes in powers of 1024 with binary prefixes (KiB, MiB, GiB), like the other ha-* cards: up to 2 decimals
-// under 10, 1 under 100, none above ("3.8 GiB", "980 MiB").
-const fmtRam = (b, loc) => {
-  if (b === null || b === undefined) return "—";
-  const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+  const units = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
   let i = 0;
   while (b >= 1024 && i < units.length - 1) {
     b /= 1024;
@@ -2178,8 +2167,8 @@ const fmtRam = (b, loc) => {
 // "used / total" for the RAM gauge: the used figure drops its unit only when both share it
 // ("1.5 / 2 GiB", but "800 MiB / 2 GiB").
 const ramPair = (used, total, loc) => {
-  const u = fmtRam(used, loc);
-  const tot = fmtRam(total, loc);
+  const u = fmtBytes(used, loc);
+  const tot = fmtBytes(total, loc);
   const [uv, uu] = u.split(" ");
   return uu === tot.split(" ")[1] ? `${uv} / ${tot}` : `${u} / ${tot}`;
 };
@@ -3404,7 +3393,7 @@ const BANNER_STYLE = `
   }
   /* Detail button (mini card): a small frosted round button in the banner's top right corner. */
   .banner .zoom { position: absolute; z-index: 2; top: 5px; right: 5px; margin: 0; width: 24px; height: 24px; color: #33506b;
-                  background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); backdrop-filter: blur(4px); }
+                  background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
   .banner.night .zoom { color: #fff; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
   .banner .zoom:hover { background: rgba(255,255,255,.75); color: #33506b; }
   .banner.night .zoom:hover { background: rgba(255,255,255,.22); color: #fff; }
@@ -3446,7 +3435,11 @@ const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "
 const HIST_REFRESH = 5 * 60000;
 const HIST_PERIOD = 5 * 60000;
 const HIST_WINDOW = 864e5;
+// While the first history answer is on its way: the sparkline's box without a curve, so the card has its final height
+// from the first render and does not grow (moving the page under it) when the statistics arrive.
+const HIST_WAIT = Object.freeze([]);
 function spark(points, now = Date.now(), max = 0) {
+  if (points === HIST_WAIT) return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"></svg>`;
   if (!points || points.length < 2) return "";
   const peak = max || Math.max(...points.map((p) => p.v)) || 1;
   const from = now - HIST_WINDOW;
@@ -3589,19 +3582,32 @@ class NasBase extends HTMLElement {
       this._resize.observe(this);
     }
     document.fonts?.ready?.then(() => this._fitPill());
+    // The 24 h curves are fetched again every HIST_REFRESH even when no sensor of the card changes (a render only
+    // happens on a new state), so that they do not grow old on a quiet NAS.
+    if (typeof setInterval === "function") {
+      clearInterval(this._histTimer);
+      this._histTimer = setInterval(() => this._histTick(), HIST_REFRESH);
+    }
     // Back on the page after leaving it: rendered again in its default state.
     this._update?.();
   }
 
+  // Timer of the 24 h curves: renders again (which fetches the statistics anew) once they are older than HIST_REFRESH.
+  _histTick() {
+    if (this._histKey && this._hass && Date.now() - this._histAt > HIST_REFRESH) this._update?.();
+  }
+
   disconnectedCallback() {
+    if (this._histTimer) clearInterval(this._histTimer);
+    this._histTimer = null;
     this._onDialogOutsideWatch?.off();
     this._resize?.disconnect();
     this._fitWidth = null;
+    if (this._fitFrame) cancelAnimationFrame(this._fitFrame);
     // Left (another dashboard view, a conditional card hidden): back to the default state, so that the card does
     // not come back unfolded or with its popup open.
     this._dialog = null;
     window.removeEventListener("keydown", this._onKey);
-    this._dialog = null;
   }
 
   // Presses a Home Assistant button entity. A failed call is logged (Home Assistant already shows a toast).
@@ -3957,6 +3963,16 @@ class NasBase extends HTMLElement {
   // that line either, or the banner has no room for the three lines above its strip, the pill keeps its dot only
   // (.titles.dot-only, back beside the title when the dot fits there). Measured after render, in every language.
   _fitPill() {
+    // Home Assistant's <ha-card> (a Lit element) shows its content only from its first update, a microtask after it
+    // is connected: measured before, everything is 0 px wide and the pill lands on the wrong line. Fitted then.
+    const haCard = this.shadowRoot?.querySelector?.("ha-card");
+    if (haCard && haCard.hasUpdated === false) {
+      this._pillWait ??= (haCard.updateComplete?.then ? haCard.updateComplete : new Promise((r) => requestAnimationFrame(r))).then(() => {
+        this._pillWait = null;
+        this._fitPill();
+      });
+      return;
+    }
     for (const t of this.shadowRoot?.querySelectorAll?.(".titles") || []) {
       const chip = t.querySelector(".trow > .chip");
       t.classList.remove("below", "dot-only");
@@ -4296,6 +4312,9 @@ class NasCard extends NasBase {
   _history(ids) {
     const key = ids.join(",");
     if (key && this._hass.callWS && (this._histKey !== key || Date.now() - this._histAt > HIST_REFRESH)) {
+      // Other series: until their first answer (or failure), the curves already known stay and the new ones keep
+      // their box (HIST_WAIT).
+      if (this._histKey !== key) this._histWait = true;
       this._histKey = key;
       this._histAt = Date.now();
       this._hass
@@ -4308,15 +4327,21 @@ class NasCard extends NasBase {
         })
         .then((r) => {
           if (this._histKey !== key) return;
+          this._histWait = false;
           this._hist = Object.fromEntries(ids.map((id) => [id, histPoints(r?.[id])]));
           this._update();
         })
         // No statistics (sensor without state_class, recorder off): try again in a minute, no sparkline meanwhile.
         .catch(() => {
           this._histAt = Date.now() - HIST_REFRESH + 60000;
+          if (this._histKey !== key || !this._histWait) return;
+          this._histWait = false;
+          this._update();
         });
     }
-    return this._histKey === key ? this._hist : null;
+    if (this._histKey !== key) return null;
+    if (!this._histWait) return this._hist;
+    return Object.fromEntries(ids.map((id) => [id, this._hist?.[id] ?? HIST_WAIT]));
   }
 
   _raidText(rs) {

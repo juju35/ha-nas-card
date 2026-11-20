@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.27.2 - 2026-11-20
+
+### Fixes
+- The status pill is placed from the card's first frame: it was measured before Home Assistant's `<ha-card>` had laid out its content (0 px wide), so for a frame it showed on the wrong line (under the title, or beside it when it belongs under it), sometimes changing the card's height, before jumping to its place. It is now fitted once the card is drawn.
+- The frosted expand / collapse button of the illustrated header keeps its blur on Safari before 18 (WebKit prefix).
+- A status pill measurement still pending when the card leaves the page is cancelled.
+- The 24 h curves keep their place while the statistics load: the card has its final height from the first render instead of growing by 24 px (mini) / 52 px (full) when they arrive, which moved the page under it.
+- Volume, disk and pool sizes are shown in powers of 1024 with binary prefixes (KiB, MiB, GiB, TiB; 2 decimals under 10, 1 under 100, none above), like the RAM and the other ha-* cards: a 6.62 TB volume reads 6.02 TiB. Rates stay decimal (kB/s, MB/s).
+- The 24 h curves are fetched again every 5 minutes even when no sensor of the card changes, instead of growing old on a quiet NAS.
+
+### Maintenance
+- Tests: the coverage of the card source is now measured (`node --test --experimental-test-coverage`).
+
 ## 1.27.1 - 2026-11-18
 
 ### Fixes

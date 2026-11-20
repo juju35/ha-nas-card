@@ -102,3 +102,48 @@ test("sparkline: a fixed 0–100 % scale clamps values outside it, keeps the tim
   assert.match(d, /^M25\.00,/);
   assert.match(d, /L50\.00,[\d.]+M75\.00,/);
 });
+
+// The page must not move under the card when the statistics arrive: the curves' boxes are there from the first
+// render, empty, and keep their place; a recorder that fails takes them away once, not on each retry.
+test("history: the sparkline boxes are reserved while the statistics load, dropped once if they fail", async () => {
+  for (const Card of [NasCard, NasMiniCard]) {
+    const { el } = mount(Card, {});
+    el._update();
+    const waiting = el.html.match(/<svg class="spark"[^>]*><\/svg>/g) || [];
+    assert.ok(waiting.length >= 2, "empty boxes before the answer");
+    await tick();
+    assert.equal((el.html.match(/<svg class="spark"/g) || []).length, waiting.length, "same boxes once the curves arrive");
+    assert.doesNotMatch(el.html, /<svg class="spark"[^>]*><\/svg>/);
+
+    const failing = mount(Card, {});
+    failing.el._hass = { ...failing.el._hass, callWS: async () => { throw new Error("no recorder"); } };
+    failing.el._update();
+    assert.match(failing.el.html, /<svg class="spark"/);
+    await tick();
+    assert.doesNotMatch(failing.el.html, /class="spark"/);
+    // The retry a minute later reserves nothing again: no box coming and going every minute.
+    failing.el._histAt -= 5 * 60000;
+    failing.el._update();
+    assert.doesNotMatch(failing.el.html, /class="spark"/);
+  }
+});
+
+test("history: the curves are fetched again by the timer once they are 5 minutes old, without any state change", async () => {
+  const { el, calls } = mount(NasCard, {});
+  el._update();
+  await tick();
+  assert.equal(calls.length, 1);
+  el._histTick();
+  el._update();
+  assert.equal(calls.length, 1, "fresh curves are not fetched again");
+  const realUpdate = el._update;
+  let renders = 0;
+  el._update = () => {
+    renders++;
+    realUpdate();
+  };
+  el._histAt = Date.now() - 5 * 60000 - 1;
+  el._histTick();
+  assert.equal(renders, 1);
+  assert.equal(calls.length, 2);
+});

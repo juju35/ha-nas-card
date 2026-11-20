@@ -112,11 +112,15 @@ test("data sizes follow Home Assistant: kB/MB/GB/TB decimal, KiB/MiB/GiB/TiB bin
   assert.equal(toBytes(s("sensor.v", 1, "GiB")), 1024 ** 3);
   assert.equal(toBytes(s("sensor.v", 1, "TiB")), 1024 ** 4);
   assert.equal(toBytes(s("sensor.v", 5)), 5);
-  // A sensor in GB or TB reads the same on the card as in Home Assistant.
-  assert.equal(fmtBytes(toBytes(s("sensor.v", 6.62, "TB"))), "6.62 TB");
-  assert.equal(fmtBytes(toBytes(s("sensor.v", 1000, "GB"))), "1 TB");
-  assert.equal(fmtBytes(toBytes(s("sensor.v", 1, "GiB"))), "1.07 GB");
-  assert.equal(fmtBytes(1500), "1.5 kB");
+  // Sizes are shown in powers of 1024 (ha-* convention), whatever the sensor's unit: 2/1/0 decimals.
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 6.62, "TB"))), "6.02 TiB");
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 1000, "GB"))), "931 GiB");
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 1, "GiB"))), "1 GiB");
+  assert.equal(fmtBytes(toBytes(s("sensor.v", 4, "TiB"))), "4 TiB");
+  assert.equal(fmtBytes(1500), "1.46 KiB");
+  assert.equal(fmtBytes(50 * 1024 ** 2), "50 MiB");
+  assert.equal(fmtBytes(12.34 * 1024 ** 3), "12.3 GiB");
+  assert.equal(fmtBytes(512), "512 B");
 });
 
 test("both cards share setConfig and translate the Normal server status", () => {
@@ -1265,9 +1269,11 @@ test("network tiles: 24 h sparkline from the recorder statistics, refreshed ever
   assert.equal(calls.length, 1);
   assert.equal(calls[0].type, "recorder/statistics_during_period");
   assert.equal(calls[0].period, "5minute");
-  assert.doesNotMatch(el.html, /class="spark"/);
+  // Before the answer: the curves' boxes, empty (the card already has its final height).
+  assert.match(el.html, /<svg class="spark"[^>]*><\/svg>/);
+  assert.doesNotMatch(el.html, /class="spark-l"/);
   await new Promise((r) => setTimeout(r, 0));
-  assert.match(el.html, /class="spark"/);
+  assert.match(el.html, /class="spark-l"/);
   el._update();
   assert.equal(calls.length, 1, "no new query within 5 minutes");
   el._histAt -= 5 * 60000 + 1;
@@ -1414,9 +1420,9 @@ test("a volume or disk without any status entity shows no dot, not a green one",
 });
 
 test("sizes and rates use the decimal separator of the card's language", async () => {
-  assert.equal(fmtBytes(1.5e9, "fr"), "1,5 GB");
-  assert.equal(fmtBytes(1.25e12, "de"), "1,25 TB");
-  assert.equal(fmtBytes(1e12, "fr"), "1 TB");
+  assert.equal(fmtBytes(1.5 * 1024 ** 3, "fr"), "1,5 GiB");
+  assert.equal(fmtBytes(1.25 * 1024 ** 4, "de"), "1,25 TiB");
+  assert.equal(fmtBytes(1e12, "fr"), "931 GiB");
   assert.equal(fmtRate(1.5e6, "de"), "1,5 MB/s");
   assert.equal(fmtRate(2e6, "fr"), "2,0 MB/s");
   assert.equal(fmtRate(1.5e6), "1.5 MB/s");
@@ -1425,7 +1431,7 @@ test("sizes and rates use the decimal separator of the card's language", async (
   el._hass = { ...(await registryHass("synology")), language: "en" };
   const html = el._render();
   assert.match(html, /24,5 MB\/s/);
-  assert.match(html, /6,62 TB utilisé/);
+  assert.match(html, /6,02 TiB utilisé/);
 });
 
 test("Synology: update chip when DSM has an update, reboot button with a confirmation at the top of the card", async () => {
