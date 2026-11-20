@@ -248,3 +248,73 @@ test("in a container sized by its content or a 1fr 1fr grid, the cards keep a us
   }
   assert.deepEqual(failures, []);
 });
+
+// Home Assistant's <ha-card> is a Lit element: it shows its content from its first update only, a microtask after it is
+// connected, so whatever the card measures before that is 0 px wide. With such a stand-in, the status pill must be in
+// its place (and the card at its height) from the first frame, and keep them through state updates.
+const LIT_HA_CARD = `customElements.define("ha-card", class extends HTMLElement {
+  constructor() { super(); this.attachShadow({ mode: "open" }).innerHTML = "<style>:host{display:block;overflow:hidden}</style>"; }
+  connectedCallback() {
+    if (this.updateComplete) return;
+    this.hasUpdated = false;
+    this.updateComplete = Promise.resolve().then(() => { this.shadowRoot.appendChild(document.createElement("slot")); this.hasUpdated = true; return true; });
+  }
+});`;
+
+for (const [type, config] of ["nas-card", "nas-mini-card"].flatMap((type) => [{}, { title: "Main network storage of the house" }].map((c) => [type, c])))
+  for (const width of [300, 400])
+    test(`${type}${config.title ? " (long title)" : ""} at ${width} px in a Lit-like ha-card: the pill is placed from the first frame and stays`, async (t) => {
+      if (skip) return t.skip(skip);
+      const page = await browser.newPage({ viewport: { width: 1000, height: 1400 } });
+      const errors = [];
+      page.on("pageerror", (e) => errors.push(e.message));
+      await page.route("https://brands.home-assistant.io/**", (r) => r.fulfill({ status: 404 }));
+      await page.setContent("<!doctype html><body style='margin:0'></body>");
+      await page.addScriptTag({ content: LIT_HA_CARD });
+      await page.addScriptTag({ content: src });
+      const r = await page.evaluate(
+        async ({ type, config, width, hass }) => {
+          const frame = () => new Promise((done) => requestAnimationFrame(done));
+          const box = document.createElement("div");
+          box.style.width = `${width}px`;
+          document.body.appendChild(box);
+          const el = document.createElement(type);
+          el.setConfig({ type: `custom:${type}`, ...config });
+          el.hass = hass;
+          box.appendChild(el);
+          const look = () => `${Math.round(el.getBoundingClientRect().height)} ${[...el.shadowRoot.querySelectorAll(".titles")].map((n) => n.className).join("|")}`;
+          const first = new Set();
+          for (let k = 0; k < 6; k++) {
+            await frame();
+            first.add(look());
+          }
+          await new Promise((done) => setTimeout(done, 300));
+          await frame();
+          const settled = look();
+          const updates = new Set();
+          let h = hass;
+          for (let i = 1; i <= 8; i++) {
+            const states = { ...h.states };
+            if (i % 2) states["sensor.layout_probe"] = { entity_id: "sensor.layout_probe", state: String(i), attributes: {} };
+            else {
+              for (const [key, v] of [["cpu_usage", 10 + ((i * 7) % 60)], ["cpu_temperature", 40 + (i % 9)], ["ram_usage", 30 + ((i * 3) % 50)]]) {
+                const id = `sensor.ugreen_nas_${key}`;
+                states[id] = { ...states[id], state: String(v) };
+              }
+
+            }
+            h = { ...h, states };
+            el.hass = h;
+            await frame();
+            await frame();
+            updates.add(look());
+          }
+          return { first: [...first], settled, updates: [...updates] };
+        },
+        { type, config, width, hass: { ...mocks.ugreen, language: "en", locale: { language: "en" }, themes: { darkMode: false } } },
+      );
+      await page.close();
+      assert.deepEqual(errors, []);
+      assert.deepEqual(r.first, [r.settled], "the first frames show the pill where it settles, at the same height");
+      assert.deepEqual(r.updates, [r.settled], "state updates keep the pill's place and the height");
+    });
