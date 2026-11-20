@@ -3597,11 +3597,11 @@ class NasBase extends HTMLElement {
     this._onDialogOutsideWatch?.off();
     this._resize?.disconnect();
     this._fitWidth = null;
+    if (this._fitFrame) cancelAnimationFrame(this._fitFrame);
     // Left (another dashboard view, a conditional card hidden): back to the default state, so that the card does
     // not come back unfolded or with its popup open.
     this._dialog = null;
     window.removeEventListener("keydown", this._onKey);
-    this._dialog = null;
   }
 
   // Presses a Home Assistant button entity. A failed call is logged (Home Assistant already shows a toast).
