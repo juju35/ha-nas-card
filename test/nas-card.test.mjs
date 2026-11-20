@@ -1265,9 +1265,11 @@ test("network tiles: 24 h sparkline from the recorder statistics, refreshed ever
   assert.equal(calls.length, 1);
   assert.equal(calls[0].type, "recorder/statistics_during_period");
   assert.equal(calls[0].period, "5minute");
-  assert.doesNotMatch(el.html, /class="spark"/);
+  // Before the answer: the curves' boxes, empty (the card already has its final height).
+  assert.match(el.html, /<svg class="spark"[^>]*><\/svg>/);
+  assert.doesNotMatch(el.html, /class="spark-l"/);
   await new Promise((r) => setTimeout(r, 0));
-  assert.match(el.html, /class="spark"/);
+  assert.match(el.html, /class="spark-l"/);
   el._update();
   assert.equal(calls.length, 1, "no new query within 5 minutes");
   el._histAt -= 5 * 60000 + 1;
