@@ -62,10 +62,10 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 
 | Integration | NAS | What the cards show |
 |---|---|---|
-| [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, UGOS version and update, reboot, link to UGOS |
-| [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks (status, SMART, bad sectors, remaining life), security status, DSM version and update, reboot, link to DSM; no fans |
-| [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
-| [ASUSTOR](https://github.com/aubierr/ha-asustor) (SNMP, custom) | ASUSTOR | CPU, RAM, temperatures, fans, network, volumes (RAID level and status), disks (SMART), ADM version and update; no server status, no reboot |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="" width="16"> [UGREEN NAS](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas) (Marketplace) | UGREEN DXP and DH | Everything: CPU, RAM, temperatures, network, volumes, disks, **fans**, server status, UGOS version and update, reboot, link to UGOS |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="16"> [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks (status, SMART, bad sectors, remaining life), security status, DSM version and update, reboot, link to DSM; no fans |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="16"> [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/asustor.svg" alt="" width="16"> [ASUSTOR](https://github.com/aubierr/ha-asustor) (SNMP, custom) | ASUSTOR | CPU, RAM, temperatures, fans, network, volumes (RAID level and status), disks (SMART), ADM version and update; no server status, no reboot |
 
 Several NAS are supported, and brands can be mixed. Some sensors of the Synology DSM, QNAP and ASUSTOR integrations are disabled by default, see [How it works](#how-it-works).
 
