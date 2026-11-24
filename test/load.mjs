@@ -3,10 +3,11 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { sources } from "./source.mjs";
 
 export const load = (file, names) => {
   const url = new URL(`../src/${file}`, import.meta.url);
-  const src = readFileSync(url, "utf8");
+  const src = (sources[file] ?? readFileSync(url, "utf8"));
   class HTMLElement {
     attachShadow() {
       // Listeners kept by type, so tests can dispatch events to them.
