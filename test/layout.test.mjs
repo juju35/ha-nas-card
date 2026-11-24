@@ -5,11 +5,11 @@
 // and its footer items stay on one line. At a third of a section (4 columns, about 160 px), the header alone
 // is checked. Skipped when Playwright or Chromium is not installed, except in CI, where it must run.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { after, before, test } from "node:test";
 import { mocks } from "../scripts/mock-states.mjs";
+import { source } from "./source.mjs";
 
-const src = readFileSync(new URL("../src/nas-card.js", import.meta.url), "utf8");
+const src = source;
 const THEMES = {
   light: { "--secondary-background-color": "#ececec", "--card-background-color": "#fff", "--primary-text-color": "#212121", "--secondary-text-color": "#727272" },
   dark: { "--secondary-background-color": "#282828", "--card-background-color": "#1c1c1c", "--primary-text-color": "#e1e1e1", "--secondary-text-color": "#9b9b9b" },
