@@ -2424,3 +2424,74 @@ test("the editor offers the illustration toggle and its theme, auto left out of 
   assert.ok(!flat(ed._schema()).some((x) => x.name === "illustration_theme"));
   for (const lang of Object.keys(STRINGS)) for (const k of ["illustration", "illustration_theme", "theme_auto", "theme_day", "theme_night"]) assert.ok(STRINGS[lang][k], `${lang}.${k}`);
 });
+
+test("Unraid (GraphQL) discovery: scalars, the array as a volume with sizes from attributes, disks joined on their names", async () => {
+  const hass = await registryHass("unraid");
+  const nas = discover(hass, "");
+  assert.equal(nas.brand, "unraid");
+  const sc = nas.scalars;
+  assert.equal(sc.cpu_usage, "sensor.tower_cpu_usage");
+  assert.equal(sc.cpu_temp, "sensor.tower_cpu_temperature");
+  assert.equal(sc.ram_usage, "sensor.tower_ram_usage");
+  assert.equal(sc.sys_temp, "sensor.tower_temperature_motherboard");
+  assert.equal(sc.boot, "sensor.tower_up_since");
+  assert.equal(sc.server_status, "sensor.tower_array_state");
+  assert.equal(sc.lan_down, "sensor.tower_network_eth0_inbound");
+  assert.equal(sc.lan_up, "sensor.tower_network_eth0_outbound");
+  const vols = Object.values(nas.pools[1].volumes);
+  assert.equal(vols.length, 1);
+  assert.equal(vols[0].labelText, "Array");
+  const u = volumeUsage(hass, vols[0]);
+  assert.equal(u.total, 21.8 * 1024 ** 4);
+  assert.equal(u.used, 12.7 * 1024 ** 4);
+  const disks = nas.pools[1].disks;
+  assert.deepEqual(Object.keys(disks), ["parity", "disk1", "disk2", "cache"]); // Unraid's order
+  assert.equal(disks.disk1.temperature, "sensor.tower_disk_disk1_temperature");
+  assert.equal(disks.disk1.problem, "binary_sensor.tower_disk_disk1_health");
+  assert.equal(disks.disk1.usage, "sensor.tower_disk_disk1_usage");
+});
+
+test("Unraid card: OK while the array is started, disk sizes from attributes, a disk problem turns it red", async () => {
+  const hass = await registryHass("unraid");
+  const el = new NasCard();
+  el._config = {};
+  el._hass = hass;
+  let html = el._render();
+  assert.match(html, /Unraid Server/);
+  assert.match(html, /Unraid 7\.2\.0/);
+  assert.match(html, /chip clickable ok[^>]*><span class="dot"><\/span><span class="txt">Normal</);
+  assert.match(html, /7\.3 TiB/);
+  assert.doesNotMatch(html, /dot crit/);
+  hass.states["binary_sensor.tower_disk_disk2_health"] = { ...hass.states["binary_sensor.tower_disk_disk2_health"], state: "on" };
+  hass.states["sensor.tower_array_state"] = { ...hass.states["sensor.tower_array_state"], state: "stopped" };
+  html = el._render();
+  assert.match(html, /dot crit/);
+  assert.match(html, /chip clickable warn[^>]*><span class="dot"><\/span><span class="txt">Stopped</);
+});
+
+test("Unraid Management Agent: disk names from disk_name, system status, buttons, update, fans; Docker device left out", async () => {
+  const hass = await registryHass("unraid_agent");
+  const nas = discover(hass, "");
+  assert.equal(nas.brand, "unraid_agent");
+  const sc = nas.scalars;
+  assert.equal(sc.server_status, "sensor.tower_system_status");
+  assert.equal(sc.reboot, "button.tower_reboot_system");
+  assert.equal(sc.shutdown, "button.tower_shutdown_system");
+  assert.equal(sc.update, "update.tower_unraid_os");
+  assert.equal(sc.lan_down, "sensor.tower_network_eth0_rx");
+  assert.deepEqual({ ...nas.fans }, { 1: "sensor.tower_fan_1" });
+  assert.equal(Object.values(sc).includes("sensor.tower_docker_cpu_usage"), false);
+  const disks = nas.pools[1].disks;
+  assert.deepEqual(Object.keys(disks), ["disk1", "disk2"]);
+  assert.equal(disks.disk2.smart, "sensor.tower_disk_disk2_health");
+  assert.equal(disks.disk2.temperature, "sensor.tower_disk_disk2_temperature");
+  const u = volumeUsage(hass, Object.values(nas.pools[1].volumes)[0]);
+  assert.equal(u.total, 21.8 * 1024 ** 4);
+  const el = new NasCard();
+  el._config = {};
+  el._hass = hass;
+  const html = el._render();
+  assert.equal((html.match(/Unraid 7\.2\.0/g) || []).length >= 1, true);
+  assert.doesNotMatch(html, /Unraid 7\.2\.0<\/span><span>Unraid 7\.2\.0/); // the model is the OS: written once
+  assert.match(html, /<span class="txt">Normal</);
+});

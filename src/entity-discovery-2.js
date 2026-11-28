@@ -6,10 +6,14 @@
 // registry (platform), typed by their language-independent translation_key, and grouped per NAS
 // through the device registry. Synology attaches volumes and disks to child devices of the NAS;
 // QNAP keeps everything on one device and tells volumes and drives apart in the entity names.
-import { num, toBytes } from "./helpers.js";
+import { attrBytes, num, toBytes } from "./helpers.js";
 import { discoverUgreen } from "./entity-discovery.js";
 
-export const REGISTRY_PLATFORMS = { synology: "synology_dsm", qnap: "qnap", asustor: "asustor" };
+export const REGISTRY_PLATFORMS = { synology: "synology_dsm", qnap: "qnap", asustor: "asustor", unraid: "unraid", unraid_agent: "unraid_management_agent" };
+// Unraid through its two integrations: "Unraid" (GraphQL API, domain unraid) and "Unraid Management Agent" (the
+// agent plugin, domain unraid_management_agent). Both keep the server on one device and tell the disks and network
+// interfaces apart in the entity names (the agent also in a disk_name attribute).
+export const UNRAID_BRANDS = new Set(["unraid", "unraid_agent"]);
 // Brands whose volumes, disks and network interfaces are child devices of the NAS device.
 export const CHILD_DEVICE_BRANDS = new Set(["synology", "asustor"]);
 
@@ -44,6 +48,32 @@ export const ASUSTOR_SCALARS = {
   cpu_model: "cpu_model",
 };
 export const ASUSTOR_TEMPS = { cpu_temperature: "cpu_temp", system_temperature: "sys_temp" };
+// Unraid (both integrations): server translation_key → scalar slot. The array state (GraphQL) or the agent's system
+// status is the server status; the agent's buttons and Unraid OS update are the power buttons and the update.
+export const UNRAID_SCALARS = {
+  cpu_usage: "cpu_usage",
+  cpu_temperature: "cpu_temp",
+  ram_usage: "ram_usage",
+  ram_used: "ram_used",
+  temperature_motherboard: "sys_temp",
+  motherboard_temperature: "sys_temp",
+  array_state: "server_status",
+  system_status: "server_status",
+  uptime: "boot",
+  system_reboot: "reboot",
+  system_shutdown: "shutdown",
+  unraid_os: "update",
+};
+// Unraid disks and network interfaces: the entities of one disk or interface are joined on its name.
+export const UNRAID_DISK_KEYS = { disk_usage: "usage", disk_temperature: "temperature", disk_health: "smart" };
+export const UNRAID_RATES = { network_interface_rx: "lan_down", network_interface_tx: "lan_up", network_rx: "lan_down", network_tx: "lan_up" };
+// Size attributes of the Unraid array and disk sensors ("3.6 TB", binary units), by integration.
+export const UNRAID_SIZE_ATTRS = {
+  total: ["total", "total_capacity", "total_size"],
+  used: ["used", "used_space", "used_size"],
+  free: ["free", "free_space", "free_size"],
+};
+
 // Volume and disk translation_key → per-device slot (Synology prefixes volume_/disk_, QNAP volume_/drive_).
 export const VOLUME_KEYS = {
   volume_percentage_used: "used_pct",
@@ -200,7 +230,8 @@ export const discoverRegistry = (hass, brand, nasId) => {
   }
   const dev = hass.devices[rootId];
   nas.info = { name: dev.name_by_user || dev.name, model: dev.model, version: dev.sw_version, url: dev.configuration_url };
-  const SCALARS_BY_KEY = { synology: SYNO_SCALARS, qnap: QNAP_SCALARS, asustor: ASUSTOR_SCALARS }[brand];
+  const SCALARS_BY_KEY = { synology: SYNO_SCALARS, qnap: QNAP_SCALARS, asustor: ASUSTOR_SCALARS, unraid: UNRAID_SCALARS, unraid_agent: UNRAID_SCALARS }[brand];
+  const unraid = UNRAID_BRANDS.has(brand);
   const pool = (nas.pools[1] = { volumes: {}, disks: {} });
   const groups = {};
   // Label of a child device (a volume or a disk). ha-asustor names them "<NAS name> <part>" ("NAS Disk 1"): the NAS
@@ -218,6 +249,15 @@ export const discoverRegistry = (hass, brand, nasId) => {
     // the temperature device class): they are told by that class, or by their id when the state
     // is not loaded yet.
     const isTemp = brand === "synology" && !tk && id.startsWith("sensor.") && (hass.states[id]?.attributes?.device_class === "temperature" || TEMP_ID_RE.test(id));
+    if (unraid) {
+      // Unraid: only the server device (the agent's Docker, VMs and controller devices hang under it).
+      if (e.device_id !== rootId) continue;
+      if (tk === "array_usage") set((pool.volumes.array ??= { labelText: "Array" }), "used_pct", id);
+      else if (tk in UNRAID_DISK_KEYS || tk in UNRAID_RATES) (groups[tk] ??= []).push(id);
+      else if (tk === "fan" && id.startsWith("sensor.")) nas.fans[Object.keys(nas.fans).length + 1] = id;
+      else if (tk in SCALARS_BY_KEY) set(nas.scalars, SCALARS_BY_KEY[tk], id);
+      continue;
+    }
     if (CHILD_DEVICE_BRANDS.has(brand) && e.device_id !== rootId) {
       // Child device of the NAS: a volume or a disk, labelled and (for disks) modelled by its device.
       const d = hass.devices[e.device_id];
@@ -254,6 +294,27 @@ export const discoverRegistry = (hass, brand, nasId) => {
     } else if (!tk && id.startsWith("sensor.") && hass.states[id]?.attributes?.device_class === "timestamp") {
       set(nas.scalars, "boot", id); // Synology "Last boot" carries no translation_key.
     }
+  }
+
+  if (unraid) {
+    // Network: the first interface (sorted entity ids) feeds the two tiles.
+    for (const [tk, slot] of Object.entries(UNRAID_RATES)) if (groups[tk]) set(nas.scalars, slot, groups[tk][0]);
+    // Disks: the agent names each disk in a disk_name attribute; otherwise the words of the entity name that the
+    // other disks' entities do not share ("Disk disk1 usage" → disk1). The disk's health is a problem binary sensor
+    // (GraphQL, on = problem) or a SMART word (agent).
+    const nameOf = (id) => hass.states[id]?.attributes?.friendly_name || id.split(".")[1];
+    for (const tk of Object.keys(UNRAID_DISK_KEYS)) {
+      const ids = groups[tk] || [];
+      const names = ids.map(nameOf);
+      ids.forEach((id, i) => {
+        const label = String(hass.states[id]?.attributes?.disk_name ?? "").trim() || monitorOf(names, i) || "1";
+        const slot = (pool.disks[label] ??= { labelText: label === "1" ? undefined : label });
+        set(slot, tk === "disk_health" && id.startsWith("binary_sensor.") ? "problem" : UNRAID_DISK_KEYS[tk], id);
+      });
+    }
+    // In Unraid's order: parity disks, the array's data disks, then the pools (cache…).
+    const rank = (k) => (/^parity/i.test(k) ? 0 : /^disk\d/i.test(k) ? 1 : 2);
+    pool.disks = Object.fromEntries(Object.entries(pool.disks).sort(([a], [b]) => rank(a) - rank(b) || naturalOrder(a, b)));
   }
 
   if (brand === "qnap") {
@@ -305,8 +366,13 @@ export const volumeUsage = (hass, vol) => {
   let total = toBytes(st("total_size_raw")) ?? toBytes(st("total_size"));
   let used = toBytes(st("used_size_raw")) ?? toBytes(st("used_size"));
   const avail = toBytes(st("available_size_raw")) ?? toBytes(st("available_size"));
-  if (used === null && total !== null && avail !== null) used = total - avail;
-  if (total === null && used !== null && avail !== null) total = used + avail;
+  // Unraid: the sizes are attributes of the usage sensor ("3.6 TB").
+  const pctState = st("used_pct");
+  if (total === null) total = attrBytes(pctState, UNRAID_SIZE_ATTRS.total);
+  if (used === null) used = attrBytes(pctState, UNRAID_SIZE_ATTRS.used);
+  const free = avail ?? attrBytes(pctState, UNRAID_SIZE_ATTRS.free);
+  if (used === null && total !== null && free !== null) used = total - free;
+  if (total === null && used !== null && free !== null) total = used + free;
   // Unknown used space: no percentage (shown as "—"), rather than an empty bar at 0 %.
   let pct = total && used !== null ? Math.min(100, Math.max(0, (used / total) * 100)) : null;
   // Synology, QNAP and ASUSTOR report the percentage directly: it completes whichever size is missing.
@@ -316,9 +382,9 @@ export const volumeUsage = (hass, vol) => {
     if (used === null && total !== null) used = (total * pct) / 100;
     else if (total === null && used !== null && pct > 0) total = (used * 100) / pct;
     // Only the free space and the percentage (ASUSTOR: used and total are disabled by default).
-    else if (total === null && used === null && avail !== null && pct < 100) {
-      total = (avail * 100) / (100 - pct);
-      used = total - avail;
+    else if (total === null && used === null && free !== null && pct < 100) {
+      total = (free * 100) / (100 - pct);
+      used = total - free;
     }
   }
   return { total, used, pct };

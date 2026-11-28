@@ -14,12 +14,13 @@
   <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/ugreen.svg" alt="UGREEN" width="64">&nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="Synology" width="64">&nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="QNAP" width="64">&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/asustor.svg" alt="ASUSTOR" width="64">
+  <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/asustor.svg" alt="ASUSTOR" width="64">&nbsp;&nbsp;
+  <a href="https://unraid.net"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/unraid.svg" alt="Unraid" width="64"></a>
 </p>
 
-Lovelace cards for Home Assistant to monitor NAS devices — [UGREEN](https://nas.ugreen.com), [Synology](https://www.synology.com), [QNAP](https://www.qnap.com) and [ASUSTOR](https://www.asustor.com): CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
+Lovelace cards for Home Assistant to monitor NAS devices — [UGREEN](https://nas.ugreen.com), [Synology](https://www.synology.com), [QNAP](https://www.qnap.com), [ASUSTOR](https://www.asustor.com) and [Unraid](https://unraid.net) servers: CPU, RAM, temperatures, disks, RAID volumes and network at a glance.
 
-The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), and of the [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) and [QNAP](https://www.home-assistant.io/integrations/qnap/) integrations included in Home Assistant, and of the [ASUSTOR integration](https://github.com/aubierr/ha-asustor): entities are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
+The cards are built on top of the [UGREEN NAS integration](https://github.com/Tom-Bom-badil/home-assistant_ugreen-nas), and of the [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) and [QNAP](https://www.home-assistant.io/integrations/qnap/) integrations included in Home Assistant, of the [ASUSTOR integration](https://github.com/aubierr/ha-asustor), and of the [Unraid](https://github.com/ruaan-deysel/ha-unraid) and [Unraid Management Agent](https://github.com/ruaan-deysel/ha-unraid-management-agent) integrations: entities are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
 
 [![Open your Home Assistant instance and open a repository inside the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=juju35&repository=ha-nas-card&category=plugin)
 
@@ -33,10 +34,15 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-qnap.png" alt="qnap card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-asustor-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-asustor.png" alt="asustor card" width="400"></picture> |
 | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-qnap.png" alt="qnap mini card" width="400"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-asustor-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-asustor.png" alt="asustor mini card" width="400"></picture> |
 
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/unraid.svg" alt="" width="20"> Unraid |
+|---|
+| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-unraid-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-unraid.png" alt="unraid card" width="400"></picture> |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-unraid-dark.png"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-unraid.png" alt="unraid mini card" width="400"></picture> |
+
 ## Features
 
 - Two cards: a full **NAS Card** and a compact **NAS Mini Card**, of type `custom:nas-card` and `custom:nas-mini-card` (the former types `custom:ugreen-nas-card` and `custom:ugreen-nas-mini-card` keep working)
-- Four integrations: **UGREEN NAS**, **Synology DSM**, **QNAP** and **ASUSTOR** ([ha-asustor](https://github.com/aubierr/ha-asustor), SNMP) — automatic discovery, several NAS supported, brands can be mixed
+- Six integrations: **UGREEN NAS**, **Synology DSM**, **QNAP**, **ASUSTOR** ([ha-asustor](https://github.com/aubierr/ha-asustor), SNMP), **Unraid** and **Unraid Management Agent** — automatic discovery, several NAS supported, brands can be mixed
 - CPU, RAM and temperature gauges, uptime and CPU model; the CPU and RAM gauges (and the mini card's CPU and RAM bars) draw their last 24 hours behind them, on a 0–100 % scale (recorder statistics)
 - Network download / upload rates, with their last 24 hours drawn behind each tile, on the full card and the mini card (recorder statistics)
 - Volumes with RAID level, filesystem, status and used space
@@ -44,12 +50,12 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 - Disks with model, status, temperature, size and power-on hours; the status dot turns red on any disk problem (on Synology also the SMART status and the bad sector / remaining life thresholds); a volume or disk without status entity has no dot
 - UGREEN and Synology: an « Update available » chip when UGOS or DSM has an update (click for its more-info dialog), and reboot and shutdown buttons at the end of the system facts, each with a confirmation popup at the top of the card
 - Fans speed (CPU fan and case fans, UGREEN)
-- Status pill: the server status (UGREEN, QNAP) or the security status (Synology); the ASUSTOR integration reports none
+- Status pill: the server status (UGREEN, QNAP), the security status (Synology), the array state (Unraid) or the system status (Unraid Management Agent); the ASUSTOR integration reports none
 - Colors turn orange / red when a threshold is crossed (CPU, RAM, temperatures, volume usage)
 - Detail button on the mini card (top right): it switches the mini card to the full card's content and back; a click anywhere outside the card brings the compact view back
 - Click any value to open its Home Assistant history (more-info dialog)
 - Illustrated header (both cards, 90 px): the NAS drawing of its model, drawn big on a server-room wall with a concrete strip at the bottom; the network cable flows and the drive LEDs blink in the status colour (green, orange on a warning or a RAID task, red on a degraded RAID, grey and dimmed when the NAS is offline), with an alert mark on a problem. Night version with a dark Home Assistant theme, forced with `illustration_theme`; `illustration: false` brings back the classic header. Animations stop with the system's reduced-motion setting
-- Round NAS icon next to the NAS name, in the status color (green when the NAS is normal, orange on a warning, red on a degraded RAID, grey when the NAS is offline or the status is unavailable), with the brand logo (UGREEN, Synology, QNAP or ASUSTOR) as a badge: a click opens the brand's website
+- Round NAS icon next to the NAS name, in the status color (green when the NAS is normal, orange on a warning, red on a degraded RAID, grey when the NAS is offline or the status is unavailable), with the brand logo (UGREEN, Synology, QNAP, ASUSTOR or Unraid) as a badge: a click opens the brand's website
 - Click the NAS picture to open the NAS web interface (UGOS, DSM, QTS), found automatically from Home Assistant for UGREEN and Synology; both addresses can be changed in the visual editor
 - Drawn NAS picture that follows the model: 43 models drawn across the three brands — towers by bay count, all-flash DXP480T, rackmounts (see [Screenshots](#screenshots)) — or your own picture
 - Visual editor in the dashboard UI for both cards (no YAML needed), with the pictures listed by brand
@@ -66,6 +72,8 @@ The cards are built on top of the [UGREEN NAS integration](https://github.com/To
 | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/synology.png" alt="" width="16"> [Synology DSM](https://www.home-assistant.io/integrations/synology_dsm/) (built in) | Synology | CPU, RAM, temperature, network, volumes, disks (status, SMART, bad sectors, remaining life), security status, DSM version and update, reboot, link to DSM; no fans |
 | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/qnap.png" alt="" width="16"> [QNAP](https://www.home-assistant.io/integrations/qnap/) (built in) | QNAP | CPU, RAM, temperature, network, volumes, drives, server status, QTS / QuTS hero firmware; no fans |
 | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/asustor.svg" alt="" width="16"> [ASUSTOR](https://github.com/aubierr/ha-asustor) (SNMP, custom) | ASUSTOR | CPU, RAM, temperatures, fans, network, volumes (RAID level and status), disks (SMART), ADM version and update; no server status, no reboot |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/unraid.svg" alt="" width="16"> [Unraid](https://github.com/ruaan-deysel/ha-unraid) (GraphQL API, custom) | Unraid servers | CPU, RAM, temperatures, network, the array (used space), disks (temperature, health, size), array state, Unraid version; no fans, no reboot |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/unraid.svg" alt="" width="16"> [Unraid Management Agent](https://github.com/ruaan-deysel/ha-unraid-management-agent) (agent plugin, custom) | Unraid servers | CPU, RAM, temperatures, fans, network, the array (used space), disks (temperature, SMART health, size), system status, Unraid OS update, reboot and shutdown |
 
 Several NAS are supported, and brands can be mixed. Some sensors of the Synology DSM, QNAP and ASUSTOR integrations are disabled by default, see [How it works](#how-it-works).
 
@@ -77,6 +85,7 @@ Home Assistant 2024.8 or later, and at least one of:
 - the [Synology DSM integration](https://www.home-assistant.io/integrations/synology_dsm/) (included in Home Assistant)
 - the [QNAP integration](https://www.home-assistant.io/integrations/qnap/) (included in Home Assistant)
 - the [ASUSTOR integration](https://github.com/aubierr/ha-asustor) (custom integration, reads the NAS over SNMP: enable SNMP in ADM under **Services → SNMP** first)
+- the [Unraid integration](https://github.com/ruaan-deysel/ha-unraid) (custom integration, Unraid 7.2+ API key) or the [Unraid Management Agent integration](https://github.com/ruaan-deysel/ha-unraid-management-agent) (custom integration, with the Unraid Management Agent plugin on the server)
 
 ## Installation
 
@@ -108,7 +117,7 @@ Or manually:
 
 ### Visual editor
 
-Edit a dashboard, click **Add card** and search for **NAS Card** or **NAS Mini Card**. The first NAS found is preselected; pick another one in the list if you have several (UGREEN, Synology, QNAP and ASUSTOR NAS are listed together), set an optional title, choose the picture (listed by brand: « QNAP TS-464 », « Synology DS923+ », « UGREEN DXP4800 Plus »…), the sections to display and the language. The preview updates live, and options left at their default are kept out of the generated YAML.
+Edit a dashboard, click **Add card** and search for **NAS Card** or **NAS Mini Card**. The first NAS found is preselected; pick another one in the list if you have several (UGREEN, Synology, QNAP, ASUSTOR and Unraid servers are listed together), set an optional title, choose the picture (listed by brand: « QNAP TS-464 », « Synology DS923+ », « UGREEN DXP4800 Plus »…), the sections to display and the language. The preview updates live, and options left at their default are kept out of the generated YAML.
 
 ### Minimal
 
@@ -163,7 +172,7 @@ language: fr
 
 | Option | Card | Default | Description |
 |---|---|---|---|
-| `nas` | both | First NAS found | NAS to display (only needed with several NAS): the `UGNAS_device_id` attribute for UGREEN, the NAS device name for Synology DSM, QNAP and ASUSTOR (its device id when two NAS share a name; device ids from earlier versions are still read) — pick it in the visual editor |
+| `nas` | both | First NAS found | NAS to display (only needed with several NAS): the `UGNAS_device_id` attribute for UGREEN, the NAS device name for Synology DSM, QNAP, ASUSTOR and Unraid (its device id when two NAS share a name; device ids from earlier versions are still read) — pick it in the visual editor |
 | `title` | both | NAS name | Card title |
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the subtitle under the title |
@@ -172,7 +181,7 @@ language: fr
 | `show_image` | both | `true` | Show the NAS picture |
 | `image` | both | NAS model | Picture to show: a model name (`DXP4800 Plus`, `DXP480T Plus`, `DH4300 Plus`, `DS923+`, `DS1821+`, `RS822+`, `TS-464`, `TVS-h674`, `TS-873AeU`… — see the [drawn models](#screenshots)) or an image URL (e.g. `/local/my-nas.png`). By default the picture follows the model reported by the integration; an unknown model of a known family is drawn from its bay count |
 | `url` | both | Device configuration URL | Web interface of the NAS, opened by a click on the NAS picture. By default the configuration URL of the NAS device in Home Assistant (the « Visit » link of the device page), set by the UGREEN NAS and Synology DSM integrations; the QNAP and ASUSTOR integrations have none, so set it for a QNAP or ASUSTOR NAS (e.g. `http://192.168.1.10:8080`) |
-| `brand_url` | both | Brand website | Website opened by a click on the header icon: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com), [qnap.com](https://www.qnap.com) or [asustor.com](https://www.asustor.com) by default |
+| `brand_url` | both | Brand website | Website opened by a click on the header icon: [nas.ugreen.com](https://nas.ugreen.com), [synology.com](https://www.synology.com), [qnap.com](https://www.qnap.com) [asustor.com](https://www.asustor.com) or [unraid.net](https://unraid.net) by default |
 | `show_system` | both | `true` | CPU, RAM and temperature gauges, uptime, CPU model |
 | `show_network` | both | `true` | Network download / upload |
 | `show_history` | both | `true` | 24 h curves behind the download / upload tiles (on the mini card, the rates then show as tiles above the footer instead of in it) and behind the CPU and RAM gauges and mini card bars (0–100 % scale), from the recorder's 5-minute statistics, fetched in one query (needs sensors with a `state_class`; a sensor without one simply gets no curve). Sections hidden with `show_system` / `show_network` are not fetched. Points sit at their time over the last 24 hours, and the curve breaks where data is missing |
@@ -306,6 +315,17 @@ Drawn ASUSTOR models, all the 83 of the manufacturer's resource page, one drawin
 
 <p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/models-asustor.svg" alt="ASUSTOR NAS pictures" width="760"></p>
 
+### <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/images/unraid.svg" alt="" width="24"> Unraid
+
+An Unraid server set up with the Unraid integration: the array, two data disks, the parity disk and a cache pool (the Unraid Management Agent integration gives the same card, with fans and the reboot and shutdown buttons):
+
+| Light | Dark |
+|---|---|
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-unraid.png" alt="card unraid" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/card-unraid-dark.png" alt="card unraid dark" width="400"> |
+| <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-unraid.png" alt="mini card unraid" width="400"> | <img src="https://raw.githubusercontent.com/juju35/ha-nas-card/main/screenshots/mini-card-unraid-dark.png" alt="mini card unraid dark" width="400"> |
+
+Unraid runs on any hardware: the picture is a home-server tower with Unraid's orange strip; set `image` to a drawn model or a URL to show your own case.
+
 ## How it works
 
 ### UGREEN NAS
@@ -326,6 +346,10 @@ The cards read the Home Assistant entity and device registries instead of entity
 ### ASUSTOR
 
 The [ha-asustor](https://github.com/aubierr/ha-asustor) integration (SNMP) is discovered like Synology DSM: the NAS is the root device, and its volumes, disks and network interfaces are child devices. CPU, RAM, CPU and system temperatures, uptime (converted from the unit Home Assistant displays, days by default), CPU model, fans, the ADM update chip (« ADM x.y » under the name), a volume's RAID level, status (the RAID chip) and filesystem, and each disk's temperature, status, SMART health, size and model. The first network interface feeds the network tiles. Total and used volume sizes are disabled by default in the integration: they are deduced from the free space and the used percentage. No server status and no reboot button (the integration has none). The model pictures (AS…, FS…, rackmounts for AS…R…) are drawings.
+
+### Unraid
+
+Both Unraid integrations keep the server on one device, read through the registries like QNAP (by `translation_key`): CPU and RAM usage, CPU and motherboard temperatures, the boot time (uptime), and the first network interface for the network tiles. The **array** is shown as a volume, its used and total space read from the attributes of its usage sensor. Each disk (parity, data disks, pools such as cache, in that order) gathers its temperature, its health and its size: the Unraid integration's **Disk … health** binary sensor turns a disk red when on; the agent's SMART health word when it is not « PASSED ». Disks are told apart by the agent's `disk_name` attribute, or by the disk name in the entity names. The status pill is « Normal » while the array is started (Unraid) or the system is online (agent), and shows the state otherwise (« Stopped », « Array stopped »…). With the agent, its fans, the **Unraid OS** update and the **Reboot System** / **Shutdown System** buttons are used too; the entities of its Docker, VMs and controller devices are left out. Disk temperatures are disabled by default in the Unraid integration: enable them to fill the disk tiles.
 
 ### NAS pictures
 
@@ -415,7 +439,7 @@ Contributions for additional languages are welcome!
 
 ## Credits
 
-UGREEN and its logo are trademarks of UGREEN Group; Synology, DSM and the Synology logo are trademarks of Synology Inc.; QNAP, QTS, QuTS hero and the QNAP logo are trademarks of QNAP Systems, Inc.; ASUSTOR, ADM and the ASUSTOR logo are trademarks of ASUSTOR Inc. The NAS pictures are drawings, not product photos. This project is not affiliated with UGREEN, Synology, QNAP or ASUSTOR.
+UGREEN and its logo are trademarks of UGREEN Group; Synology, DSM and the Synology logo are trademarks of Synology Inc.; QNAP, QTS, QuTS hero and the QNAP logo are trademarks of QNAP Systems, Inc.; ASUSTOR, ADM and the ASUSTOR logo are trademarks of ASUSTOR Inc.; Unraid and the Unraid logo are trademarks of Lime Technology, Inc. The NAS pictures are drawings, not product photos. This project is not affiliated with UGREEN, Synology, QNAP, ASUSTOR or Lime Technology.
 
 ## License
 

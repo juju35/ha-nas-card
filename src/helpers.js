@@ -2,7 +2,7 @@
 // Helpers
 // ---------------------------------------------------------------------------
 import { NO_VALUE } from "./entity-discovery.js";
-import { CHILD_DEVICE_BRANDS, rootDevice } from "./entity-discovery-2.js";
+import { CHILD_DEVICE_BRANDS, UNRAID_BRANDS, rootDevice } from "./entity-discovery-2.js";
 import { STRINGS } from "./i18n/strings.js";
 
 export const esc = (v) =>
@@ -127,6 +127,16 @@ export const durationSeconds = (s) => {
   return v === null ? null : v * (DURATION_FACTORS[String(s.attributes?.unit_of_measurement || "s").toLowerCase()] ?? 1);
 };
 
+// A size written in an attribute, "3.6 TB" or "512.0 MB" (Unraid: binary units with decimal names, as both
+// Unraid integrations format them), the first of `keys` that reads as one; null otherwise.
+export const attrBytes = (s, keys) => {
+  for (const k of keys) {
+    const m = String(s?.attributes?.[k] ?? "").trim().match(/^([\d.]+)\s*([KMGTP]?)i?B$/i);
+    if (m && Number.isFinite(parseFloat(m[1]))) return parseFloat(m[1]) * 1024 ** " KMGTP".indexOf(m[2].toUpperCase() || " ");
+  }
+  return null;
+};
+
 // Age in seconds of a boot timestamp sensor (Synology "Last boot", QNAP "Uptime").
 export const bootAge = (s) => {
   const ts = s && Date.parse(s.state);
@@ -136,13 +146,30 @@ export const bootAge = (s) => {
 // OS line of the subtitle: UGOS comes from its own sensor, the Synology firmware string already
 // spells out DSM, and QNAP firmware starts with "h" on QuTS hero.
 export const osVersion = (v, brand) =>
-  !v ? null : brand === "qnap" ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}` : brand === "asustor" ? `ADM ${v}` : v;
+  !v
+    ? null
+    : brand === "qnap"
+      ? `${/^h/i.test(v) ? "QuTS hero" : "QTS"} ${v}`
+      : brand === "asustor"
+        ? `ADM ${v}`
+        : UNRAID_BRANDS.has(brand) && !/unraid/i.test(v)
+          ? `Unraid ${v}`
+          : v;
 
 export const isOk = (s) => !s || /^(normal|ok|good|healthy|safe|passed|idle|on|false)$/i.test(String(s.state));
 
-// Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found).
+// Server status: UGREEN and QNAP report a word, Synology a safety binary sensor (on = issue found), Unraid the
+// array state (started) or the agent's system status (online).
 // An entity without value (NAS offline) is never "ok", whatever the brand.
-export const statusOk = (nas, s) => (s && NO_VALUE.has(s.state) ? false : nas.brand === "synology" && s ? String(s.state) === "off" : isOk(s));
+export const UNRAID_OK_RE = /^(started|online)$/i;
+export const statusOk = (nas, s) =>
+  s && NO_VALUE.has(s.state)
+    ? false
+    : nas.brand === "synology" && s
+      ? String(s.state) === "off"
+      : UNRAID_BRANDS.has(nas.brand) && s
+        ? UNRAID_OK_RE.test(String(s.state))
+        : isOk(s);
 
 export const level = (v, warn, crit) => (v === null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "ok");
 
@@ -202,12 +229,12 @@ export const raidState = (s) => {
 export const raidEntity = (nas, pool, vol) => pool.status || (CHILD_DEVICE_BRANDS.has(nas.brand) ? vol.status : undefined);
 
 // Health of a disk: its status and SMART status words, plus the Synology bad sector and remaining life threshold
-// binary sensors (on = problem). Any problem turns it red, titled with what is wrong; without any of these
+// binary sensors and the Unraid disk health binary sensor (on = problem). Any problem turns it red, titled with what is wrong; without any of these
 // entities there is no health at all (null: no dot), and without any value it is neutral.
 export const diskHealth = (hass, d) => {
   const st = (k) => (d[k] ? hass.states[d[k]] : undefined);
   const words = [st("status"), st("smart")].filter(Boolean);
-  const flags = [st("bad_sectors"), st("low_life")].filter(Boolean);
+  const flags = [st("bad_sectors"), st("low_life"), st("problem")].filter(Boolean);
   if (!words.length && !flags.length) return null;
   const problems = [
     ...words.filter((s) => !NO_VALUE.has(s.state) && !isOk(s)).map((s) => s.state),
@@ -228,6 +255,8 @@ export const PALETTES = {
   dh: { top: "#f2f2f0", bottom: "#d9d9d6", front: "#e6e6e3", tray: "#d0d0cc", handle: "#b5b5b0", mark: "#888" },
   synology: { top: "#45484c", bottom: "#17181a", front: "#101113", tray: "#1e2023", handle: "#34373b", mark: "#6b6f74" },
   qnap: { top: "#3c3f44", bottom: "#1c1e21", front: "#17181b", tray: "#24262a", handle: "#3a3d42", mark: "#8d9196", accent: "#c8a46a" },
+  // Unraid runs on any hardware: a dark home-server tower with Unraid's orange strip.
+  unraid: { top: "#3a3c40", bottom: "#151618", front: "#121315", tray: "#212326", handle: "#383b40", mark: "#7a7e84", accent: "#f15a2c" },
 };
 export const towerSvg = (bays, p) => {
   const tw = 34, gap = 6, strip = 46, pad = 14, h = 150;
@@ -440,6 +469,7 @@ export const nasSvg = (model, brand) => {
   // FS is both a Synology and an ASUSTOR prefix (FS6706T): the discovered brand decides.
   const b = (/^FS\d/.test(m) && brand === "asustor" ? "asustor" : brandOfModel(m)) || brand || "ugreen";
   if (b === "asustor") return asustorSvg(m);
+  if (UNRAID_BRANDS.has(b)) return towerSvg(6, PALETTES.unraid);
   if (b === "synology") return /^RS/.test(m) ? rackSvg(synoRackBays(m), PALETTES.synology) : towerSvg(synoBays(m), PALETTES.synology);
   if (b === "qnap") return /U(-RP)?$/.test(m) ? rackSvg(qnapBays(m), PALETTES.qnap) : towerSvg(qnapBays(m), PALETTES.qnap);
   if (/480T/.test(m)) return flatSvg();
@@ -453,8 +483,15 @@ export const nasSvg = (model, brand) => {
 export const nasPicture = (image, model, brand) =>
   /^(https?:|\/|data:)/.test(image || "") ? image : `data:image/svg+xml,${encodeURIComponent(nasSvg(image || model, brand))}`;
 
-export const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP", asustor: "ASUSTOR" };
-export const BRAND_SITES = { ugreen: "https://nas.ugreen.com", synology: "https://www.synology.com", qnap: "https://www.qnap.com", asustor: "https://www.asustor.com" };
+export const BRAND_NAMES = { ugreen: "UGREEN", synology: "Synology", qnap: "QNAP", asustor: "ASUSTOR", unraid: "Unraid", unraid_agent: "Unraid" };
+export const BRAND_SITES = {
+  ugreen: "https://nas.ugreen.com",
+  synology: "https://www.synology.com",
+  qnap: "https://www.qnap.com",
+  asustor: "https://www.asustor.com",
+  unraid: "https://unraid.net",
+  unraid_agent: "https://unraid.net",
+};
 // Only web addresses become links (a configuration_url can also be a homeassistant:// path).
 export const webUrl = (u) => (/^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : null);
 // The NAS web interface: the configuration_url of the NAS device in the device registry (set by the
@@ -486,6 +523,10 @@ export const BRAND_LOGOS = {
 };
 // ASUSTOR: the mark of the Dashboard Icons collection (images/asustor.svg), embedded like the others.
 BRAND_LOGOS.asustor = "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22800%22%20height=%22800%22%20viewBox=%220%200%201024%201024%22%3E%3Ccircle%20cx=%22512%22%20cy=%22512%22%20r=%22512%22%20style=%22fill:%230052a4%22/%3E%3Cpath%20d=%22M240.3%20511.7h-16.9c-3%200-6%201.1-8.9%203.1-2.9%202.1-4.5%204.6-5%207.5l-1.4%208.7c-.6%203.9.6%207.5%203.7%2010.6%203%203.2%206.6%204.8%2010.6%204.8h11.9zm32.2-18.8-11.9%2071.4H208c-8.1%200-15-2.8-20.6-8.5-5.6-5.6-8.5-12.5-8.5-20.6%200-1.2.1-2.6.4-4.3l2.2-13.4c4.3-15.4%2013.8-23%2028.4-23h33.7c.7-4.4-.4-8.4-3.4-12.1s-6.7-5.5-11.2-5.5h-32.2l2.8-16.9h44.1c7.8%200%2014.6%202.8%2020.3%208.5%205.7%205.6%208.6%2012.4%208.6%2020.2.1%201.9%200%203.3-.1%204.2m109.9-33.1-3%2016.9h-45.8c-8%200-12.7%203.9-14.1%2011.8l35.8%2021.8q14.1%208.55%2014.1%2024.6c0%209.4-3.5%2017-10.4%2022.6-5.6%204.5-11.9%206.8-18.7%206.8H278l2.8-17.8h45.8c8.2%200%2013.1-4.2%2014.6-12.6l-36.3-20.2c-9.3-5.2-13.9-13.2-13.9-23.9q0-12.9%208.1-21.3c5.4-5.6%2012.4-8.5%2020.9-8.5h62.4zm104.2%200-13.7%2080.8c-1.2%206.5-4.6%2012.1-10.2%2016.7s-11.8%207-18.4%207H416c-8.1%200-15-2.8-20.5-8.2-5.6-5.5-8.3-12.3-8.3-20.4%200-1.6.2-3.3.4-5l11.7-70.8h29L417%20529.5c-.2.9-.3%201.7-.3%202.6%200%204.2%201.4%207.6%204.3%2010.3s6.4%204%2010.6%204c7.8%200%2012.4-4%2013.7-12.1l12-74.5zm99.8%200-3%2016.9H542c-8%200-12.7%203.9-14.1%2011.8l35.8%2021.8q14.1%208.55%2014.1%2024.6c0%209.4-3.5%2017-10.4%2022.6-5.6%204.5-11.9%206.8-18.7%206.8h-62.3l2.8-17.8H535c8.2%200%2013.1-4.2%2014.5-12.6l-36.3-20.2c-9.3-5.2-13.9-13.2-13.9-23.9%200-8.6%202.7-15.7%208.2-21.3%205.4-5.6%2012.4-8.5%2020.9-8.5h58zm79.5%200-3%2016.9h-29.3l-8.6%2052.7c0%20.9-.1%201.7-.1%202.6%200%203.9%201.4%207.3%204.4%2010.1q4.35%204.2%2010.2%204.2h11.7l-2.8%2017.8h-23.7c-8.1%200-15-2.8-20.5-8.5-5.6-5.6-8.4-12.5-8.4-20.6%200-1.8.2-3.5.4-5.2l14.8-87.7h28.6l-2.9%2017.6h29.2zm90.5%208.3c-5.7-5.5-12.5-8.3-20.5-8.3h-28.2c-6.8%200-13%202.1-18.5%206.2-5.5%204.2-8.8%209.6-10%2016.3l-7.8%2047.5c-.3%201.7-.4%203.5-.4%205.2%200%208.1%202.8%2015%208.4%2020.6s12.4%208.5%2020.5%208.5h27.8c6.9%200%2013.2-2.4%2018.8-7.2s8.9-10.6%2010.1-17.4l8-46.2c.3-1.6.5-3.3.5-5.2-.1-7.8-3-14.5-8.7-20m-12.3%2025.2-6.9%2040.6c-1.4%208.4-6.3%2012.6-14.4%2012.6-4.1%200-7.5-1.3-10.3-3.9s-3.8-5.8-3.8-9.9c0-.9.3-3%20.3-3l6.7-40.6c1.3-8%205.8-12%2013.4-12%204.5%200%2010.3.7%2013.5%203.8%203.1%203.2%202.2%207.9%201.5%2012.4m101-33.5-2.9%2016.9h-17q-12.45%200-14.4%2012.3L799%20564.3h-28.8l13.2-81.4c1-6.7%204.3-12.3%209.9-16.6s11.8-6.5%2018.6-6.5z%22%20style=%22fill:%23fff%22/%3E%3C/svg%3E";
+// Unraid: the mark of the Dashboard Icons collection (images/unraid.svg), embedded like the others; both Unraid
+// integrations show it.
+BRAND_LOGOS.unraid = "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20xml:space=%22preserve%22%20viewBox=%220%20108.3%20512%20295.4%22%3E%3ClinearGradient%20id=%22a%22%20x1=%2291.058%22%20x2=%22420.942%22%20y1=%2293.45%22%20y2=%22423.333%22%20gradientTransform=%22matrix%281%200%200%20-1%200%20514.2%29%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20style=%22stop-color:%23e32929%22/%3E%3Cstop%20offset=%221%22%20style=%22stop-color:%23ff8d30%22/%3E%3C/linearGradient%3E%3Cpath%20d=%22M243.3%20181.9h24.9v147.8h-24.9zM24.9%20329.7H0V181.9h24.9zm96.8%2017.6h24.9v56.4h-24.9zM60.6%20284h24.9v91.3H60.6zm121.7%200h24.9v91.3h-24.9zm304.8-102.1H512v147.8h-24.9zm-96.8-17.2h-24.9v-56.4h24.9zm61.1%2062.9h-24.9v-91h24.9zm-122.1%200h-24.9v-91h24.9z%22%20style=%22fill:url%28%23a%29%22/%3E%3C/svg%3E";
+BRAND_LOGOS.unraid_agent = BRAND_LOGOS.unraid;
 export const UGREEN_LOGO = `<svg viewBox="31.54 11.44 86.93 129.63"><defs><linearGradient id="ug-logo" x1="75" y1="10.18" x2="75" y2="137.54" gradientUnits="userSpaceOnUse">
   <stop offset="0" stop-color="#02f2a6"/><stop offset="1" stop-color="#001509"/></linearGradient></defs>
   <path fill="url(#ug-logo)" d="M36.21,56.43c8.12,16.43,15.61,13.88,24.28,29.62V39.6c0-15.55-12.96-28.15-28.95-28.15v26.39c.26,5.25,.53,10.23,4.67,18.6Zm24.28,78.24v-24.2c.16-12.01-7.13-26.61-16.7-33.75-3.94-3.35-8-6.82-12.25-14.49v37.98c0,19.49,13.67,36.08,32.41,40.86-2.09-1.4-3.45-3.74-3.45-6.39ZM118.46,37.83V11.44c-15.99,0-28.95,12.6-28.95,28.15v46.45c4.25-7.68,8.31-11.15,12.26-14.5,9.57-7.12,16.86-21.77,16.7-33.72Zm-32.41,103.22c18.74-4.77,32.41-21.37,32.41-40.86,0,0,0-37.98,0-37.98-4.25,7.67-8.31,11.14-12.25,14.49-9.61,7.16-16.85,21.76-16.7,33.75v24.2c0,2.65-1.37,4.99-3.45,6.39Z"/></svg>`;

@@ -1,5 +1,5 @@
 /*
- * NAS Card for Home Assistant (UGREEN, Synology, QNAP)
+ * NAS Card for Home Assistant (UGREEN, Synology, QNAP, ASUSTOR, Unraid)
  * https://github.com/juju35/ha-nas-card
  *
  * Lovelace cards for the UGREEN NAS integration

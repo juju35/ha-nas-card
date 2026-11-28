@@ -2,8 +2,8 @@
 // Full card
 // ---------------------------------------------------------------------------
 import { ICONS } from "./core.js";
-import { bootAge, diskHealth, dotClass, durationSeconds, esc, fmtBytes, fmtRate, fmtUptime, num, raidEntity, raidState, ramPair, ramUsedBytes, svgIcon, temperature, toBps, toBytes } from "./helpers.js";
-import { DEVICE_ID_RE, discover, nasValue, volumeUsage } from "./entity-discovery-2.js";
+import { attrBytes, bootAge, diskHealth, dotClass, durationSeconds, esc, fmtBytes, fmtRate, fmtUptime, num, raidEntity, raidState, ramPair, ramUsedBytes, svgIcon, temperature, toBps, toBytes } from "./helpers.js";
+import { DEVICE_ID_RE, UNRAID_SIZE_ATTRS, discover, nasValue, volumeUsage } from "./entity-discovery-2.js";
 import { BANNER_STYLE, BASE_STYLE, HIST_REFRESH, HIST_WAIT, HIST_WINDOW, NasBase, histPoints, spark } from "./shared-styles.js";
 import { NET_STYLE } from "./mini-card.js";
 
@@ -302,7 +302,7 @@ export class NasCard extends NasBase {
         const health = diskHealth(this._hass, d);
         const temp = temperature(this._s(d.temperature), this._hass);
         const hours = num(this._s(d.power_on_hours));
-        const size = toBytes(this._s(d.size));
+        const size = toBytes(this._s(d.size)) ?? attrBytes(this._s(d.usage), UNRAID_SIZE_ATTRS.total); // Unraid: an attribute
         items.push(`<div class="disk clickable" role="button" tabindex="0" data-key="${esc(`${pn}-${dn}`)}" data-entity="${d.temperature || d.status || ""}">
           <div class="top">${svgIcon(ICONS.disk)}<span>${esc(this._text(d.label) || d.labelText || this._t("disk_n").replace("{n}", dno))}</span>
             ${health ? `<span class="dot ${health.cls}" title="${esc(health.title ?? this._dotTitle(health.state))}"></span>` : ""}</div>
