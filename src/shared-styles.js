@@ -2,10 +2,10 @@
 // Shared styles
 // ---------------------------------------------------------------------------
 import { ICONS } from "./core.js";
-import { BRAND_NAMES, BRAND_SITES, deviceUrl, durationSeconds, esc, fmtLang, headerIcon, level, nasPicture, nasSvg, num, osVersion, raidEntity, raidState, statusOk, svgIcon, t, temperature, thresholds, webUrl } from "./helpers.js";
+import { BRAND_NAMES, BRAND_SITES, deviceUrl, durationSeconds, esc, fmtLang, headerIcon, level, nasPicture, nasSvg, num, osVersion, raidEntity, raidState, statusOk, svgIcon, t, temperature, thresholds, UNRAID_OK_RE, webUrl } from "./helpers.js";
 import { nasArt, nasArtImage, nasIsNight, nasScene } from "./illustrated-header.js";
 import { NO_VALUE, _lastText } from "./entity-discovery.js";
-import { discover, fireMoreInfo, morph, sameSig, textWidth } from "./entity-discovery-2.js";
+import { UNRAID_BRANDS, discover, fireMoreInfo, morph, sameSig, textWidth } from "./entity-discovery-2.js";
 
 export let _nasUid = 0;
 
@@ -627,6 +627,11 @@ export class NasBase extends HTMLElement {
   _statusText(status, brand) {
     if (NO_VALUE.has(status.state)) return this._t(status.state);
     if (brand === "synology") return this._t(String(status.state) === "off" ? "status_ok" : "status_problem");
+    if (UNRAID_BRANDS.has(brand)) {
+      if (UNRAID_OK_RE.test(String(status.state))) return this._t("status_ok");
+      const raw = String(status.state).replace(/_/g, " "); // "array_stopped" → "Array stopped"
+      return raw.charAt(0).toUpperCase() + raw.slice(1);
+    }
     return /^(normal|good|healthy|ok)$/i.test(String(status.state)) ? this._t("status_ok") : status.state;
   }
 
@@ -801,7 +806,8 @@ export class NasBase extends HTMLElement {
     const version = this._text(sc.version);
     const os = version ? `UGOS ${version}` : osVersion(nas.info?.version, nas.brand);
     // The compact mini card shares its header with the NAS picture: the model alone, the OS version zoomed in.
-    const sub = [model, os && !this._compactHeader() ? os : null].filter(Boolean);
+    // The agent's Unraid model is its OS ("Unraid 7.2.0"): written once.
+    const sub = [model, os && !this._compactHeader() ? os : null].filter((x, i, a) => x && a.indexOf(x) === i);
     const state = this._headerState(nas, status);
     const icon = this._link(webUrl(c.brand_url) || BRAND_SITES[nas.brand], this._t("open_brand").replace("{brand}", BRAND_NAMES[nas.brand]), "brand-link", headerIcon(state, nas.brand));
     const chip = status

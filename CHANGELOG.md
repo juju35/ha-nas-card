@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.28.0 - 2026-11-28
+
+### Features
+- Unraid support (#111), through the [Unraid](https://github.com/ruaan-deysel/ha-unraid) integration (GraphQL API) and the [Unraid Management Agent](https://github.com/ruaan-deysel/ha-unraid-management-agent) integration, discovered from the registries like the other brands: CPU, RAM, CPU and motherboard temperatures, uptime, the first network interface, the array as a volume (used and total space from its attributes), each disk — parity, data disks, then pools such as cache — with its temperature, health and size, and the array state (Unraid) or system status (agent) in the status pill. With the agent, its fans, the Unraid OS update and the reboot and shutdown buttons too. Unraid logo as the header badge, an Unraid home-server tower as the picture, and Unraid screenshots in the README.
+
 ## 1.27.5 - 2026-11-24
 
 ### Maintenance

@@ -1,4 +1,4 @@
-// Renders the cards with mock NAS data (UGREEN, Synology DSM, QNAP, ASUSTOR) and saves the README screenshots.
+// Renders the cards with mock NAS data (UGREEN, Synology DSM, QNAP, ASUSTOR, Unraid) and saves the README screenshots.
 // Usage: npm run build && npm run screenshots
 import { chromium } from "playwright";
 import { execFileSync } from "node:child_process";
@@ -108,6 +108,10 @@ const shots = [
   { file: "card-asustor-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "asustor" },
   { file: "mini-card-asustor", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "asustor" },
   { file: "mini-card-asustor-dark", type: "nas-mini-card", theme: "dark", width: 380, config: {}, mock: "asustor" },
+  { file: "card-unraid", type: "nas-card", theme: "light", width: 460, config: {}, mock: "unraid" },
+  { file: "card-unraid-dark", type: "nas-card", theme: "dark", width: 460, config: {}, mock: "unraid" },
+  { file: "mini-card-unraid", type: "nas-mini-card", theme: "light", width: 380, config: {}, mock: "unraid" },
+  { file: "mini-card-unraid-dark", type: "nas-mini-card", theme: "dark", width: 380, config: {}, mock: "unraid" },
 ];
 
 const browser = await chromium.launch(

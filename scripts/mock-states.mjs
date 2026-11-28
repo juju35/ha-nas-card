@@ -213,10 +213,70 @@ export const asustor = registryMock("asustor", asusDevices.asus_nas, "asustor-na
 ]);
 for (const d of Object.values(asusDevices)) asustor.devices[d.id] = d;
 
+// Unraid (GraphQL API integration, domain unraid): everything on the server device; the disks and network interfaces
+// are told apart in the entity names, the array and disk sizes are attributes of their usage sensors.
+const unraidServer = { id: "unraid_srv", name: "tower", manufacturer: "Lime Technology", model: "Unraid Server", sw_version: "7.2.0", via_device_id: null };
+const sizes = (total, used, free) => ({ total, used, free });
+export const unraid = registryMock("unraid", unraidServer, "tower", [
+  ["sensor.tower_cpu_usage", "cpu_usage", "18.4", { name: "CPU usage", unit_of_measurement: "%" }],
+  ["sensor.tower_cpu_temperature", "cpu_temperature", "51", { name: "CPU temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_ram_usage", "ram_usage", "46.3", { name: "RAM usage", unit_of_measurement: "%" }],
+  ["sensor.tower_ram_used", "ram_used", "14.8", { name: "RAM used", unit_of_measurement: "GiB" }],
+  ["sensor.tower_temperature_motherboard", "temperature_motherboard", "39", { name: "Temperature Motherboard", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_up_since", "uptime", BOOT, { name: "Up since", device_class: "timestamp" }],
+  ["sensor.tower_array_state", "array_state", "started", { name: "Array state" }],
+  ["sensor.tower_array_usage", "array_usage", "58.2", { name: "Array usage", unit_of_measurement: "%", ...sizes("21.8 TB", "12.7 TB", "9.1 TB") }],
+  ["sensor.tower_disk_parity_usage", "disk_usage", "0.0", { name: "Disk parity usage", unit_of_measurement: "%", ...sizes("7.3 TB", "0 B", "7.3 TB") }],
+  ["sensor.tower_disk_disk1_usage", "disk_usage", "71.4", { name: "Disk disk1 usage", unit_of_measurement: "%", ...sizes("7.3 TB", "5.2 TB", "2.1 TB") }],
+  ["sensor.tower_disk_disk2_usage", "disk_usage", "64.9", { name: "Disk disk2 usage", unit_of_measurement: "%", ...sizes("7.3 TB", "4.7 TB", "2.6 TB") }],
+  ["sensor.tower_disk_cache_usage", "disk_usage", "38.0", { name: "Disk cache usage", unit_of_measurement: "%", ...sizes("931.5 GB", "354.0 GB", "577.5 GB") }],
+  ["sensor.tower_disk_parity_temperature", "disk_temperature", "34", { name: "Disk parity temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_disk_disk1_temperature", "disk_temperature", "36", { name: "Disk disk1 temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_disk_disk2_temperature", "disk_temperature", "37", { name: "Disk disk2 temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_disk_cache_temperature", "disk_temperature", "42", { name: "Disk cache temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["binary_sensor.tower_disk_parity_health", "disk_health", "off", { name: "Disk parity health", device_class: "problem" }],
+  ["binary_sensor.tower_disk_disk1_health", "disk_health", "off", { name: "Disk disk1 health", device_class: "problem" }],
+  ["binary_sensor.tower_disk_disk2_health", "disk_health", "off", { name: "Disk disk2 health", device_class: "problem" }],
+  ["binary_sensor.tower_disk_cache_health", "disk_health", "off", { name: "Disk cache health", device_class: "problem" }],
+  ["sensor.tower_network_eth0_inbound", "network_interface_rx", "11.6", { name: "Network eth0 inbound", unit_of_measurement: "MB/s", device_class: "data_rate" }],
+  ["sensor.tower_network_eth0_outbound", "network_interface_tx", "2.3", { name: "Network eth0 outbound", unit_of_measurement: "MB/s", device_class: "data_rate" }],
+]);
+
+// Unraid Management Agent (domain unraid_management_agent): the same server through the agent plugin — the disks
+// carry their name in a disk_name attribute, the system status, reboot / shutdown buttons and the Unraid OS update.
+const agentServer = { id: "uma_srv", name: "tower", manufacturer: "Lime Technology", model: "Unraid 7.2.0", sw_version: "7.2.0", via_device_id: null };
+const agentDocker = { id: "uma_docker", name: "tower Docker", manufacturer: "Lime Technology", model: "Docker", via_device_id: "uma_srv" };
+const disk = (name, extra = {}) => ({ disk_name: name, ...extra });
+export const unraid_agent = registryMock("unraid_management_agent", agentServer, "tower", [
+  ["sensor.tower_cpu_usage", "cpu_usage", "18.4", { name: "CPU Usage", unit_of_measurement: "%" }],
+  ["sensor.tower_cpu_temperature", "cpu_temperature", "51", { name: "CPU Temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_motherboard_temperature", "motherboard_temperature", "39", { name: "Motherboard Temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_ram_usage", "ram_usage", "46.3", { name: "RAM Usage", unit_of_measurement: "%" }],
+  ["sensor.tower_uptime", "uptime", BOOT, { name: "Uptime", device_class: "timestamp" }],
+  ["sensor.tower_system_status", "system_status", "online", { name: "System Status" }],
+  ["sensor.tower_array_usage", "array_usage", "58.2", { name: "Array Usage", unit_of_measurement: "%", total_capacity: "21.8 TB", used_space: "12.7 TB", free_space: "9.1 TB" }],
+  ["sensor.tower_disk_disk1_usage", "disk_usage", "71.4", { name: "Disk disk1 Usage", unit_of_measurement: "%", ...disk("disk1", { total_size: "7.3 TB" }) }],
+  ["sensor.tower_disk_disk1_health", "disk_health", "PASSED", { name: "Disk disk1 Health", ...disk("disk1") }],
+  ["sensor.tower_disk_disk1_temperature", "disk_temperature", "36", { name: "Disk disk1 Temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_disk_disk2_usage", "disk_usage", "64.9", { name: "Disk disk2 Usage", unit_of_measurement: "%", ...disk("disk2", { total_size: "7.3 TB" }) }],
+  ["sensor.tower_disk_disk2_health", "disk_health", "PASSED", { name: "Disk disk2 Health", ...disk("disk2") }],
+  ["sensor.tower_disk_disk2_temperature", "disk_temperature", "37", { name: "Disk disk2 Temperature", unit_of_measurement: "°C", device_class: "temperature" }],
+  ["sensor.tower_fan_1", "fan", "1180", { name: "Fan 1", unit_of_measurement: "rpm" }],
+  ["sensor.tower_network_eth0_rx", "network_rx", "92800", { name: "Network ETH0 RX", unit_of_measurement: "kbit/s", device_class: "data_rate" }],
+  ["sensor.tower_network_eth0_tx", "network_tx", "18400", { name: "Network ETH0 TX", unit_of_measurement: "kbit/s", device_class: "data_rate" }],
+  ["button.tower_reboot_system", "system_reboot", "unknown", { name: "Reboot System" }],
+  ["button.tower_shutdown_system", "system_shutdown", "unknown", { name: "Shutdown System" }],
+  ["update.tower_unraid_os", "unraid_os", "off", { name: "Unraid OS", installed_version: "7.2.0", latest_version: "7.2.0" }],
+  ["sensor.tower_docker_cpu_usage", "docker_cpu_usage", "3.1", { name: "Docker CPU Usage", unit_of_measurement: "%" }, "uma_docker"],
+]);
+unraid_agent.devices.uma_docker = agentDocker;
+
 // One mock Home Assistant per brand, the shape scripts/screenshots.mjs mounts the cards with.
 export const mocks = {
   ugreen: { states },
   synology,
   qnap,
   asustor,
+  unraid,
+  unraid_agent,
 };
